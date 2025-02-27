@@ -1,1 +1,96 @@
-/* You can add global styles to this file, and also import other style files */
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+
+html {
+    @include mat.theme((
+        color: (
+            theme-type: light,
+            primary: mat.$orange-palette,
+            tertiary: mat.$blue-palette,
+        ),
+        typography: Roboto,
+        density: 0,
+    ));
+}/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    @apply bg-gray-100;
+}
+
+@import "tailwindcss";
+
+.bg-lba {
+    background-color: #1f1f3c;
+}
+
+.bg-primary {
+    background-color: var(--mdc-filled-button-container-color, var(--mat-sys-primary));
+}
+
+// Fix tailwind form field outline
+// https://github.com/tailwindlabs/tailwindcss/discussions/9993
+.mdc-notched-outline__notch {
+    border-right: none !important;
+}
+
+.mat-mdc-dialog-surface {
+    overflow: hidden !important;
+
+    .dialog-content {
+        max-height: calc(100vh - 64px - 64px);
+        overflow: auto;
+        @apply flex flex-col p-4 sm:p-6;
+    }
+
+    .dialog-actions {
+        @apply flex flex-row items-center justify-end gap-4 p-4 sm:p-6;
+    }
+}
+
+.card {
+    @apply flex flex-col bg-white rounded shadow;
+
+    .card-title {
+        @apply text-xl font-bold text-white p-6 rounded-t;
+        background-color: #1f1f3c;
+    }
+
+    .card-content {
+        @apply p-6;
+    }
+
+}
+
+.page {
+    @apply flex flex-col;
+
+    .page-header {
+        @apply p-6 sm:p-12 text-white;
+        background-color: #1f1f3c;
+
+        .title {
+            font-family: 'Roboto Condensed', sans-serif;
+            @apply text-7xl font-medium;
+        }
+
+        .subtitle {
+            @apply mt-6;
+        }
+    }
+
+    .page-content {
+        @apply p-6 sm:p-12;
+    }
+
+}
+
+.huge-icon {
+    width: 128px !important;
+    height: 128px !important;
+    font-size: 128px !important;
+}

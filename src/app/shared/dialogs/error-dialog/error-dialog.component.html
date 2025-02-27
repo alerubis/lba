@@ -1,0 +1,41 @@
+<div class="flex flex-col" cdkDrag cdkDragRootElement=".cdk-overlay-pane">
+
+    <mat-toolbar class="flex flex-row items-center justify-between !bg-red-700 !px-6" cdkDragHandle>
+        <div class="text-lg text-white">
+            Error
+        </div>
+        <button mat-icon-button (click)="cancel()">
+            <mat-icon class="!text-white">clear</mat-icon>
+        </button>
+    </mat-toolbar>
+
+    <div class="dialog-content">
+
+        <div class="flex flex-row items-center gap-3 border rounded p-3 bg-red-100 border-red-600">
+            <mat-icon class="w-6 min-w-6 !text-red-600">
+                error_outline
+            </mat-icon>
+            <div class="text-sm text-red-600">{{ message }}</div>
+        </div>
+
+
+        @if (showFullError) {
+            <pre class="text-sm overflow-x-auto mt-6">{{ error | json }}</pre>
+        }
+
+    </div>
+
+    <div class="dialog-actions">
+        <button mat-button (click)="showFullError = !showFullError">
+            @if (showFullError) {
+                Hide full error
+            } @else {
+                Show full error
+            }
+        </button>
+        <button mat-flat-button (click)="ok()">
+            Ok
+        </button>
+    </div>
+
+</div>

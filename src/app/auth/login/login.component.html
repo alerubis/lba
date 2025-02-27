@@ -1,0 +1,42 @@
+<div class="flex items-center justify-center h-full">
+
+    <div class="flex flex-col w-full max-w-md">
+
+        <div class="mb-6 mx-auto">
+            <img class="h-32" src="images/logo_lba.svg">
+        </div>
+
+        <div class="card">
+
+            <div class="card-title text-center">
+                Login to your account
+            </div>
+
+            <div class="card-content">
+
+                <form class="flex flex-col gap-6 py-6" [formGroup]="loginForm" (submit)="login()">
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Username</mat-label>
+                        <input matInput formControlName="username" maxlength="16" autofocus>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Password</mat-label>
+                        <input matInput formControlName="password" maxlength="32" type="password">
+                    </mat-form-field>
+
+                    <button mat-flat-button type="submit" [disabled]="!loginForm.valid || loginLoading">
+                        <span *ngIf="!loginLoading">Login</span>
+                        <mat-progress-spinner *ngIf="loginLoading" class="mx-auto my-2" mode="indeterminate" [diameter]="20"></mat-progress-spinner>
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
