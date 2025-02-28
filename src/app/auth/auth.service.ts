@@ -108,7 +108,7 @@ export class AuthService {
         const betterErrorMessage = error?.error?.message || error?.message || error;
         const dialogRef = this._matDialog.open(ErrorDialogComponent, {
             width: '100%',
-            maxWidth: '640px',
+            maxWidth: '1024px',
             data: {
                 message: betterErrorMessage,
                 error: error,

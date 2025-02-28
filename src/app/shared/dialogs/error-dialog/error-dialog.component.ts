@@ -27,6 +27,7 @@ export class ErrorDialogComponent {
 
     message: string = '';
     error: any = '';
+    htmlError: string = '';
     showFullError: boolean = false;
 
     constructor(
@@ -35,6 +36,9 @@ export class ErrorDialogComponent {
     ) {
         this.message = this._data.message;
         this.error = this._data.error;
+        if (this.error.error && new String(this.error.error).includes('html')) {
+            this.htmlError = this.error.error;
+        }
     }
 
     //#region Actions

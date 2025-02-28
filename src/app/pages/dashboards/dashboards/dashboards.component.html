@@ -1,0 +1,65 @@
+<div class="page">
+
+    <app-breadcrumb [section]="'Elements'" [items]="[
+        { text: 'DASHBOARD', route: [] }
+    ]"
+    ></app-breadcrumb>
+
+    <div class="page-header">
+        <div class="title">
+            DASHBOARD
+        </div>
+        <div class="subtitle">
+            In this section you can create your own dashboards.
+        </div>
+    </div>
+
+    <div class="page-content">
+
+        <div class="card">
+
+            <div class="card-title flex flex-row items-center justify-between">
+
+                <div>
+                    Dashboard list
+                </div>
+
+                <button mat-flat-button (click)="createDashboard()">
+                    <mat-icon>add</mat-icon>
+                    New dashboard
+                </button>
+
+            </div>
+
+            <div class="bg-gray-200 p-6">
+
+                @if (dashboards.length > 0) {
+
+                    <div class="flex flex-col divide-y divide-gray-300">
+                        @for (dashboard of dashboards; track $index) {
+                            <a class="bg-white p-6 hover:bg-gray-100 cursor-pointer" [routerLink]="[dashboard.id]">
+                                {{ dashboard.description }}
+                            </a>
+                        }
+                    </div>
+
+                } @else {
+
+                    <div class="flex flex-col items-center justify-center bg-white rounded p-6">
+                        <div class="text-center">
+                            No dashboard found.
+                        </div>
+                        <div class="text-gray-500 text-sm text-center">
+                            Create your first dashboard by clicking the button "New dashboard".
+                        </div>
+                    </div>
+
+                }
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

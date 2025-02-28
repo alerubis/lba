@@ -1,0 +1,31 @@
+<div class="page">
+
+    <app-breadcrumb [section]="'Elements'" [items]="[
+        { text: 'DASHBOARD', route: ['../'] },
+        { text: dashboard?.description, route: [] }
+    ]"
+    ></app-breadcrumb>
+
+    <div class="page-header">
+        <div class="flex flex-row items-start justify-between gap-6">
+            <div class="title">
+                {{ dashboard?.description }}
+            </div>
+            <button mat-flat-button (click)="updateDashboard(dashboard)">
+                <mat-icon>edit</mat-icon>
+                Edit dashboard
+            </button>
+        </div>
+        <div class="subtitle">
+            Dashboard detail.
+        </div>
+    </div>
+
+    <div class="page-content">
+        <div class="bg-gray-200 p-3">
+            <gridstack [options]="gridOptions"></gridstack>
+        </div>
+
+    </div>
+
+</div>

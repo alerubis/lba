@@ -3,7 +3,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { Router, RouterOutlet } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 
 @Component({
@@ -15,7 +15,7 @@ import { AuthService } from '../auth/auth.service';
         MatButtonModule,
         MatIconModule,
         MatMenuModule,
-        RouterOutlet,
+        RouterModule,
     ]
 })
 export class PagesComponent {

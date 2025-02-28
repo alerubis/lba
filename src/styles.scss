@@ -32,6 +32,10 @@ body {
     background-color: var(--mdc-filled-button-container-color, var(--mat-sys-primary));
 }
 
+.font-condensed {
+    font-family: 'Roboto Condensed', sans-serif;
+}
+
 // Fix tailwind form field outline
 // https://github.com/tailwindlabs/tailwindcss/discussions/9993
 .mdc-notched-outline__notch {
@@ -40,6 +44,15 @@ body {
 
 .mat-mdc-dialog-surface {
     overflow: hidden !important;
+
+    .dialog-header {
+        @apply flex flex-row items-center justify-between px-6 py-3 text-white;
+        background-color: #1f1f3c;
+
+        .mat-icon {
+            @apply text-white;
+        }
+    }
 
     .dialog-content {
         max-height: calc(100vh - 64px - 64px);
@@ -56,8 +69,9 @@ body {
     @apply flex flex-col bg-white rounded shadow;
 
     .card-title {
-        @apply text-xl font-bold text-white p-6 rounded-t;
+        font-family: 'Roboto Condensed', sans-serif;
         background-color: #1f1f3c;
+        @apply text-xl font-bold text-white p-6 rounded-t;
     }
 
     .card-content {
@@ -93,4 +107,15 @@ body {
     width: 128px !important;
     height: 128px !important;
     font-size: 128px !important;
+}
+
+// Gridstack
+@import "gridstack/dist/gridstack.min.css";
+
+.grid-stack {
+
+}
+
+.grid-stack-item-content {
+    @apply bg-white p-6 rounded;
 }

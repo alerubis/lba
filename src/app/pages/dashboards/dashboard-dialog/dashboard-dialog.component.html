@@ -1,0 +1,66 @@
+<div class="flex flex-col" cdkDrag cdkDragRootElement=".cdk-overlay-pane">
+
+    <div class="dialog-header" cdkDragHandle>
+        <div class="text-lg text-white">
+            @if (action === 'create') {
+                Create dashboard
+            } @else if (action === 'update') {
+                Update dashboard
+            }
+        </div>
+        <button mat-icon-button (click)="cancel()">
+            <mat-icon class="text-white">clear</mat-icon>
+        </button>
+    </div>
+
+    <div class="dialog-content">
+
+        <form class="flex flex-col" [formGroup]="dashboardForm">
+
+            <div class="flex flex-col gap-1">
+                <mat-label>Description</mat-label>
+                <mat-form-field appearance="outline">
+                    <input matInput formControlName="description" name="description" type="text">
+                </mat-form-field>
+            </div>
+
+        </form>
+
+    </div>
+
+    <div class="dialog-actions">
+
+        <button mat-button (click)="cancel()">
+            Cancel
+        </button>
+
+        @if (action === 'create') {
+
+            <button mat-flat-button type="submit" (click)="create()" [disabled]="dashboardForm.invalid || createLoading">
+                <div class="flex flex-row items-center gap-4">
+                    @if (createLoading) { <mat-spinner [diameter]="24"></mat-spinner> }
+                    <div>Create</div>
+                </div>
+            </button>
+
+        } @else if (action === 'update') {
+
+            <button mat-flat-button (click)="delete()" [disabled]="deleteLoading">
+                <div class="flex flex-row items-center gap-4">
+                    @if (deleteLoading) { <mat-spinner [diameter]="24"></mat-spinner> }
+                    <div>Delete</div>
+                </div>
+            </button>
+
+            <button mat-flat-button type="submit" (click)="update()" [disabled]="dashboardForm.invalid || updateLoading">
+                <div class="flex flex-row items-center gap-4">
+                    @if (updateLoading) { <mat-spinner [diameter]="24"></mat-spinner> }
+                    <div>Update</div>
+                </div>
+            </button>
+
+        }
+
+    </div>
+
+</div>

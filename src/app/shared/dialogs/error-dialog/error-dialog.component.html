@@ -11,11 +11,16 @@
 
     <div class="dialog-content">
 
-        <div class="flex flex-row items-center gap-3 border rounded p-3 bg-red-100 border-red-600">
+        <div class="flex flex-row items-start gap-3 border rounded p-3 bg-red-100 border-red-600 overflow-x-auto">
             <mat-icon class="w-6 min-w-6 !text-red-600">
                 error_outline
             </mat-icon>
-            <div class="text-sm text-red-600">{{ message }}</div>
+            <div class="flex flex-col text-sm text-red-600">
+                <div class="">{{ message }}</div>
+                @if (htmlError) {
+                    <span [innerHTML]="htmlError"></span>
+                }
+            </div>
         </div>
 
 

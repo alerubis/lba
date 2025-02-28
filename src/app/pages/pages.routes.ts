@@ -13,6 +13,10 @@ export const routes: Routes = [
                 loadChildren: () => import('./home/home.routes').then(m => m.routes),
             },
             {
+                path: 'dashboards',
+                loadChildren: () => import('./dashboards/dashboards.routes').then(m => m.routes),
+            },
+            {
                 path: '',
                 redirectTo: 'home',
                 pathMatch: 'full'

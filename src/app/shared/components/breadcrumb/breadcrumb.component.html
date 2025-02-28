@@ -1,0 +1,13 @@
+<div class="flex flex-row items-center gap-2 px-6 sm:px-12 py-3 font-condensed">
+    <a class="hover:underline hover:text-gray-600" [routerLink]="['/pages/home']">
+        HOME
+    </a>
+    @for (item of items; track $index) {
+        <div>
+            &gt;
+        </div>
+        <a class="hover:underline hover:text-gray-600" [routerLink]="item.route">
+            {{ item.text }}
+        </a>
+    }
+</div>
