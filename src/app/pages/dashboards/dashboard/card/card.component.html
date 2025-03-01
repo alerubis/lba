@@ -1,0 +1,24 @@
+<div class="w-full h-full min-h-20">
+
+    @switch (cardType.id) {
+
+        @case ('RADAR') {
+            <div echarts [options]="chartOption" [autoResize]="true" class="w-full h-full"></div>
+        }
+
+        @default {
+
+            <div class="flex flex-col items-center justify-center bg-white rounded p-6">
+                <div class="text-center">
+                    No template found.
+                </div>
+                <div class="text-gray-500 text-sm text-center">
+                    The card type "{{ cardType.id }}" is not yet implemented.
+                </div>
+            </div>
+
+        }
+
+    }
+
+</div>

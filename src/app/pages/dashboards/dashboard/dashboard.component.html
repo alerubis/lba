@@ -2,7 +2,7 @@
     <mat-progress-bar class="!absolute top-0 z-50" mode="indeterminate"></mat-progress-bar>
 }
 
-<mat-sidenav-container>
+<mat-sidenav-container class="min-h-screen">
 
     <mat-sidenav-content>
 
@@ -31,7 +31,12 @@
 
             <div class="page-content">
 
-                <div class="flex flex-row items-center justify-end gap-6 mb-6">
+                <div class="flex flex-row items-center justify-between gap-6 mb-6">
+                    <div class="text-green-700">
+                        @if (false) {
+                            Changes successfully saved to the database.
+                        }
+                    </div>
                     <button mat-flat-button (click)="sidenav.open()">
                         <mat-icon>add</mat-icon>
                         Add new card
@@ -39,29 +44,32 @@
                 </div>
 
                 <div class="bg-gray-200 p-3">
-                    <gridstack [options]="gridstackOptions">
-                        @for (item of gridstackItems; track $index) {
+                    <gridstack [options]="gridstackOptions" (changeCB)="handleChange($event)">
+                        @for (item of gridstackItems; track item.id) {
                             <gridstack-item [options]="item">
                                 <div class="card w-full h-full">
                                     <div class="card-title flex flex-row items-center justify-between !py-3 !pr-3">
-                                        <div class="text-lg font-bold">Card title</div>
+                                        <div class="text-lg font-bold">Card {{ item.id }}</div>
                                         <div class="flex flex-row items-center">
                                             <button mat-icon-button>
                                                 <mat-icon class="!text-white">settings</mat-icon>
                                             </button>
-                                            <button mat-icon-button (click)="deleteCard($index)">
+                                            <button mat-icon-button (click)="deleteItem(item)">
                                                 <mat-icon class="!text-white">delete</mat-icon>
                                             </button>
                                         </div>
                                     </div>
-                                    <div class="card-content">
-                                        qui
+                                    <div class="card-content w-full h-full">
+                                        <app-card
+                                            [dashboardCard]="getDashboardCardFromItem(item)"
+                                            [card]="getCardFromItem(item)"
+                                            [cardType]="getCardTypeFromItem(item)"
+                                        ></app-card>
                                     </div>
                                 </div>
                             </gridstack-item>
                         }
-                      </gridstack>
-                    <gridstack [options]="gridstackOptions"></gridstack>
+                    </gridstack>
                 </div>
 
             </div>
@@ -72,7 +80,7 @@
 
     <mat-sidenav #sidenav [mode]="'over'" [position]="'end'">
 
-        <div class="flex flex-col divide-y p-6">
+        <div class="flex flex-col gap-6 p-6">
 
             @for (card of cards; track $index) {
                 <div class="relative group cursor-pointer" (click)="addCard(card)">
@@ -87,7 +95,14 @@
                             {{ card.description }}
                         </div>
                         <div class="card-content">
-                            anteprima
+                            <div class="flex flex-col items-center justify-center bg-white rounded p-6">
+                                <div class="text-center">
+                                    No template found.
+                                </div>
+                                <div class="text-gray-500 text-sm text-center">
+                                    Preview not yet implemented.
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

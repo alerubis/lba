@@ -10,6 +10,9 @@ export class DashboardCard implements Table {
     card_id: number | undefined;
     x: number | undefined;
     y: number | undefined;
+    width: number | undefined;
+    height: number | undefined;
+    settings: any | undefined;
 
     constructor(values?: any) {
         if (values) {
@@ -19,6 +22,9 @@ export class DashboardCard implements Table {
             this.card_id = values.card_id;
             this.x = values.x;
             this.y = values.y;
+            this.width = values.width;
+            this.height = values.height;
+            this.settings = values.settings;
         }
     }
 
@@ -34,6 +40,9 @@ export class DashboardCard implements Table {
         newDashboardCard.card_id = values.card_id;
         newDashboardCard.x = values.x;
         newDashboardCard.y = values.y;
+        newDashboardCard.width = values.width;
+        newDashboardCard.height = values.height;
+        newDashboardCard.settings = values.settings;
         return newDashboardCard;
     }
 
@@ -45,6 +54,9 @@ export class DashboardCard implements Table {
             card_id: this.card_id,
             x: this.x,
             y: this.y,
+            width: this.width,
+            height: this.height,
+            settings: this.settings,
         }
     }
 
@@ -55,6 +67,9 @@ export class DashboardCard implements Table {
             card_id: new FormControl(this.card_id),
             x: new FormControl(this.x),
             y: new FormControl(this.y),
+            width: new FormControl(this.width),
+            height: new FormControl(this.height),
+            settings: new FormControl(this.settings),
         }
     }
 

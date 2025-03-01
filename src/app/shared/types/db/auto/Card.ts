@@ -7,12 +7,14 @@ export class Card implements Table {
     id: number | undefined;
     card_type_id: string | undefined;
     description: string | undefined;
+    default_settings: any | undefined;
 
     constructor(values?: any) {
         if (values) {
             this.id = values.id;
             this.card_type_id = values.card_type_id;
             this.description = values.description;
+            this.default_settings = values.default_settings;
         }
     }
 
@@ -25,6 +27,7 @@ export class Card implements Table {
         newCard.id = values.id;
         newCard.card_type_id = values.card_type_id;
         newCard.description = values.description;
+        newCard.default_settings = values.default_settings;
         return newCard;
     }
 
@@ -33,6 +36,7 @@ export class Card implements Table {
             id: this.id,
             card_type_id: this.card_type_id,
             description: this.description,
+            default_settings: this.default_settings,
         }
     }
 
@@ -40,6 +44,7 @@ export class Card implements Table {
         return {
             card_type_id: new FormControl(this.card_type_id),
             description: new FormControl(this.description),
+            default_settings: new FormControl(this.default_settings),
         }
     }
 

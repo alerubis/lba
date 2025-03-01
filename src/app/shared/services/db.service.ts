@@ -54,7 +54,7 @@ export class DbService {
         return new Observable((observer) => {
             this._authService.wsCall('db/' + entity.getName() + '/create', entity.toDbValues()).subscribe({
                 next: response => {
-                    observer.next(response);
+                    observer.next(entity.fromDbValues(response));
                     observer.complete();
                 },
                 error: error => {
@@ -68,7 +68,7 @@ export class DbService {
         return new Observable((observer) => {
             this._authService.wsCall('db/' + entity.getName() + '/update', entity.toDbValues()).subscribe({
                 next: response => {
-                    observer.next(response);
+                    observer.next(entity.fromDbValues(response));
                     observer.complete();
                 },
                 error: error => {
