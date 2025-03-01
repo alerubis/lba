@@ -1,3 +1,7 @@
+@if (dataLoading) {
+    <mat-progress-bar class="!absolute top-0 z-50" mode="indeterminate"></mat-progress-bar>
+}
+
 <div class="page">
 
     <app-breadcrumb [section]="'Elements'" [items]="[

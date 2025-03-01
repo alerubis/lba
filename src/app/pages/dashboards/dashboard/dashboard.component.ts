@@ -3,14 +3,18 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { GridStackOptions } from 'gridstack';
+import { GridStackOptions, GridStackWidget } from 'gridstack';
 import { GridstackModule } from 'gridstack/dist/angular';
 import { BreadcrumbComponent } from '../../../shared/components/breadcrumb/breadcrumb.component';
 import { DbService } from '../../../shared/services/db.service';
+import { Card } from '../../../shared/types/db/auto/Card';
+import { CardType } from '../../../shared/types/db/auto/CardType';
 import { Dashboard } from '../../../shared/types/db/auto/Dashboard';
+import { DashboardCard } from '../../../shared/types/db/auto/DashboardCard';
 import { DashboardDialogComponent } from '../dashboard-dialog/dashboard-dialog.component';
 
 @Component({
@@ -22,6 +26,7 @@ import { DashboardDialogComponent } from '../dashboard-dialog/dashboard-dialog.c
         MatButtonModule,
         MatIconModule,
         MatProgressBarModule,
+        MatSidenavModule,
         MatTabsModule,
         MatTooltipModule,
         GridstackModule,
@@ -31,17 +36,20 @@ export class DashboardComponent implements OnInit {
 
     dashboardId: number | undefined;
     dashboard: Dashboard | undefined;
-    dashboardLoading: boolean = false;
+    dashboardCards: DashboardCard[] = [];
+    cards: Card[] = [];
+    cardTypes: CardType[] = [];
+    dataLoading: boolean = false;
 
-    gridOptions: GridStackOptions = {
+    gridstackOptions: GridStackOptions = {
         margin: 8,
         marginUnit: 'px',
-        children: [
-            { x: 0, y: 0, minW: 2, minH: 2, content: 'Item 1' },
-            { x: 2, y: 0, minW: 2, minH: 2, content: 'Item 2' },
-            { x: 0, y: 2, minW: 2, minH: 2, content: 'Item 3' },
-        ]
     };
+    gridstackItems: GridStackWidget[] = [
+        { x: 0, y: 0, w: 4, h: 3, minW: 2, minH: 2, id: '1' },
+        { x: 4, y: 0, w: 4, h: 3, minW: 2, minH: 2, id: '2' },
+        { x: 0, y: 4, w: 4, h: 3, minW: 2, minH: 2, id: '3' },
+    ];
 
     constructor(
         private _activatedRoute: ActivatedRoute,
@@ -58,25 +66,23 @@ export class DashboardComponent implements OnInit {
             if (idFromParams) {
                 this.dashboardId = +idFromParams;
             }
-            this.loadDashboard();
+            this.loadData();
         });
     }
 
     //#region Dashboard
-    loadDashboard(): void {
+    async loadData(): Promise<void> {
+        this.dataLoading = true;
         if (this.dashboardId) {
-            this.dashboardLoading = true;
-            this._dbService.readFromId(new Dashboard(), this.dashboardId).subscribe({
-                next: response => {
-                    this.dashboard = response;
-                    this.dashboardLoading = false;
-                },
-                error: error => {
-                    this.dashboard = undefined;
-                    this.dashboardLoading = false;
-                }
-            });
+            this.dashboard = await this._dbService.readFromId(new Dashboard(), this.dashboardId) as Dashboard;
+            this.dashboardCards = await this._dbService.readList(new DashboardCard(), { dashboard_id: this.dashboardId }) as DashboardCard[];
+        } else {
+            this.dashboard = undefined;
+            this.dashboardCards = [];
         }
+        this.cards = await this._dbService.readList(new Card()) as Card[];
+        this.cardTypes = await this._dbService.readList(new CardType()) as CardType[];
+        this.dataLoading = false;
     }
 
     updateDashboard(dashboard: Dashboard | undefined): void {
@@ -98,10 +104,20 @@ export class DashboardComponent implements OnInit {
                 if (response === 'delete') {
                     this._router.navigate(['/pages/dashboards/']);
                 } else {
-                    this.loadDashboard();
+                    this.loadData();
                 }
             }
         });
+    }
+    //#endregion
+
+    //#region Cards
+    addCard(card: Card): void {
+        this.gridstackItems.push({ w: 4, h: 3 });
+    }
+
+    deleteCard(index: number): void {
+        this.gridstackItems.splice(index, 1);
     }
     //#endregion
 

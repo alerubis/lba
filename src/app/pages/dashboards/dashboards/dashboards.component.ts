@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { RouterModule } from '@angular/router';
 import { BreadcrumbComponent } from '../../../shared/components/breadcrumb/breadcrumb.component';
 import { DbService } from '../../../shared/services/db.service';
@@ -15,6 +16,7 @@ import { DashboardDialogComponent } from '../dashboard-dialog/dashboard-dialog.c
     imports: [
         MatIconModule,
         MatButtonModule,
+        MatProgressBarModule,
         BreadcrumbComponent,
         RouterModule,
     ]
@@ -22,7 +24,7 @@ import { DashboardDialogComponent } from '../dashboard-dialog/dashboard-dialog.c
 export class DashboardsComponent implements OnInit {
 
     dashboards: Dashboard[] = [];
-    dashboardsLoading: boolean = false;
+    dataLoading: boolean = false;
 
     constructor(
         private _dbService: DbService,
@@ -32,22 +34,14 @@ export class DashboardsComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.loadDashboards();
+        this.loadData();
     }
 
     //#region Table
-    loadDashboards(): void {
-        this.dashboardsLoading = true;
-        this._dbService.readList(new Dashboard()).subscribe({
-            next: response => {
-                this.dashboards = response.rows as Dashboard[];
-                this.dashboardsLoading = false;
-            },
-            error: error => {
-                this.dashboards = [];
-                this.dashboardsLoading = false;
-            }
-        });
+    async loadData(): Promise<void> {
+        this.dataLoading = true;
+        this.dashboards = await this._dbService.readList(new Dashboard()) as Dashboard[];
+        this.dataLoading = false;
     }
     //#endregion
 
@@ -63,7 +57,7 @@ export class DashboardsComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe((response: any) => {
             if (response) {
-                this.loadDashboards();
+                this.loadData();
             }
         });
     }
@@ -80,7 +74,7 @@ export class DashboardsComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe((response: any) => {
             if (response) {
-                this.loadDashboards();
+                this.loadData();
             }
         });
     }
