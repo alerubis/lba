@@ -1,67 +1,61 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { DbService } from '../../../../shared/services/db.service';
 import { Card } from '../../../../shared/types/db/auto/Card';
 import { CardType } from '../../../../shared/types/db/auto/CardType';
 import { DashboardCard } from '../../../../shared/types/db/auto/DashboardCard';
-
-// echarts
-import { RadarChart } from 'echarts/charts';
-import { GridComponent } from 'echarts/components';
-import * as echarts from 'echarts/core';
-import { EChartsCoreOption } from 'echarts/core';
-import { CanvasRenderer } from 'echarts/renderers';
-import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
-echarts.use([RadarChart, GridComponent, CanvasRenderer]);
+import { RadarCardComponent } from './radar-card/radar-card.component';
+import { MatDialog } from '@angular/material/dialog';
+import { CardSettingsDialogComponent } from './card-settings-dialog/card-settings-dialog.component';
 
 @Component({
     selector: 'app-card',
     templateUrl: './card.component.html',
     standalone: true,
     imports: [
-        NgxEchartsDirective
+        MatIconModule,
+        MatButtonModule,
+        RadarCardComponent,
     ],
-    providers: [
-        provideEchartsCore({ echarts }),
-    ]
 })
-export class CardComponent implements OnInit {
+export class CardComponent {
 
     @Input({ required: true }) dashboardCard!: DashboardCard;
     @Input({ required: true }) card!: Card;
     @Input({ required: true }) cardType!: CardType;
 
-    chartOption: EChartsCoreOption = {};
+    @Output() onCardUpdate: EventEmitter<any> = new EventEmitter();
+    @Output() onCardDelete: EventEmitter<any> = new EventEmitter();
 
     constructor(
         private _dbService: DbService,
+        private _matDialog: MatDialog,
     ) {
 
     }
-    ngOnInit(): void {
-        this.chartOption = {
-            radar: {
-                indicator: this.card.default_settings.names.map((x: any) => ({ name: x })),
+
+    editCardSettings(): void {
+        const dialogRef = this._matDialog.open(CardSettingsDialogComponent, {
+            width: '90%',
+            maxWidth: '640px',
+            data: {
+                dashboardCard: this.dashboardCard,
+                card: this.card,
             },
-            series: [
-                {
-                    name: 'Test',
-                    type: 'radar',
-                    data: [
-                        {
-                            value: [90, 70, 85, 60, 90],
-                            name: 'Test'
-                        }
-                    ],
-                    areaStyle: {
-                        color: '#bfdbfe',
-                    },
-                    lineStyle: {
-                        color: '#2563eb',
-                        width: 2,
-                    }
-                }
-            ]
-        };
+        });
+
+        dialogRef.afterClosed().subscribe((response: any) => {
+            if (response) {
+                this.onCardUpdate.emit(response);
+            }
+        });
+    }
+
+    deleteCard(): void {
+        this._dbService.delete(this.dashboardCard).subscribe((response: any) => {
+            this.onCardDelete.emit(response);
+        });
     }
 
 }

@@ -47,26 +47,13 @@
                     <gridstack [options]="gridstackOptions" (changeCB)="handleChange($event)">
                         @for (item of gridstackItems; track item.id) {
                             <gridstack-item [options]="item">
-                                <div class="card w-full h-full">
-                                    <div class="card-title flex flex-row items-center justify-between !py-3 !pr-3">
-                                        <div class="text-lg font-bold">Card {{ item.id }}</div>
-                                        <div class="flex flex-row items-center">
-                                            <button mat-icon-button>
-                                                <mat-icon class="!text-white">settings</mat-icon>
-                                            </button>
-                                            <button mat-icon-button (click)="deleteItem(item)">
-                                                <mat-icon class="!text-white">delete</mat-icon>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="card-content w-full h-full">
-                                        <app-card
-                                            [dashboardCard]="getDashboardCardFromItem(item)"
-                                            [card]="getCardFromItem(item)"
-                                            [cardType]="getCardTypeFromItem(item)"
-                                        ></app-card>
-                                    </div>
-                                </div>
+                                <app-card
+                                    [dashboardCard]="getDashboardCardFromItem(item)"
+                                    [card]="getCardFromItem(item)"
+                                    [cardType]="getCardTypeFromItem(item)"
+                                    (onCardUpdate)="updateItem(item, $event)"
+                                    (onCardDelete)="deleteItem(item)"
+                                ></app-card>
                             </gridstack-item>
                         }
                     </gridstack>

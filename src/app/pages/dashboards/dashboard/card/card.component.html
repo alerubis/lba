@@ -1,24 +1,40 @@
-<div class="w-full h-full min-h-20">
+<div class="card w-full h-full">
+    <div class="card-title flex flex-row items-center justify-between !py-3 !pr-3">
+        <div class="text-lg font-bold">
+            Card title
+        </div>
+        <div class="flex flex-row items-center">
+            <button mat-icon-button (click)="editCardSettings()">
+                <mat-icon class="!text-white">settings</mat-icon>
+            </button>
+            <button mat-icon-button (click)="deleteCard()">
+                <mat-icon class="!text-white">delete</mat-icon>
+            </button>
+        </div>
+    </div>
+    <div class="card-content w-full h-full">
+        @switch (cardType.id) {
 
-    @switch (cardType.id) {
+            @case ('RADAR') {
+                <app-radar-card
+                    [dashboardCard]="dashboardCard"
+                    [card]="card"
+                ></app-radar-card>
+            }
 
-        @case ('RADAR') {
-            <div echarts [options]="chartOption" [autoResize]="true" class="w-full h-full"></div>
-        }
+            @default {
 
-        @default {
-
-            <div class="flex flex-col items-center justify-center bg-white rounded p-6">
-                <div class="text-center">
-                    No template found.
+                <div class="flex flex-col items-center justify-center bg-white rounded p-6">
+                    <div class="text-center">
+                        No template found.
+                    </div>
+                    <div class="text-gray-500 text-sm text-center">
+                        The card type "{{ cardType.id }}" is not yet implemented.
+                    </div>
                 </div>
-                <div class="text-gray-500 text-sm text-center">
-                    The card type "{{ cardType.id }}" is not yet implemented.
-                </div>
-            </div>
+
+            }
 
         }
-
-    }
-
+    </div>
 </div>

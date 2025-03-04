@@ -150,12 +150,14 @@ export class DashboardComponent implements OnInit {
         console.log(event);
     }
 
+    updateItem(item: GridStackWidget, dashboardCard: DashboardCard): void {
+        this.loadData();
+    }
+
     deleteItem(item: GridStackWidget): void {
         const dashboardCard = this.getDashboardCardFromItem(item);
-        this._dbService.delete(dashboardCard).subscribe((response: any) => {
-            this.dashboardCards = this.dashboardCards.filter(x => x.id !== dashboardCard.id);
-            this.loadGridstackItems();
-        });
+        this.dashboardCards = this.dashboardCards.filter(x => x.id !== dashboardCard.id);
+        this.loadGridstackItems();
     }
 
     getDashboardCardFromItem(item: GridStackWidget): DashboardCard {
