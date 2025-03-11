@@ -5,7 +5,7 @@ import { Table } from '../Table';
 export class DashboardCard implements Table {
 
     id: number | undefined;
-    user_id: number | undefined;
+    team_id: number | undefined;
     dashboard_id: number | undefined;
     card_id: number | undefined;
     x: number | undefined;
@@ -17,7 +17,7 @@ export class DashboardCard implements Table {
     constructor(values?: any) {
         if (values) {
             this.id = values.id;
-            this.user_id = values.user_id;
+            this.team_id = values.team_id;
             this.dashboard_id = values.dashboard_id;
             this.card_id = values.card_id;
             this.x = values.x;
@@ -35,7 +35,7 @@ export class DashboardCard implements Table {
     fromDbValues(values: any): DashboardCard {
         const newDashboardCard = new DashboardCard();
         newDashboardCard.id = values.id;
-        newDashboardCard.user_id = values.user_id;
+        newDashboardCard.team_id = values.team_id;
         newDashboardCard.dashboard_id = values.dashboard_id;
         newDashboardCard.card_id = values.card_id;
         newDashboardCard.x = values.x;
@@ -49,7 +49,7 @@ export class DashboardCard implements Table {
     toDbValues(): any {
         return {
             id: this.id,
-            user_id: this.user_id,
+            team_id: this.team_id,
             dashboard_id: this.dashboard_id,
             card_id: this.card_id,
             x: this.x,
@@ -62,7 +62,7 @@ export class DashboardCard implements Table {
 
     toFormGroup(): any {
         return {
-            user_id: new FormControl(this.user_id),
+            team_id: new FormControl(this.team_id),
             dashboard_id: new FormControl(this.dashboard_id),
             card_id: new FormControl(this.card_id),
             x: new FormControl(this.x),
