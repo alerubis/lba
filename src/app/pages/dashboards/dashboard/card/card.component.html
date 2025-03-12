@@ -13,12 +13,12 @@
         </div>
     </div>
     <div class="card-content w-full h-full">
-        @switch (cardType.id) {
+        @switch (dashboardCard.card_id) {
 
-            @case ('RADAR') {
+            @case ('AREA') {
                 <app-radar-card
                     [dashboardCard]="dashboardCard"
-                    [card]="card"
+                    [dashboardCardSettings]="dashboardCardSettings"
                 ></app-radar-card>
             }
 
@@ -29,7 +29,7 @@
                         No template found.
                     </div>
                     <div class="text-gray-500 text-sm text-center">
-                        The card type "{{ cardType.id }}" is not yet implemented.
+                        The card "{{ dashboardCard.card_id }}" is not yet implemented.
                     </div>
                 </div>
 

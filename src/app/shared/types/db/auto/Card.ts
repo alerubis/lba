@@ -4,17 +4,15 @@ import { Table } from '../Table';
 
 export class Card implements Table {
 
-    id: number | undefined;
-    card_type_id: string | undefined;
+    id: string | undefined;
     description: string | undefined;
-    default_settings: any | undefined;
+    view_name: string | undefined;
 
     constructor(values?: any) {
         if (values) {
             this.id = values.id;
-            this.card_type_id = values.card_type_id;
             this.description = values.description;
-            this.default_settings = values.default_settings;
+            this.view_name = values.view_name;
         }
     }
 
@@ -25,26 +23,23 @@ export class Card implements Table {
     fromDbValues(values: any): Card {
         const newCard = new Card();
         newCard.id = values.id;
-        newCard.card_type_id = values.card_type_id;
         newCard.description = values.description;
-        newCard.default_settings = values.default_settings;
+        newCard.view_name = values.view_name;
         return newCard;
     }
 
     toDbValues(): any {
         return {
             id: this.id,
-            card_type_id: this.card_type_id,
             description: this.description,
-            default_settings: this.default_settings,
+            view_name: this.view_name,
         }
     }
 
     toFormGroup(): any {
         return {
-            card_type_id: new FormControl(this.card_type_id),
             description: new FormControl(this.description),
-            default_settings: new FormControl(this.default_settings),
+            view_name: new FormControl(this.view_name),
         }
     }
 
