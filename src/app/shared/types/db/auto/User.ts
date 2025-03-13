@@ -7,12 +7,14 @@ export class User implements Table {
     id: number | undefined;
     username: string | undefined;
     password: string | undefined;
+    team_id: number | undefined;
 
     constructor(values?: any) {
         if (values) {
             this.id = values.id;
             this.username = values.username;
             this.password = values.password;
+            this.team_id = values.team_id;
         }
     }
 
@@ -25,6 +27,7 @@ export class User implements Table {
         newUser.id = values.id;
         newUser.username = values.username;
         newUser.password = values.password;
+        newUser.team_id = values.team_id;
         return newUser;
     }
 
@@ -33,6 +36,7 @@ export class User implements Table {
             id: this.id,
             username: this.username,
             password: this.password,
+            team_id: this.team_id,
         }
     }
 
@@ -40,6 +44,7 @@ export class User implements Table {
         return {
             username: new FormControl(this.username),
             password: new FormControl(this.password),
+            team_id: new FormControl(this.team_id),
         }
     }
 

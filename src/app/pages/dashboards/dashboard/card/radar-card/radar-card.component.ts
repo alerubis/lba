@@ -1,6 +1,4 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { Card } from '../../../../../shared/types/db/auto/Card';
-import { CardType } from '../../../../../shared/types/db/auto/CardType';
 import { DashboardCard } from '../../../../../shared/types/db/auto/DashboardCard';
 
 // echarts
@@ -10,12 +8,8 @@ import * as echarts from 'echarts/core';
 import { EChartsCoreOption } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
+import { DashboardCardSettings } from '../../../../../shared/types/db/auto/DashboardCardSettings';
 echarts.use([RadarChart, GridComponent, CanvasRenderer]);
-
-export interface Settings {
-    names: string[];
-    values: number[];
-}
 
 @Component({
     selector: 'app-radar-card',
@@ -31,7 +25,7 @@ export interface Settings {
 export class RadarCardComponent implements OnInit, OnChanges {
 
     @Input({ required: true }) dashboardCard!: DashboardCard;
-    @Input({ required: true }) card!: Card;
+    @Input({ required: true }) dashboardCardSettings!: DashboardCardSettings[];
 
     chartOption: EChartsCoreOption = {};
 
@@ -44,10 +38,9 @@ export class RadarCardComponent implements OnInit, OnChanges {
     }
 
     loadChartOption(): void {
-        const settings = (this.dashboardCard.settings || this.card.default_settings) as Settings;
         this.chartOption = {
             radar: {
-                indicator: settings.names.map(x => ({ name: x })),
+                indicator: [{name: '0'}],
             },
             series: [
                 {
@@ -55,7 +48,7 @@ export class RadarCardComponent implements OnInit, OnChanges {
                     type: 'radar',
                     data: [
                         {
-                            value: settings.values,
+                            value: [1, 2],
                             name: 'Test'
                         }
                     ],

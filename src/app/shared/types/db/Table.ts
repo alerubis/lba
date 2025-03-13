@@ -1,6 +1,6 @@
 export interface Table {
 
-    id: number | string | undefined;
+    id?: number | string | undefined;
 
     getName(): string;
 

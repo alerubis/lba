@@ -49,8 +49,7 @@
                             <gridstack-item [options]="item">
                                 <app-card
                                     [dashboardCard]="getDashboardCardFromItem(item)"
-                                    [card]="getCardFromItem(item)"
-                                    [cardType]="getCardTypeFromItem(item)"
+                                    [dashboardCardSettings]="getDashboardCardSettingsFromItem(item)"
                                     (onCardUpdate)="updateItem(item, $event)"
                                     (onCardDelete)="deleteItem(item)"
                                 ></app-card>

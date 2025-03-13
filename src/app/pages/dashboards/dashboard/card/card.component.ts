@@ -1,13 +1,13 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { DbService } from '../../../../shared/services/db.service';
 import { Card } from '../../../../shared/types/db/auto/Card';
-import { CardType } from '../../../../shared/types/db/auto/CardType';
 import { DashboardCard } from '../../../../shared/types/db/auto/DashboardCard';
-import { RadarCardComponent } from './radar-card/radar-card.component';
-import { MatDialog } from '@angular/material/dialog';
 import { CardSettingsDialogComponent } from './card-settings-dialog/card-settings-dialog.component';
+import { RadarCardComponent } from './radar-card/radar-card.component';
+import { DashboardCardSettings } from '../../../../shared/types/db/auto/DashboardCardSettings';
 
 @Component({
     selector: 'app-card',
@@ -22,8 +22,7 @@ import { CardSettingsDialogComponent } from './card-settings-dialog/card-setting
 export class CardComponent {
 
     @Input({ required: true }) dashboardCard!: DashboardCard;
-    @Input({ required: true }) card!: Card;
-    @Input({ required: true }) cardType!: CardType;
+    @Input({ required: true }) dashboardCardSettings!: DashboardCardSettings[];
 
     @Output() onCardUpdate: EventEmitter<any> = new EventEmitter();
     @Output() onCardDelete: EventEmitter<any> = new EventEmitter();
@@ -41,7 +40,7 @@ export class CardComponent {
             maxWidth: '640px',
             data: {
                 dashboardCard: this.dashboardCard,
-                card: this.card,
+                dashboardCardSettings: this.dashboardCardSettings,
             },
         });
 

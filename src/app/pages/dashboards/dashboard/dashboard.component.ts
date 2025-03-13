@@ -12,11 +12,11 @@ import { GridstackModule, nodesCB } from 'gridstack/dist/angular';
 import { BreadcrumbComponent } from '../../../shared/components/breadcrumb/breadcrumb.component';
 import { DbService } from '../../../shared/services/db.service';
 import { Card } from '../../../shared/types/db/auto/Card';
-import { CardType } from '../../../shared/types/db/auto/CardType';
 import { Dashboard } from '../../../shared/types/db/auto/Dashboard';
 import { DashboardCard } from '../../../shared/types/db/auto/DashboardCard';
 import { DashboardDialogComponent } from '../dashboard-dialog/dashboard-dialog.component';
 import { CardComponent } from './card/card.component';
+import { DashboardCardSettings } from '../../../shared/types/db/auto/DashboardCardSettings';
 
 @Component({
     selector: 'app-dashboard',
@@ -39,8 +39,8 @@ export class DashboardComponent implements OnInit {
     dashboardId: number | undefined;
     dashboard: Dashboard | undefined;
     dashboardCards: DashboardCard[] = [];
+    dashboardCardsSettings: DashboardCardSettings[] = [];
     cards: Card[] = [];
-    cardTypes: CardType[] = [];
     dataLoading: boolean = false;
 
     gridstackOptions: GridStackOptions = {
@@ -74,12 +74,13 @@ export class DashboardComponent implements OnInit {
         if (this.dashboardId) {
             this.dashboard = await this._dbService.readFromId(new Dashboard(), this.dashboardId) as Dashboard;
             this.dashboardCards = await this._dbService.readList(new DashboardCard(), { dashboard_id: this.dashboardId }) as DashboardCard[];
+            this.dashboardCardsSettings = await this._dbService.readList(new DashboardCardSettings(), { dashboard_id: this.dashboardId }) as DashboardCardSettings[];
         } else {
             this.dashboard = undefined;
             this.dashboardCards = [];
+            this.dashboardCardsSettings = [];
         }
         this.cards = await this._dbService.readList(new Card()) as Card[];
-        this.cardTypes = await this._dbService.readList(new CardType()) as CardType[];
         this.loadGridstackItems();
         this.dataLoading = false;
     }
@@ -165,16 +166,9 @@ export class DashboardComponent implements OnInit {
         return dashboardCard;
     }
 
-    getCardFromItem(item: GridStackWidget): Card {
-        const dashboardCard = this.getDashboardCardFromItem(item);
-        const card = this.cards.find(x => x.id == dashboardCard.card_id)!;
-        return card;
-    }
-
-    getCardTypeFromItem(item: GridStackWidget): CardType {
-        const card = this.getCardFromItem(item);
-        const cardType = this.cardTypes.find(x => x.id == card.card_type_id)!;
-        return cardType;
+    getDashboardCardSettingsFromItem(item: GridStackWidget): DashboardCardSettings[] {
+        const dashboardCardSettings = this.dashboardCardsSettings.filter(x => x.dashboard_card_id == +item.id!)!;
+        return dashboardCardSettings;
     }
     //#endregion
 

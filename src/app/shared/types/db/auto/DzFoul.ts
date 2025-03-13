@@ -2,9 +2,9 @@ import { FormControl, Validators } from '@angular/forms';
 import { DbUtils } from '../DbUtils';
 import { Table } from '../Table';
 
-export class CardType implements Table {
+export class DzFoul implements Table {
 
-    id: string | undefined;
+    id: number | undefined;
     description: string | undefined;
 
     constructor(values?: any) {
@@ -15,14 +15,14 @@ export class CardType implements Table {
     }
 
     getName(): string {
-        return 'card_type';
+        return 'dz_foul';
     }
 
-    fromDbValues(values: any): CardType {
-        const newCardType = new CardType();
-        newCardType.id = values.id;
-        newCardType.description = values.description;
-        return newCardType;
+    fromDbValues(values: any): DzFoul {
+        const newDzFoul = new DzFoul();
+        newDzFoul.id = values.id;
+        newDzFoul.description = values.description;
+        return newDzFoul;
     }
 
     toDbValues(): any {

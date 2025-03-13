@@ -5,13 +5,13 @@ import { Table } from '../Table';
 export class Dashboard implements Table {
 
     id: number | undefined;
-    user_id: number | undefined;
+    team_id: number | undefined;
     description: string | undefined;
 
     constructor(values?: any) {
         if (values) {
             this.id = values.id;
-            this.user_id = values.user_id;
+            this.team_id = values.team_id;
             this.description = values.description;
         }
     }
@@ -23,7 +23,7 @@ export class Dashboard implements Table {
     fromDbValues(values: any): Dashboard {
         const newDashboard = new Dashboard();
         newDashboard.id = values.id;
-        newDashboard.user_id = values.user_id;
+        newDashboard.team_id = values.team_id;
         newDashboard.description = values.description;
         return newDashboard;
     }
@@ -31,14 +31,14 @@ export class Dashboard implements Table {
     toDbValues(): any {
         return {
             id: this.id,
-            user_id: this.user_id,
+            team_id: this.team_id,
             description: this.description,
         }
     }
 
     toFormGroup(): any {
         return {
-            user_id: new FormControl(this.user_id),
+            team_id: new FormControl(this.team_id),
             description: new FormControl(this.description),
         }
     }
