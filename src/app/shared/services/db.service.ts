@@ -33,9 +33,9 @@ export class DbService {
         });
     }
 
-    readFromId(table: Table, id: number): Promise<Table | null> {
+    readUnique(table: Table, where: any): Promise<Table | null> {
         return new Promise((resolve, reject) => {
-            this._authService.wsCall('db/' + table.getName() + '/read', { take: 1, where: { id: id } }).subscribe({
+            this._authService.wsCall('db/' + table.getName() + '/read', { take: 1, where: where }).subscribe({
                 next: response => {
                     if (response.rows.length > 0) {
                         resolve(table.fromDbValues(response.rows[0]));
@@ -64,9 +64,13 @@ export class DbService {
         });
     }
 
-    update(entity: Table): Observable<any> {
+    update(entity: Table, params?: any): Observable<any> {
         return new Observable((observer) => {
-            this._authService.wsCall('db/' + entity.getName() + '/update', entity.toDbValues()).subscribe({
+            const body = {
+                ...params,
+                ...entity.toDbValues()
+            };
+            this._authService.wsCall('db/' + entity.getName() + '/update', body).subscribe({
                 next: response => {
                     observer.next(entity.fromDbValues(response));
                     observer.complete();
@@ -80,7 +84,7 @@ export class DbService {
 
     delete(entity: Table): Observable<any> {
         return new Observable((observer) => {
-            this._authService.wsCall('db/' + entity.getName() + '/delete', { id: entity.id }).subscribe({
+            this._authService.wsCall('db/' + entity.getName() + '/delete', entity.toDbValues()).subscribe({
                 next: response => {
                     observer.next(response);
                     observer.complete();

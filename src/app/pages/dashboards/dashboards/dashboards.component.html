@@ -41,7 +41,7 @@
 
                     <div class="flex flex-col divide-y divide-gray-300">
                         @for (dashboard of dashboards; track $index) {
-                            <a class="bg-white p-6 hover:bg-gray-100 cursor-pointer" [routerLink]="[dashboard.id]">
+                            <a class="bg-white p-6 hover:bg-gray-100 cursor-pointer" [routerLink]="[dashboard.dashboard_id]">
                                 {{ dashboard.description }}
                             </a>
                         }

@@ -11,6 +11,13 @@
 
     <div class="dialog-content">
 
+        <div class="flex flex-col gap-1">
+            <mat-label>Card title</mat-label>
+            <mat-form-field appearance="outline">
+                <input matInput [(ngModel)]="dashboardCard.title">
+            </mat-form-field>
+        </div>
+
         @if (dataLoading) {
             <mat-progress-bar class="!absolute top-0 z-50" mode="indeterminate"></mat-progress-bar>
         } @else {

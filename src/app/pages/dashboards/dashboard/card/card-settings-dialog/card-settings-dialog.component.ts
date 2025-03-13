@@ -51,8 +51,8 @@ export class CardSettingsDialogComponent implements OnInit{
         private _dialogRef: MatDialogRef<CardSettingsDialogComponent>,
         private _dbService: DbService,
     ) {
-        this.dashboardCard = this._data.dashboardCard;
-        this.dashboardCardSettings = this._data.dashboardCardSettings;
+        this.dashboardCard = new DashboardCard(this._data.dashboardCard);
+        this.dashboardCardSettings = this._data.dashboardCardSettings.map(x => new DashboardCardSettings(x));
     }
 
     ngOnInit(): void {
@@ -81,7 +81,7 @@ export class CardSettingsDialogComponent implements OnInit{
 
     update(): void {
         this.updateLoading = true;
-        this._dbService.update(this.dashboardCard).subscribe({
+        this._dbService.update(this.dashboardCard, { dashboard_card_settings: this.dashboardCardSettings }).subscribe({
             next: (r: any) => {
                 this.updateLoading = false;
                 this._dialogRef.close('update');
@@ -97,7 +97,7 @@ export class CardSettingsDialogComponent implements OnInit{
         for (const cardSetting of this.cardSettings) {
             const dashboardCardSetting = new DashboardCardSettings();
             dashboardCardSetting.dashboard_id = this.dashboardCard.dashboard_id;
-            dashboardCardSetting.dashboard_card_id = this.dashboardCard.id;
+            dashboardCardSetting.dashboard_card_id = this.dashboardCard.dashboard_card_id;
             dashboardCardSetting.card_id = cardSetting.card_id;
             dashboardCardSetting.setting_id = cardSetting.setting_id;
             dashboardCardSetting.value = cardSetting.default_value;

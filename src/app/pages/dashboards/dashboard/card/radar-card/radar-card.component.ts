@@ -38,9 +38,11 @@ export class RadarCardComponent implements OnInit, OnChanges {
     }
 
     loadChartOption(): void {
+        const x = this.dashboardCardSettings.find((setting) => setting.setting_id === 'X')?.value;
+        const y = this.dashboardCardSettings.find((setting) => setting.setting_id === 'Y')?.value;
         this.chartOption = {
             radar: {
-                indicator: [{name: '0'}],
+                indicator: [{name: x}],
             },
             series: [
                 {

@@ -72,7 +72,7 @@ export class DashboardComponent implements OnInit {
     async loadData(): Promise<void> {
         this.dataLoading = true;
         if (this.dashboardId) {
-            this.dashboard = await this._dbService.readFromId(new Dashboard(), this.dashboardId) as Dashboard;
+            this.dashboard = await this._dbService.readUnique(new Dashboard(), { dashboard_id: this.dashboardId }) as Dashboard;
             this.dashboardCards = await this._dbService.readList(new DashboardCard(), { dashboard_id: this.dashboardId }) as DashboardCard[];
             this.dashboardCardsSettings = await this._dbService.readList(new DashboardCardSettings(), { dashboard_id: this.dashboardId }) as DashboardCardSettings[];
         } else {
@@ -116,7 +116,7 @@ export class DashboardComponent implements OnInit {
         this.gridstackItems = [];
         for (const card of this.dashboardCards) {
             this.gridstackItems.push({
-                id: card.id?.toString(),
+                id: card.dashboard_card_id?.toString(),
                 x: card.x,
                 y: card.y,
                 w: card.width,
@@ -130,12 +130,11 @@ export class DashboardComponent implements OnInit {
     addCard(card: Card): void {
         const newDashboardCard = new DashboardCard();
         newDashboardCard.dashboard_id = this.dashboardId;
-        newDashboardCard.card_id = card.id;
+        newDashboardCard.card_id = card.card_id;
         newDashboardCard.width = 4;
         newDashboardCard.height = 3;
         this._dbService.create(newDashboardCard).subscribe((response: any) => {
-            this.dashboardCards.push(response);
-            this.loadGridstackItems();
+            this.loadData();
         });
     }
 
@@ -157,12 +156,12 @@ export class DashboardComponent implements OnInit {
 
     deleteItem(item: GridStackWidget): void {
         const dashboardCard = this.getDashboardCardFromItem(item);
-        this.dashboardCards = this.dashboardCards.filter(x => x.id !== dashboardCard.id);
+        this.dashboardCards = this.dashboardCards.filter(x => x.dashboard_card_id !== dashboardCard.dashboard_card_id);
         this.loadGridstackItems();
     }
 
     getDashboardCardFromItem(item: GridStackWidget): DashboardCard {
-        const dashboardCard = this.dashboardCards.find(x => x.id == +item.id!)!;
+        const dashboardCard = this.dashboardCards.find(x => x.dashboard_card_id == +item.id!)!;
         return dashboardCard;
     }
 

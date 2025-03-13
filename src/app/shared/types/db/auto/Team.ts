@@ -4,12 +4,12 @@ import { Table } from '../Table';
 
 export class Team implements Table {
 
-    id: number | undefined;
+    team_id: number | undefined;
     name: string | undefined;
 
     constructor(values?: any) {
         if (values) {
-            this.id = values.id;
+            this.team_id = values.team_id;
             this.name = values.name;
         }
     }
@@ -20,20 +20,21 @@ export class Team implements Table {
 
     fromDbValues(values: any): Team {
         const newTeam = new Team();
-        newTeam.id = values.id;
+        newTeam.team_id = values.team_id;
         newTeam.name = values.name;
         return newTeam;
     }
 
     toDbValues(): any {
         return {
-            id: this.id,
+            team_id: this.team_id,
             name: this.name,
         }
     }
 
     toFormGroup(): any {
         return {
+            team_id: new FormControl(this.team_id),
             name: new FormControl(this.name),
         }
     }
