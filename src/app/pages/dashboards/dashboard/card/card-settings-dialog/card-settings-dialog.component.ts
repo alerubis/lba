@@ -81,7 +81,7 @@ export class CardSettingsDialogComponent implements OnInit{
 
     update(): void {
         this.updateLoading = true;
-        this._dbService.update(this.dashboardCard, { dashboard_card_settings: this.dashboardCardSettings }).subscribe({
+        this._dbService.update(this.dashboardCard, { dashboardCardSettings: this.dashboardCardSettings }).subscribe({
             next: (r: any) => {
                 this.updateLoading = false;
                 this._dialogRef.close('update');
