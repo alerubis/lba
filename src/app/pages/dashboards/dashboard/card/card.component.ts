@@ -6,7 +6,7 @@ import { DbService } from '../../../../shared/services/db.service';
 import { Card } from '../../../../shared/types/db/auto/Card';
 import { DashboardCard } from '../../../../shared/types/db/auto/DashboardCard';
 import { CardSettingsDialogComponent } from './card-settings-dialog/card-settings-dialog.component';
-import { RadarCardComponent } from './radar-card/radar-card.component';
+import { RadarCardComponent } from './custom-cards/radar-card/radar-card.component';
 import { DashboardCardSettings } from '../../../../shared/types/db/auto/DashboardCardSettings';
 
 @Component({
