@@ -1,0 +1,101 @@
+option = {
+  xAxis: {
+    type: 'category',
+    boundaryGap: false,
+    name: 'Minuti di gioco',
+    nameLocation: 'middle',
+    nameGap: 25
+  },
+  yAxis: {
+    type: 'value',
+    boundaryGap: [0, '30%'],
+    name: 'Percentuale da 2 punti',
+    nameLocation: 'middle',
+    nameGap: 50
+  },
+  visualMap: {
+    type: 'piecewise',
+    show: false,
+    dimension: 0,
+    seriesIndex: [0, 1],
+    pieces: [
+      { gt: 0, lt: 10, color: 'rgba(60, 179, 113, 0.4)' },
+      { gt: 10, lt: 16, color: 'rgba(255, 165, 0, 0.4)' },
+      { gt: 16, lt: 20, color: 'rgba(255, 0, 0, 0.4)' }
+    ]
+  },
+  legend: {
+    data: ['Squadra A', 'Squadra B'],
+    top: 'top'
+  },
+  series: [
+    {
+      name: 'Squadra A',
+      type: 'line',
+      smooth: 0.5,
+      symbol: 'none',
+      lineStyle: {
+        color: '#1f77b4',
+        width: 3
+      },
+      areaStyle: { opacity: 0.5 },
+      data: [
+        ['0', 42],
+        ['0.5', 44],
+        ['1', 45],
+        ['1.5', 46],
+        ['2', 47],
+        ['2.5', 49],
+        ['3', 50],
+        ['3.5', 51],
+        ['4', 52],
+        ['4.5', 53],
+        ['5', 54],
+        ['5.5', 53],
+        ['6', 53],
+        ['6.5', 52],
+        ['7', 51],
+        ['7.5', 50],
+        ['8', 48],
+        ['8.5', 47],
+        ['9', 46],
+        ['9.5', 45],
+        ['10', 44]
+      ]
+    },
+    {
+      name: 'Squadra B',
+      type: 'line',
+      smooth: 0.5,
+      symbol: 'none',
+      lineStyle: {
+        color: '#ff7f0e',
+        width: 3
+      },
+      areaStyle: { opacity: 0.5 },
+      data: [
+        ['0', 38],
+        ['0.5', 39],
+        ['1', 41],
+        ['1.5', 42],
+        ['2', 43],
+        ['2.5', 44],
+        ['3', 46],
+        ['3.5', 47],
+        ['4', 48],
+        ['4.5', 48],
+        ['5', 49],
+        ['5.5', 48],
+        ['6', 48],
+        ['6.5', 47],
+        ['7', 46],
+        ['7.5', 45],
+        ['8', 44],
+        ['8.5', 43],
+        ['9', 41],
+        ['9.5', 40],
+        ['10', 40]
+      ]
+    }
+  ]
+};

@@ -1,0 +1,34 @@
+option = {
+  title: {
+    text: 'Statistiche Basket'
+  },
+  legend: {
+    data: ['Squadra A', 'Squadra B']
+  },
+  radar: {
+    indicator: [
+      { name: 'Punti', max: 120 },
+      { name: 'Assist', max: 30 },
+      { name: 'Rimbalzi', max: 60 },
+      { name: 'Palle Recuperate', max: 15 },
+      { name: 'Palle Perse', max: 20 },
+      { name: 'Stoppate', max: 10 }
+    ]
+  },
+  series: [
+    {
+      name: 'Squadra A vs Squadra B',
+      type: 'radar',
+      data: [
+        {
+          value: [110, 25, 50, 12, 18, 8],
+          name: 'Squadra A'
+        },
+        {
+          value: [105, 28, 55, 10, 15, 9],
+          name: 'Squadra B'
+        }
+      ]
+    }
+  ]
+};
