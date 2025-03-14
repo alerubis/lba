@@ -13,7 +13,17 @@ export class SubPlay implements Table {
     player_suffered_id: number | undefined;
     team_suffered_id: number | undefined;
     game_suffered_id: number | undefined;
-    type_sub_play_id: number | undefined;
+    shot_id: number | undefined;
+    turnover_id: number | undefined;
+    foul_id: number | undefined;
+    infraction_id: number | undefined;
+    rebound_defensive_01: string | undefined;
+    rebound_offensive_01: string | undefined;
+    assist_01: string | undefined;
+    blocks_01: string | undefined;
+    time_out_01: string | undefined;
+    x: number | undefined;
+    y: number | undefined;
 
     constructor(values?: any) {
         if (values) {
@@ -26,7 +36,17 @@ export class SubPlay implements Table {
             this.player_suffered_id = values.player_suffered_id;
             this.team_suffered_id = values.team_suffered_id;
             this.game_suffered_id = values.game_suffered_id;
-            this.type_sub_play_id = values.type_sub_play_id;
+            this.shot_id = values.shot_id;
+            this.turnover_id = values.turnover_id;
+            this.foul_id = values.foul_id;
+            this.infraction_id = values.infraction_id;
+            this.rebound_defensive_01 = values.rebound_defensive_01;
+            this.rebound_offensive_01 = values.rebound_offensive_01;
+            this.assist_01 = values.assist_01;
+            this.blocks_01 = values.blocks_01;
+            this.time_out_01 = values.time_out_01;
+            this.x = values.x;
+            this.y = values.y;
         }
     }
 
@@ -45,7 +65,17 @@ export class SubPlay implements Table {
         newSubPlay.player_suffered_id = values.player_suffered_id;
         newSubPlay.team_suffered_id = values.team_suffered_id;
         newSubPlay.game_suffered_id = values.game_suffered_id;
-        newSubPlay.type_sub_play_id = values.type_sub_play_id;
+        newSubPlay.shot_id = values.shot_id;
+        newSubPlay.turnover_id = values.turnover_id;
+        newSubPlay.foul_id = values.foul_id;
+        newSubPlay.infraction_id = values.infraction_id;
+        newSubPlay.rebound_defensive_01 = values.rebound_defensive_01;
+        newSubPlay.rebound_offensive_01 = values.rebound_offensive_01;
+        newSubPlay.assist_01 = values.assist_01;
+        newSubPlay.blocks_01 = values.blocks_01;
+        newSubPlay.time_out_01 = values.time_out_01;
+        newSubPlay.x = values.x;
+        newSubPlay.y = values.y;
         return newSubPlay;
     }
 
@@ -60,7 +90,17 @@ export class SubPlay implements Table {
             player_suffered_id: this.player_suffered_id,
             team_suffered_id: this.team_suffered_id,
             game_suffered_id: this.game_suffered_id,
-            type_sub_play_id: this.type_sub_play_id,
+            shot_id: this.shot_id,
+            turnover_id: this.turnover_id,
+            foul_id: this.foul_id,
+            infraction_id: this.infraction_id,
+            rebound_defensive_01: this.rebound_defensive_01,
+            rebound_offensive_01: this.rebound_offensive_01,
+            assist_01: this.assist_01,
+            blocks_01: this.blocks_01,
+            time_out_01: this.time_out_01,
+            x: this.x,
+            y: this.y,
         }
     }
 
@@ -74,7 +114,17 @@ export class SubPlay implements Table {
             player_suffered_id: new FormControl(this.player_suffered_id),
             team_suffered_id: new FormControl(this.team_suffered_id),
             game_suffered_id: new FormControl(this.game_suffered_id),
-            type_sub_play_id: new FormControl(this.type_sub_play_id),
+            shot_id: new FormControl(this.shot_id),
+            turnover_id: new FormControl(this.turnover_id),
+            foul_id: new FormControl(this.foul_id),
+            infraction_id: new FormControl(this.infraction_id),
+            rebound_defensive_01: new FormControl(this.rebound_defensive_01),
+            rebound_offensive_01: new FormControl(this.rebound_offensive_01),
+            assist_01: new FormControl(this.assist_01),
+            blocks_01: new FormControl(this.blocks_01),
+            time_out_01: new FormControl(this.time_out_01),
+            x: new FormControl(this.x),
+            y: new FormControl(this.y),
         }
     }
 
