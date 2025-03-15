@@ -7,6 +7,7 @@ import { VTeamYearLeagueSummaryMinutesGame } from '../../../../../../shared/type
 import { VTeamYearLeagueSummaryMinutesQuarter } from '../../../../../../shared/types/db/auto/VTeamYearLeagueSummaryMinutesQuarter';
 import { VTeamYearLeagueSummarySecondsPlay } from '../../../../../../shared/types/db/auto/VTeamYearLeagueSummarySecondsPlay';
 import { BaseCardComponent } from '../../base-card/base-card.component';
+import _ from 'lodash';
 
 @Component({
     selector: 'app-radar-card',
@@ -40,24 +41,75 @@ export class RadarCardComponent extends BaseCardComponent {
         if (x === "team_year_league_summary_seconds_play"){
             if (filter === "team"){
                 this.dati = await this._dbService.readList(new VTeamYearLeagueSummarySecondsPlay(), { team_id: 1, league_year_id: 1 }) as VTeamYearLeagueSummarySecondsPlay[];
+                this.dati = _.orderBy(this.dati, a=>+a.second_in_play);
             }
-        } else if (x === "team_year_league_summary_minutes_quart"){
+        } else if (x === "team_year_league_summary_minutes_quarter"){
             if (filter === "team"){
                 this.dati = await this._dbService.readList(new VTeamYearLeagueSummaryMinutesQuarter(), { team_id: 1, league_year_id: 1 }) as VTeamYearLeagueSummaryMinutesQuarter[];
+                this.dati = _.orderBy(this.dati, a=>+a.minute_in_quarter);
             }
         } else if (x === "team_year_league_summary_minutes_game"){
             if (filter === "team"){
-                this.dati = await this._dbService.readList(new VTeamYearLeagueSummaryMinutesGame(), { team_id: 1, league_year_id: 1 }) as VTeamYearLeagueSummaryMinutesGame[];
+                this.dati = await this._dbService.readList(new VTeamYearLeagueSummaryMinutesGame(), { team_id: 1, league_year_id: 1}) as VTeamYearLeagueSummaryMinutesGame[];
+                this.dati = _.orderBy(this.dati, a=>+a.minute_in_game);
             }
         }
 
         if (x === 'team_year_league_summary_seconds_play') {
-            const dati = this.dati.map(x=>{+x.second_in_play+1; x[y]})
+            const dati = this.dati.map(a=>[+a.second_in_play, a[y]])
             this.chartOption = {
                 xAxis: {
                     type: 'category',
                     boundaryGap: false,
                     name: 'Seconds Play',
+                    nameLocation: 'middle',
+                    nameGap: 25
+                },
+                yAxis: {
+                    type: 'value',
+                    boundaryGap: [0, '30%'],
+                    name: y,
+                    nameLocation: 'middle',
+                    nameGap: 50
+                },
+                visualMap: {
+                    type: 'piecewise',
+                    show: false,
+                    dimension: 0,
+                    seriesIndex: [0, 1],
+                    pieces: [
+                        { gt: 0, lt: 14, color: 'rgba(60, 179, 113, 0.4)' },
+                        { gt: 14, lt: 20, color: 'rgba(255, 165, 0, 0.4)' },
+                        { gt: 20, lt: 24, color: 'rgba(255, 0, 0, 0.4)' }
+                    ]
+                },
+                legend: {
+                    data: ['Squadra A'],
+                    top: 'top'
+                },
+                series: [
+                    {
+                        name: 'Squadra A',
+                        type: 'line',
+                        smooth: 0.5,
+                        symbol: 'none',
+                        lineStyle: {
+                            color: '#1f77b4',
+                            width: 3
+                        },
+                        areaStyle: { opacity: 0.5 },
+                        data: dati
+                    }
+                ]
+            };
+
+        } else if (x === 'team_year_league_summary_minutes_quarter') {
+            const dati = this.dati.map(a=>[+a.minute_in_quarter+1, a[y]])
+            this.chartOption = {
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    name: 'Minutes Quarter',
                     nameLocation: 'middle',
                     nameGap: 25
                 },
@@ -94,21 +146,18 @@ export class RadarCardComponent extends BaseCardComponent {
                             width: 3
                         },
                         areaStyle: { opacity: 0.5 },
-                        data: [
-                            dati
-                        ]
+                        data: dati
                     }
                 ]
             };
 
-        } else if (x === 'team_year_league_summary_minutes_quarter') {
-            const dati = this.dati.map(x=>{+x.minute_in_quarter+1; x[y]})
-
+        } else if (x === 'team_year_league_summary_minutes_game') {
+            const dati = this.dati.map(a=>[+a.minute_in_game, a[y]])
             this.chartOption = {
                 xAxis: {
                     type: 'category',
                     boundaryGap: false,
-                    name: 'Minuti di gioco',
+                    name: 'Minutes Game',
                     nameLocation: 'middle',
                     nameGap: 25
                 },
@@ -126,8 +175,9 @@ export class RadarCardComponent extends BaseCardComponent {
                     seriesIndex: [0, 1],
                     pieces: [
                         { gt: 0, lt: 10, color: 'rgba(60, 179, 113, 0.4)' },
-                        { gt: 10, lt: 16, color: 'rgba(255, 165, 0, 0.4)' },
-                        { gt: 16, lt: 20, color: 'rgba(255, 0, 0, 0.4)' }
+                        { gt: 10, lt: 20, color: 'rgba(255, 165, 0, 0.4)' },
+                        { gt: 20, lt: 30, color: 'rgba(255, 0, 0, 0.4)' },
+                        { gt: 30, lt: 40, color: 'rgba(255, 0, 165, 0.4)' }
                     ]
                 },
                 legend: {
@@ -145,68 +195,10 @@ export class RadarCardComponent extends BaseCardComponent {
                             width: 3
                         },
                         areaStyle: { opacity: 0.5 },
-                        data: [
-                            dati
-                        ]
-                    },
-                ]
-            };
-
-        } else {
-            const dati = this.dati.map(x=>{+x.minute_in_game+1; x[y]})
-
-            this.chartOption = {
-                xAxis: {
-                    type: 'category',
-                    boundaryGap: false,
-                    name: 'Minuti di gioco',
-                    nameLocation: 'middle',
-                    nameGap: 25,
-                    axisLabel: {
-                        interval: 2
-                    }
-                },
-                yAxis: {
-                    type: 'value',
-                    boundaryGap: [0, '30%'],
-                    name: y,
-                    nameLocation: 'middle',
-                    nameGap: 50
-                },
-                visualMap: {
-                    type: 'piecewise',
-                    show: false,
-                    dimension: 0,
-                    seriesIndex: [0, 1],
-                    pieces: [
-                        { gt: 0, lt: 20, color: 'rgba(60, 179, 113, 0.4)' },
-                        { gt: 20, lt: 40, color: 'rgba(255, 165, 0, 0.4)' },
-                        { gt: 40, lt: 60, color: 'rgba(255, 0, 0, 0.4)' },
-                        { gt: 60, lt: 80, color: 'rgba(128, 0, 128, 0.4)' }
-                    ]
-                },
-                legend: {
-                    data: ['Squadra A'],
-                    top: 'top'
-                },
-                series: [
-                    {
-                        name: 'Squadra A',
-                        type: 'line',
-                        smooth: 0.5,
-                        symbol: 'none',
-                        lineStyle: {
-                            color: '#1f77b4',
-                            width: 3
-                        },
-                        areaStyle: { opacity: 0.5 },
-                        data: [
-                            dati
-                        ]
+                        data: dati
                     }
                 ]
             };
-
 
         }
 

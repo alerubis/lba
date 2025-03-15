@@ -16,8 +16,8 @@ export class DbService {
     readList(table: Table, where?: any, paginator?: MatPaginator, sort?: MatSort): Promise<Table[]> {
         return new Promise((resolve, reject) => {
             this._authService.wsCall('db/' + table.getName() + '/read', {
-                skip: (paginator?.pageIndex || 0) * (paginator?.pageSize || 25),
-                take: (paginator?.pageSize || 25),
+                skip: (paginator?.pageIndex || 0) * (paginator?.pageSize || 100),
+                take: (paginator?.pageSize || 100),
                 where: where,
                 orderBy: (sort?.active && sort.direction ? { [sort.active]: sort.direction } : undefined),
             }).subscribe({
