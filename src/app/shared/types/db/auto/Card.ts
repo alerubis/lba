@@ -5,11 +5,13 @@ import { Table } from '../Table';
 export class Card implements Table {
 
     card_id: string | undefined;
+    card_type_id: string | undefined;
     description: string | undefined;
 
     constructor(values?: any) {
         if (values) {
             this.card_id = values.card_id;
+            this.card_type_id = values.card_type_id;
             this.description = values.description;
         }
     }
@@ -21,6 +23,7 @@ export class Card implements Table {
     fromDbValues(values: any): Card {
         const newCard = new Card();
         newCard.card_id = values.card_id;
+        newCard.card_type_id = values.card_type_id;
         newCard.description = values.description;
         return newCard;
     }
@@ -28,6 +31,7 @@ export class Card implements Table {
     toDbValues(): any {
         return {
             card_id: this.card_id,
+            card_type_id: this.card_type_id,
             description: this.description,
         }
     }
@@ -35,6 +39,7 @@ export class Card implements Table {
     toFormGroup(): any {
         return {
             card_id: new FormControl(this.card_id),
+            card_type_id: new FormControl(this.card_type_id),
             description: new FormControl(this.description),
         }
     }
