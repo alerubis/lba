@@ -2,7 +2,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { DbUtils } from '../DbUtils';
 import { Table } from '../Table';
 
-export class PlayerYearLeagueSummaryMinuteQuarter implements Table {
+export class VPlayerYearLeagueSummaryMinuteQuarter implements Table {
 
     player_id: number | undefined;
     player_name: string | undefined;
@@ -61,37 +61,37 @@ export class PlayerYearLeagueSummaryMinuteQuarter implements Table {
     }
 
     getName(): string {
-        return 'player_year_league_summary_minute_quarter';
+        return 'v_player_year_league_summary_minute_quarter';
     }
 
-    fromDbValues(values: any): PlayerYearLeagueSummaryMinuteQuarter {
-        const newPlayerYearLeagueSummaryMinuteQuarter = new PlayerYearLeagueSummaryMinuteQuarter();
-        newPlayerYearLeagueSummaryMinuteQuarter.player_id = values.player_id;
-        newPlayerYearLeagueSummaryMinuteQuarter.player_name = values.player_name;
-        newPlayerYearLeagueSummaryMinuteQuarter.league_year_id = values.league_year_id;
-        newPlayerYearLeagueSummaryMinuteQuarter.league_id = values.league_id;
-        newPlayerYearLeagueSummaryMinuteQuarter.league_name = values.league_name;
-        newPlayerYearLeagueSummaryMinuteQuarter.minute_in_quarter = DbUtils.epochToDate(values.minute_in_quarter);
-        newPlayerYearLeagueSummaryMinuteQuarter.total_sub_plays = DbUtils.epochToDate(values.total_sub_plays);
-        newPlayerYearLeagueSummaryMinuteQuarter.total_shots = values.total_shots;
-        newPlayerYearLeagueSummaryMinuteQuarter.one_point_shots_made = values.one_point_shots_made;
-        newPlayerYearLeagueSummaryMinuteQuarter.one_point_shots_miss = values.one_point_shots_miss;
-        newPlayerYearLeagueSummaryMinuteQuarter.two_point_shots_made = values.two_point_shots_made;
-        newPlayerYearLeagueSummaryMinuteQuarter.two_point_shots_miss = values.two_point_shots_miss;
-        newPlayerYearLeagueSummaryMinuteQuarter.three_point_shots_made = values.three_point_shots_made;
-        newPlayerYearLeagueSummaryMinuteQuarter.three_point_shots_miss = values.three_point_shots_miss;
-        newPlayerYearLeagueSummaryMinuteQuarter.one_point_shot_ratio = values.one_point_shot_ratio;
-        newPlayerYearLeagueSummaryMinuteQuarter.two_point_shot_ratio = values.two_point_shot_ratio;
-        newPlayerYearLeagueSummaryMinuteQuarter.three_point_shot_ratio = values.three_point_shot_ratio;
-        newPlayerYearLeagueSummaryMinuteQuarter.total_fouls = values.total_fouls;
-        newPlayerYearLeagueSummaryMinuteQuarter.total_infractions = values.total_infractions;
-        newPlayerYearLeagueSummaryMinuteQuarter.total_turnovers = values.total_turnovers;
-        newPlayerYearLeagueSummaryMinuteQuarter.total_defensive_rebounds = values.total_defensive_rebounds;
-        newPlayerYearLeagueSummaryMinuteQuarter.total_offensive_rebounds = values.total_offensive_rebounds;
-        newPlayerYearLeagueSummaryMinuteQuarter.total_assists = values.total_assists;
-        newPlayerYearLeagueSummaryMinuteQuarter.total_blocks = values.total_blocks;
-        newPlayerYearLeagueSummaryMinuteQuarter.total_timeouts = values.total_timeouts;
-        return newPlayerYearLeagueSummaryMinuteQuarter;
+    fromDbValues(values: any): VPlayerYearLeagueSummaryMinuteQuarter {
+        const newVPlayerYearLeagueSummaryMinuteQuarter = new VPlayerYearLeagueSummaryMinuteQuarter();
+        newVPlayerYearLeagueSummaryMinuteQuarter.player_id = values.player_id;
+        newVPlayerYearLeagueSummaryMinuteQuarter.player_name = values.player_name;
+        newVPlayerYearLeagueSummaryMinuteQuarter.league_year_id = values.league_year_id;
+        newVPlayerYearLeagueSummaryMinuteQuarter.league_id = values.league_id;
+        newVPlayerYearLeagueSummaryMinuteQuarter.league_name = values.league_name;
+        newVPlayerYearLeagueSummaryMinuteQuarter.minute_in_quarter = DbUtils.epochToDate(values.minute_in_quarter);
+        newVPlayerYearLeagueSummaryMinuteQuarter.total_sub_plays = DbUtils.epochToDate(values.total_sub_plays);
+        newVPlayerYearLeagueSummaryMinuteQuarter.total_shots = values.total_shots;
+        newVPlayerYearLeagueSummaryMinuteQuarter.one_point_shots_made = values.one_point_shots_made;
+        newVPlayerYearLeagueSummaryMinuteQuarter.one_point_shots_miss = values.one_point_shots_miss;
+        newVPlayerYearLeagueSummaryMinuteQuarter.two_point_shots_made = values.two_point_shots_made;
+        newVPlayerYearLeagueSummaryMinuteQuarter.two_point_shots_miss = values.two_point_shots_miss;
+        newVPlayerYearLeagueSummaryMinuteQuarter.three_point_shots_made = values.three_point_shots_made;
+        newVPlayerYearLeagueSummaryMinuteQuarter.three_point_shots_miss = values.three_point_shots_miss;
+        newVPlayerYearLeagueSummaryMinuteQuarter.one_point_shot_ratio = values.one_point_shot_ratio;
+        newVPlayerYearLeagueSummaryMinuteQuarter.two_point_shot_ratio = values.two_point_shot_ratio;
+        newVPlayerYearLeagueSummaryMinuteQuarter.three_point_shot_ratio = values.three_point_shot_ratio;
+        newVPlayerYearLeagueSummaryMinuteQuarter.total_fouls = values.total_fouls;
+        newVPlayerYearLeagueSummaryMinuteQuarter.total_infractions = values.total_infractions;
+        newVPlayerYearLeagueSummaryMinuteQuarter.total_turnovers = values.total_turnovers;
+        newVPlayerYearLeagueSummaryMinuteQuarter.total_defensive_rebounds = values.total_defensive_rebounds;
+        newVPlayerYearLeagueSummaryMinuteQuarter.total_offensive_rebounds = values.total_offensive_rebounds;
+        newVPlayerYearLeagueSummaryMinuteQuarter.total_assists = values.total_assists;
+        newVPlayerYearLeagueSummaryMinuteQuarter.total_blocks = values.total_blocks;
+        newVPlayerYearLeagueSummaryMinuteQuarter.total_timeouts = values.total_timeouts;
+        return newVPlayerYearLeagueSummaryMinuteQuarter;
     }
 
     toDbValues(): any {

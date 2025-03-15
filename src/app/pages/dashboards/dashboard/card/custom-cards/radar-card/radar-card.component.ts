@@ -2,6 +2,10 @@ import { Component } from '@angular/core';
 import * as echarts from 'echarts';
 import { EChartsCoreOption } from 'echarts/core';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
+import { DbService } from '../../../../../../shared/services/db.service';
+import { VTeamYearLeagueSummaryMinutesGame } from '../../../../../../shared/types/db/auto/VTeamYearLeagueSummaryMinutesGame';
+import { VTeamYearLeagueSummaryMinutesQuarter } from '../../../../../../shared/types/db/auto/VTeamYearLeagueSummaryMinutesQuarter';
+import { VTeamYearLeagueSummarySecondsPlay } from '../../../../../../shared/types/db/auto/VTeamYearLeagueSummarySecondsPlay';
 import { BaseCardComponent } from '../../base-card/base-card.component';
 
 @Component({
@@ -19,10 +23,34 @@ export class RadarCardComponent extends BaseCardComponent {
 
     chartOption: EChartsCoreOption = {};
 
-    override loadChartOption(): void {
+    dati: any[] = [];
+
+    constructor(private _dbService: DbService) {
+        super();
+    }
+
+    override async loadChartOption(): Promise<void> {
+
         const x = this.dashboardCardSettings.find((setting) => setting.setting_id === 'X')?.value;
         const y = this.dashboardCardSettings.find((setting) => setting.setting_id === 'Y')?.value;
-        
+        // const filter = this.dashboardCardSettings.find((setting) => setting.setting_id === 'Filter')?.value;
+        const filter = 'team';
+
+        this.dati = [];
+        if (x === "team_year_league_summary_seconds_play"){
+            if (filter === "team"){
+                this.dati = await this._dbService.readList(new VTeamYearLeagueSummarySecondsPlay(), { team_id: 1, league_year_id: 1 }) as VTeamYearLeagueSummarySecondsPlay[];
+            }
+        } else if (x === "team_year_league_summary_minutes_quart"){
+            if (filter === "team"){
+                this.dati = await this._dbService.readList(new VTeamYearLeagueSummaryMinutesQuarter(), { team_id: 1, league_year_id: 1 }) as VTeamYearLeagueSummaryMinutesQuarter[];
+            }
+        } else if (x === "team_year_league_summary_minutes_game"){
+            if (filter === "team"){
+                this.dati = await this._dbService.readList(new VTeamYearLeagueSummaryMinutesGame(), { team_id: 1, league_year_id: 1 }) as VTeamYearLeagueSummaryMinutesGame[];
+            }
+        }
+
         if (x === 'team_year_league_summary_seconds_play') {
             const dati = this.dati.map(x=>{+x.second_in_play+1; x[y]})
             this.chartOption = {

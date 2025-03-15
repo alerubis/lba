@@ -2,14 +2,14 @@ import { FormControl, Validators } from '@angular/forms';
 import { DbUtils } from '../DbUtils';
 import { Table } from '../Table';
 
-export class TeamYearLeagueSummaryMinutesGame implements Table {
+export class VTeamYearLeagueSummarySecondsPlay implements Table {
 
     team_id: number | undefined;
     team_name: string | undefined;
     league_year_id: number | undefined;
     league_id: number | undefined;
     league_name: string | undefined;
-    minute_in_game: Date | undefined;
+    second_in_play: number | undefined;
     total_sub_plays: Date | undefined;
     total_shots: any | undefined;
     one_point_shots_made: any | undefined;
@@ -37,7 +37,7 @@ export class TeamYearLeagueSummaryMinutesGame implements Table {
             this.league_year_id = values.league_year_id;
             this.league_id = values.league_id;
             this.league_name = values.league_name;
-            this.minute_in_game = values.minute_in_game;
+            this.second_in_play = values.second_in_play;
             this.total_sub_plays = values.total_sub_plays;
             this.total_shots = values.total_shots;
             this.one_point_shots_made = values.one_point_shots_made;
@@ -61,37 +61,37 @@ export class TeamYearLeagueSummaryMinutesGame implements Table {
     }
 
     getName(): string {
-        return 'team_year_league_summary_minutes_game';
+        return 'v_team_year_league_summary_seconds_play';
     }
 
-    fromDbValues(values: any): TeamYearLeagueSummaryMinutesGame {
-        const newTeamYearLeagueSummaryMinutesGame = new TeamYearLeagueSummaryMinutesGame();
-        newTeamYearLeagueSummaryMinutesGame.team_id = values.team_id;
-        newTeamYearLeagueSummaryMinutesGame.team_name = values.team_name;
-        newTeamYearLeagueSummaryMinutesGame.league_year_id = values.league_year_id;
-        newTeamYearLeagueSummaryMinutesGame.league_id = values.league_id;
-        newTeamYearLeagueSummaryMinutesGame.league_name = values.league_name;
-        newTeamYearLeagueSummaryMinutesGame.minute_in_game = DbUtils.epochToDate(values.minute_in_game);
-        newTeamYearLeagueSummaryMinutesGame.total_sub_plays = DbUtils.epochToDate(values.total_sub_plays);
-        newTeamYearLeagueSummaryMinutesGame.total_shots = values.total_shots;
-        newTeamYearLeagueSummaryMinutesGame.one_point_shots_made = values.one_point_shots_made;
-        newTeamYearLeagueSummaryMinutesGame.one_point_shots_miss = values.one_point_shots_miss;
-        newTeamYearLeagueSummaryMinutesGame.two_point_shots_made = values.two_point_shots_made;
-        newTeamYearLeagueSummaryMinutesGame.two_point_shots_miss = values.two_point_shots_miss;
-        newTeamYearLeagueSummaryMinutesGame.three_point_shots_made = values.three_point_shots_made;
-        newTeamYearLeagueSummaryMinutesGame.three_point_shots_miss = values.three_point_shots_miss;
-        newTeamYearLeagueSummaryMinutesGame.one_point_shot_ratio = values.one_point_shot_ratio;
-        newTeamYearLeagueSummaryMinutesGame.two_point_shot_ratio = values.two_point_shot_ratio;
-        newTeamYearLeagueSummaryMinutesGame.three_point_shot_ratio = values.three_point_shot_ratio;
-        newTeamYearLeagueSummaryMinutesGame.total_fouls = values.total_fouls;
-        newTeamYearLeagueSummaryMinutesGame.total_infractions = values.total_infractions;
-        newTeamYearLeagueSummaryMinutesGame.total_turnovers = values.total_turnovers;
-        newTeamYearLeagueSummaryMinutesGame.total_defensive_rebounds = values.total_defensive_rebounds;
-        newTeamYearLeagueSummaryMinutesGame.total_offensive_rebounds = values.total_offensive_rebounds;
-        newTeamYearLeagueSummaryMinutesGame.total_assists = values.total_assists;
-        newTeamYearLeagueSummaryMinutesGame.total_blocks = values.total_blocks;
-        newTeamYearLeagueSummaryMinutesGame.total_timeouts = values.total_timeouts;
-        return newTeamYearLeagueSummaryMinutesGame;
+    fromDbValues(values: any): VTeamYearLeagueSummarySecondsPlay {
+        const newVTeamYearLeagueSummarySecondsPlay = new VTeamYearLeagueSummarySecondsPlay();
+        newVTeamYearLeagueSummarySecondsPlay.team_id = values.team_id;
+        newVTeamYearLeagueSummarySecondsPlay.team_name = values.team_name;
+        newVTeamYearLeagueSummarySecondsPlay.league_year_id = values.league_year_id;
+        newVTeamYearLeagueSummarySecondsPlay.league_id = values.league_id;
+        newVTeamYearLeagueSummarySecondsPlay.league_name = values.league_name;
+        newVTeamYearLeagueSummarySecondsPlay.second_in_play = values.second_in_play;
+        newVTeamYearLeagueSummarySecondsPlay.total_sub_plays = DbUtils.epochToDate(values.total_sub_plays);
+        newVTeamYearLeagueSummarySecondsPlay.total_shots = values.total_shots;
+        newVTeamYearLeagueSummarySecondsPlay.one_point_shots_made = values.one_point_shots_made;
+        newVTeamYearLeagueSummarySecondsPlay.one_point_shots_miss = values.one_point_shots_miss;
+        newVTeamYearLeagueSummarySecondsPlay.two_point_shots_made = values.two_point_shots_made;
+        newVTeamYearLeagueSummarySecondsPlay.two_point_shots_miss = values.two_point_shots_miss;
+        newVTeamYearLeagueSummarySecondsPlay.three_point_shots_made = values.three_point_shots_made;
+        newVTeamYearLeagueSummarySecondsPlay.three_point_shots_miss = values.three_point_shots_miss;
+        newVTeamYearLeagueSummarySecondsPlay.one_point_shot_ratio = values.one_point_shot_ratio;
+        newVTeamYearLeagueSummarySecondsPlay.two_point_shot_ratio = values.two_point_shot_ratio;
+        newVTeamYearLeagueSummarySecondsPlay.three_point_shot_ratio = values.three_point_shot_ratio;
+        newVTeamYearLeagueSummarySecondsPlay.total_fouls = values.total_fouls;
+        newVTeamYearLeagueSummarySecondsPlay.total_infractions = values.total_infractions;
+        newVTeamYearLeagueSummarySecondsPlay.total_turnovers = values.total_turnovers;
+        newVTeamYearLeagueSummarySecondsPlay.total_defensive_rebounds = values.total_defensive_rebounds;
+        newVTeamYearLeagueSummarySecondsPlay.total_offensive_rebounds = values.total_offensive_rebounds;
+        newVTeamYearLeagueSummarySecondsPlay.total_assists = values.total_assists;
+        newVTeamYearLeagueSummarySecondsPlay.total_blocks = values.total_blocks;
+        newVTeamYearLeagueSummarySecondsPlay.total_timeouts = values.total_timeouts;
+        return newVTeamYearLeagueSummarySecondsPlay;
     }
 
     toDbValues(): any {
@@ -101,7 +101,7 @@ export class TeamYearLeagueSummaryMinutesGame implements Table {
             league_year_id: this.league_year_id,
             league_id: this.league_id,
             league_name: this.league_name,
-            minute_in_game: DbUtils.dateToEpoch(this.minute_in_game),
+            second_in_play: this.second_in_play,
             total_sub_plays: DbUtils.dateToEpoch(this.total_sub_plays),
             total_shots: this.total_shots,
             one_point_shots_made: this.one_point_shots_made,
@@ -131,7 +131,7 @@ export class TeamYearLeagueSummaryMinutesGame implements Table {
             league_year_id: new FormControl(this.league_year_id),
             league_id: new FormControl(this.league_id),
             league_name: new FormControl(this.league_name),
-            minute_in_game: new FormControl(this.minute_in_game),
+            second_in_play: new FormControl(this.second_in_play),
             total_sub_plays: new FormControl(this.total_sub_plays),
             total_shots: new FormControl(this.total_shots),
             one_point_shots_made: new FormControl(this.one_point_shots_made),
