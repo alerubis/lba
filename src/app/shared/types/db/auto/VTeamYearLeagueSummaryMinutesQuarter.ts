@@ -9,8 +9,8 @@ export class VTeamYearLeagueSummaryMinutesQuarter implements Table {
     league_year_id: number | undefined;
     league_id: number | undefined;
     league_name: string | undefined;
-    minute_in_quarter: number | undefined;
-    total_sub_plays: number | undefined;
+    minute_in_quarter: Date | undefined;
+    total_sub_plays: Date | undefined;
     total_shots: any | undefined;
     one_point_shots_made: any | undefined;
     one_point_shots_miss: any | undefined;
@@ -71,8 +71,8 @@ export class VTeamYearLeagueSummaryMinutesQuarter implements Table {
         newVTeamYearLeagueSummaryMinutesQuarter.league_year_id = values.league_year_id;
         newVTeamYearLeagueSummaryMinutesQuarter.league_id = values.league_id;
         newVTeamYearLeagueSummaryMinutesQuarter.league_name = values.league_name;
-        newVTeamYearLeagueSummaryMinutesQuarter.minute_in_quarter = values.minute_in_quarter;
-        newVTeamYearLeagueSummaryMinutesQuarter.total_sub_plays = values.total_sub_plays;
+        newVTeamYearLeagueSummaryMinutesQuarter.minute_in_quarter = DbUtils.epochToDate(values.minute_in_quarter);
+        newVTeamYearLeagueSummaryMinutesQuarter.total_sub_plays = DbUtils.epochToDate(values.total_sub_plays);
         newVTeamYearLeagueSummaryMinutesQuarter.total_shots = values.total_shots;
         newVTeamYearLeagueSummaryMinutesQuarter.one_point_shots_made = values.one_point_shots_made;
         newVTeamYearLeagueSummaryMinutesQuarter.one_point_shots_miss = values.one_point_shots_miss;
@@ -101,8 +101,8 @@ export class VTeamYearLeagueSummaryMinutesQuarter implements Table {
             league_year_id: this.league_year_id,
             league_id: this.league_id,
             league_name: this.league_name,
-            minute_in_quarter: this.minute_in_quarter,
-            total_sub_plays: this.total_sub_plays,
+            minute_in_quarter: DbUtils.dateToEpoch(this.minute_in_quarter),
+            total_sub_plays: DbUtils.dateToEpoch(this.total_sub_plays),
             total_shots: this.total_shots,
             one_point_shots_made: this.one_point_shots_made,
             one_point_shots_miss: this.one_point_shots_miss,

@@ -1,5 +1,5 @@
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -13,6 +13,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { DbService } from '../../../shared/services/db.service';
 import { Dashboard } from '../../../shared/types/db/auto/Dashboard';
+import { CardType } from '../../../shared/types/db/auto/CardType';
 
 export interface DashboardDialogData {
     action: 'create' | 'update' | 'delete';
@@ -37,11 +38,12 @@ export interface DashboardDialogData {
         ReactiveFormsModule,
     ]
 })
-export class DashboardDialogComponent {
+export class DashboardDialogComponent implements OnInit{
 
     action: 'create' | 'update' | 'delete';
     dashboard: Dashboard;
     dashboardForm: FormGroup;
+    cardType: CardType[] = [];
 
     createLoading: boolean = false;
     updateLoading: boolean = false;
@@ -61,6 +63,9 @@ export class DashboardDialogComponent {
         }
     }
 
+    async ngOnInit(): Promise<void> {
+        this.cardType = await this._dbService.readList(new CardType()) as CardType[];
+    }
     //#region Actions
     cancel(): void {
         this._dialogRef.close();

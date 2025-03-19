@@ -3,21 +3,22 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { DbService } from '../../../../shared/services/db.service';
-import { Card } from '../../../../shared/types/db/auto/Card';
 import { DashboardCard } from '../../../../shared/types/db/auto/DashboardCard';
 import { CardSettingsDialogComponent } from './card-settings-dialog/card-settings-dialog.component';
-import { RadarCardComponent } from './custom-cards/radar-card/radar-card.component';
+import { LinePlayPlayerCardComponent } from './custom-cards/line-play-player/line-play-player-card.component';
 import { DashboardCardSettings } from '../../../../shared/types/db/auto/DashboardCardSettings';
+import { LinePlayTeamCardComponent } from "./custom-cards/line-play-team/line-play-team-card.component";
 
 @Component({
     selector: 'app-card',
     templateUrl: './card.component.html',
     standalone: true,
     imports: [
-        MatIconModule,
-        MatButtonModule,
-        RadarCardComponent,
-    ],
+    MatIconModule,
+    MatButtonModule,
+    LinePlayPlayerCardComponent,
+    LinePlayTeamCardComponent
+],
 })
 export class CardComponent {
 

@@ -24,6 +24,19 @@
                 </mat-form-field>
             </div>
 
+            <div class="flex flex-col gap-1">
+                <mat-label>Tipo analisi</mat-label>
+                <mat-form-field appearance="outline">
+                    <mat-select matInput formControlName="card_type_id" name="card_type_id">
+                        @for (type of cardType; track $index) {
+                            <mat-option [value]="type.id">
+                                {{ type.description }}
+                            </mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
         </form>
 
     </div>

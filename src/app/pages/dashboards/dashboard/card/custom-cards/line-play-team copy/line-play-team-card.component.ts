@@ -10,8 +10,8 @@ import { BaseCardComponent } from '../../base-card/base-card.component';
 import _ from 'lodash';
 
 @Component({
-    selector: 'app-radar-card',
-    templateUrl: './radar-card.component.html',
+    selector: 'line-play-team-card',
+    templateUrl: './line-play-team-card.component.html',
     standalone: true,
     imports: [
         NgxEchartsDirective
@@ -20,7 +20,7 @@ import _ from 'lodash';
         provideEchartsCore({ echarts }),
     ]
 })
-export class RadarCardComponent extends BaseCardComponent {
+export class LinePlayTeamCardComponent extends BaseCardComponent {
 
     chartOption: EChartsCoreOption = {};
 

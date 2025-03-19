@@ -15,11 +15,17 @@
     <div class="card-content w-full h-full">
         @switch (dashboardCard.card_id) {
 
-            @case ('AREA') {
-                <app-radar-card
+            @case ('LPSP') {
+                <line-play-player-card
                     [dashboardCard]="dashboardCard"
                     [dashboardCardSettings]="dashboardCardSettings"
-                ></app-radar-card>
+                ></line-play-player-card>
+            }
+            @case ('LTSP') {
+                <line-play-team-card
+                    [dashboardCard]="dashboardCard"
+                    [dashboardCardSettings]="dashboardCardSettings"
+                ></line-play-team-card>
             }
 
             @default {
