@@ -30,6 +30,8 @@ export class DashboardComponent implements OnInit, OnChanges {
     gridstackOptions: GridStackOptions = {
         margin: 8,
         marginUnit: 'px',
+        disableDrag: true,
+        disableResize: true,
     };
     gridstackItems: GridStackWidget[] = [];
 

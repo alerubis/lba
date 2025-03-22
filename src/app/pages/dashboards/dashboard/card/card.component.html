@@ -3,14 +3,16 @@
         <div class="text-lg font-bold">
             {{ dashboardCard.title }}
         </div>
-        <div class="flex flex-row items-center">
-            <button mat-icon-button (click)="editCardSettings()">
-                <mat-icon class="!text-white">settings</mat-icon>
-            </button>
-            <button mat-icon-button (click)="deleteCard()">
-                <mat-icon class="!text-white">delete</mat-icon>
-            </button>
-        </div>
+        @if (edit) {
+            <div class="flex flex-row items-center">
+                <button mat-icon-button (click)="editCardSettings()">
+                    <mat-icon class="!text-white">settings</mat-icon>
+                </button>
+                <button mat-icon-button (click)="deleteCard()">
+                    <mat-icon class="!text-white">delete</mat-icon>
+                </button>
+            </div>
+        }
     </div>
     <div class="card-content w-full h-full">
         @switch (dashboardCard.card_id) {

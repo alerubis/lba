@@ -22,6 +22,7 @@ import { LinePlayTeamCardComponent } from "./custom-cards/line-play-team/line-pl
 })
 export class CardComponent {
 
+    @Input() edit: boolean = false;
     @Input({ required: true }) dashboardCard!: DashboardCard;
     @Input({ required: true }) dashboardCardSettings!: DashboardCardSettings[];
     @Input() gameId: number | undefined;

@@ -48,6 +48,7 @@
                         @for (item of gridstackItems; track item.id) {
                             <gridstack-item [options]="item">
                                 <app-card
+                                    [edit]="true"
                                     [dashboardCard]="getDashboardCardFromItem(item)"
                                     [dashboardCardSettings]="getDashboardCardSettingsFromItem(item)"
                                     (onCardUpdate)="updateItem(item, $event)"
