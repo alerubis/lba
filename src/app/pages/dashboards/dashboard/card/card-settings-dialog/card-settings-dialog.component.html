@@ -26,19 +26,31 @@
                     <div class="flex flex-col gap-1">
                         <mat-label>{{ setting.setting_id }}</mat-label>
                         <mat-form-field appearance="outline">
-                            <mat-select matInput [(ngModel)]="setting.value">
-                                @for (option of getSettingPossibleValues(setting); track $index) {
-                                    <mat-option [value]="option">
-                                        {{ option }}
-                                    </mat-option>
-                                }
-                            </mat-select>
+                            @if (setting.setting_id === 'STAT') {
+                                <!-- MULTI SELECT -->
+                                <mat-select matInput [(ngModel)]="setting.value" multiple>
+                                    @for (option of getSettingPossibleValues(setting); track $index) {
+                                        <mat-option [value]="option">
+                                            {{ option }}
+                                        </mat-option>
+                                    }
+                                </mat-select>
+                            } @else {
+                                <!-- SINGLE SELECT -->
+                                <mat-select matInput [(ngModel)]="setting.value">
+                                    @for (option of getSettingPossibleValues(setting); track $index) {
+                                        <mat-option [value]="option">
+                                            {{ option }}
+                                        </mat-option>
+                                    }
+                                </mat-select>
+                            }
                         </mat-form-field>
                     </div>
                 }
             </div>
         }
-
+        
     </div>
 
     <div class="dialog-actions">

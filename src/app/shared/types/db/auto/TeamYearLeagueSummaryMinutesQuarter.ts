@@ -9,8 +9,8 @@ export class TeamYearLeagueSummaryMinutesQuarter implements Table {
     league_year_id: number | undefined;
     league_id: number | undefined;
     league_name: string | undefined;
-    minute_in_quarter: Date | undefined;
-    total_sub_plays: Date | undefined;
+    minute_in_quarter: number | undefined;
+    total_sub_plays: number | undefined;
     total_shots: any | undefined;
     one_point_shots_made: any | undefined;
     one_point_shots_miss: any | undefined;
@@ -71,8 +71,8 @@ export class TeamYearLeagueSummaryMinutesQuarter implements Table {
         newTeamYearLeagueSummaryMinutesQuarter.league_year_id = values.league_year_id;
         newTeamYearLeagueSummaryMinutesQuarter.league_id = values.league_id;
         newTeamYearLeagueSummaryMinutesQuarter.league_name = values.league_name;
-        newTeamYearLeagueSummaryMinutesQuarter.minute_in_quarter = DbUtils.epochToDate(values.minute_in_quarter);
-        newTeamYearLeagueSummaryMinutesQuarter.total_sub_plays = DbUtils.epochToDate(values.total_sub_plays);
+        newTeamYearLeagueSummaryMinutesQuarter.minute_in_quarter = values.minute_in_quarter;
+        newTeamYearLeagueSummaryMinutesQuarter.total_sub_plays = values.total_sub_plays;
         newTeamYearLeagueSummaryMinutesQuarter.total_shots = values.total_shots;
         newTeamYearLeagueSummaryMinutesQuarter.one_point_shots_made = values.one_point_shots_made;
         newTeamYearLeagueSummaryMinutesQuarter.one_point_shots_miss = values.one_point_shots_miss;

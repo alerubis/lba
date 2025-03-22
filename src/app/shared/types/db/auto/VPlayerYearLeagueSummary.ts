@@ -72,7 +72,7 @@ export class VPlayerYearLeagueSummary implements Table {
         newVPlayerYearLeagueSummary.league_year_id = values.league_year_id;
         newVPlayerYearLeagueSummary.league_id = values.league_id;
         newVPlayerYearLeagueSummary.league_name = values.league_name;
-        newVPlayerYearLeagueSummary.total_sub_plays = DbUtils.epochToDate(values.total_sub_plays);
+        newVPlayerYearLeagueSummary.total_sub_plays = values.total_sub_plays;
         newVPlayerYearLeagueSummary.total_shots = values.total_shots;
         newVPlayerYearLeagueSummary.one_point_shots_made = values.one_point_shots_made;
         newVPlayerYearLeagueSummary.one_point_shots_miss = values.one_point_shots_miss;

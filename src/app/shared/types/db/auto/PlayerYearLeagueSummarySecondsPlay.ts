@@ -72,7 +72,7 @@ export class PlayerYearLeagueSummarySecondsPlay implements Table {
         newPlayerYearLeagueSummarySecondsPlay.league_id = values.league_id;
         newPlayerYearLeagueSummarySecondsPlay.league_name = values.league_name;
         newPlayerYearLeagueSummarySecondsPlay.second_in_play = values.second_in_play;
-        newPlayerYearLeagueSummarySecondsPlay.total_sub_plays = DbUtils.epochToDate(values.total_sub_plays);
+        newPlayerYearLeagueSummarySecondsPlay.total_sub_plays = values.total_sub_plays;
         newPlayerYearLeagueSummarySecondsPlay.total_shots = values.total_shots;
         newPlayerYearLeagueSummarySecondsPlay.one_point_shots_made = values.one_point_shots_made;
         newPlayerYearLeagueSummarySecondsPlay.one_point_shots_miss = values.one_point_shots_miss;

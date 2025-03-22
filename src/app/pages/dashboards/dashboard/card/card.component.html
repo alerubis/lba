@@ -15,34 +15,21 @@
         }
     </div>
     <div class="card-content w-full h-full">
-        @switch (dashboardCard.card_id) {
-
-            @case ('LPSP') {
-                <line-play-player-card
-                    [dashboardCard]="dashboardCard"
-                    [dashboardCardSettings]="dashboardCardSettings"
-                ></line-play-player-card>
-            }
-            @case ('LTSP') {
-                <line-play-team-card
-                    [dashboardCard]="dashboardCard"
-                    [dashboardCardSettings]="dashboardCardSettings"
-                ></line-play-team-card>
-            }
-
-            @default {
-
-                <div class="flex flex-col items-center justify-center bg-white rounded p-6">
-                    <div class="text-center">
-                        No template found.
-                    </div>
-                    <div class="text-gray-500 text-sm text-center">
-                        The card "{{ dashboardCard.card_id }}" is not yet implemented.
-                    </div>
+        @if (dashboardCard.card_id) {
+            <grafic-card
+                [dashboardCard]="dashboardCard"
+                [dashboardCardSettings]="dashboardCardSettings"
+            ></grafic-card>
+        }
+        @else {
+            <div class="flex flex-col items-center justify-center bg-white rounded p-6">
+                <div class="text-center">
+                    No template found.
                 </div>
-
-            }
-
+                <div class="text-gray-500 text-sm text-center">
+                    The card "{{ dashboardCard.card_id }}" is not yet implemented.
+                </div>
+            </div>
         }
     </div>
 </div>

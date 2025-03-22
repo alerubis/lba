@@ -72,7 +72,7 @@ export class VTeamYearLeagueSummarySecondsPlay implements Table {
         newVTeamYearLeagueSummarySecondsPlay.league_id = values.league_id;
         newVTeamYearLeagueSummarySecondsPlay.league_name = values.league_name;
         newVTeamYearLeagueSummarySecondsPlay.second_in_play = values.second_in_play;
-        newVTeamYearLeagueSummarySecondsPlay.total_sub_plays = DbUtils.epochToDate(values.total_sub_plays);
+        newVTeamYearLeagueSummarySecondsPlay.total_sub_plays = values.total_sub_plays;
         newVTeamYearLeagueSummarySecondsPlay.total_shots = values.total_shots;
         newVTeamYearLeagueSummarySecondsPlay.one_point_shots_made = values.one_point_shots_made;
         newVTeamYearLeagueSummarySecondsPlay.one_point_shots_miss = values.one_point_shots_miss;

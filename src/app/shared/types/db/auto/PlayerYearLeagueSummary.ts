@@ -10,7 +10,7 @@ export class PlayerYearLeagueSummary implements Table {
     league_year_id: number | undefined;
     league_id: number | undefined;
     league_name: string | undefined;
-    total_sub_plays: Date | undefined;
+    total_sub_plays: number | undefined;
     total_shots: any | undefined;
     one_point_shots_made: any | undefined;
     one_point_shots_miss: any | undefined;
@@ -72,7 +72,7 @@ export class PlayerYearLeagueSummary implements Table {
         newPlayerYearLeagueSummary.league_year_id = values.league_year_id;
         newPlayerYearLeagueSummary.league_id = values.league_id;
         newPlayerYearLeagueSummary.league_name = values.league_name;
-        newPlayerYearLeagueSummary.total_sub_plays = DbUtils.epochToDate(values.total_sub_plays);
+        newPlayerYearLeagueSummary.total_sub_plays = values.total_sub_plays;
         newPlayerYearLeagueSummary.total_shots = values.total_shots;
         newPlayerYearLeagueSummary.one_point_shots_made = values.one_point_shots_made;
         newPlayerYearLeagueSummary.one_point_shots_miss = values.one_point_shots_miss;
@@ -102,7 +102,7 @@ export class PlayerYearLeagueSummary implements Table {
             league_year_id: this.league_year_id,
             league_id: this.league_id,
             league_name: this.league_name,
-            total_sub_plays: DbUtils.dateToEpoch(this.total_sub_plays),
+            total_sub_plays: this.total_sub_plays,
             total_shots: this.total_shots,
             one_point_shots_made: this.one_point_shots_made,
             one_point_shots_miss: this.one_point_shots_miss,

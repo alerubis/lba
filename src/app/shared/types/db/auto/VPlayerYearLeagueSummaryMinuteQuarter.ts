@@ -71,8 +71,8 @@ export class VPlayerYearLeagueSummaryMinuteQuarter implements Table {
         newVPlayerYearLeagueSummaryMinuteQuarter.league_year_id = values.league_year_id;
         newVPlayerYearLeagueSummaryMinuteQuarter.league_id = values.league_id;
         newVPlayerYearLeagueSummaryMinuteQuarter.league_name = values.league_name;
-        newVPlayerYearLeagueSummaryMinuteQuarter.minute_in_quarter = DbUtils.epochToDate(values.minute_in_quarter);
-        newVPlayerYearLeagueSummaryMinuteQuarter.total_sub_plays = DbUtils.epochToDate(values.total_sub_plays);
+        newVPlayerYearLeagueSummaryMinuteQuarter.minute_in_quarter = values.minute_in_quarter;
+        newVPlayerYearLeagueSummaryMinuteQuarter.total_sub_plays = values.total_sub_plays;
         newVPlayerYearLeagueSummaryMinuteQuarter.total_shots = values.total_shots;
         newVPlayerYearLeagueSummaryMinuteQuarter.one_point_shots_made = values.one_point_shots_made;
         newVPlayerYearLeagueSummaryMinuteQuarter.one_point_shots_miss = values.one_point_shots_miss;

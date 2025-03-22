@@ -5,9 +5,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { DbService } from '../../../../shared/services/db.service';
 import { DashboardCard } from '../../../../shared/types/db/auto/DashboardCard';
 import { CardSettingsDialogComponent } from './card-settings-dialog/card-settings-dialog.component';
-import { LinePlayPlayerCardComponent } from './custom-cards/line-play-player/line-play-player-card.component';
 import { DashboardCardSettings } from '../../../../shared/types/db/auto/DashboardCardSettings';
-import { LinePlayTeamCardComponent } from "./custom-cards/line-play-team/line-play-team-card.component";
+import { GraficCardComponent } from './custom-cards/grafic-card/grafic-card.component';
 
 @Component({
     selector: 'app-card',
@@ -16,8 +15,7 @@ import { LinePlayTeamCardComponent } from "./custom-cards/line-play-team/line-pl
     imports: [
     MatIconModule,
     MatButtonModule,
-    LinePlayPlayerCardComponent,
-    LinePlayTeamCardComponent
+    GraficCardComponent
 ],
 })
 export class CardComponent {

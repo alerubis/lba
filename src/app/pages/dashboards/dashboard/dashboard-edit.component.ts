@@ -73,6 +73,7 @@ export class DashboardEditComponent implements OnInit {
         this.dataLoading = true;
         if (this.dashboardId) {
             this.dashboard = await this._dbService.readUnique(new Dashboard(), { dashboard_id: this.dashboardId }) as Dashboard;
+            this.cards = await this._dbService.readList(new Card(), { card_type_id: this.dashboard?.card_type_id }) as Card[];
             this.dashboardCards = await this._dbService.readList(new DashboardCard(), { dashboard_id: this.dashboardId }) as DashboardCard[];
             this.dashboardCardsSettings = await this._dbService.readList(new DashboardCardSettings(), { dashboard_id: this.dashboardId }) as DashboardCardSettings[];
         } else {
@@ -80,7 +81,6 @@ export class DashboardEditComponent implements OnInit {
             this.dashboardCards = [];
             this.dashboardCardsSettings = [];
         }
-        this.cards = await this._dbService.readList(new Card()) as Card[];
         this.loadGridstackItems();
         this.dataLoading = false;
     }
