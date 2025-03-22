@@ -24,6 +24,8 @@ export class CardComponent {
 
     @Input({ required: true }) dashboardCard!: DashboardCard;
     @Input({ required: true }) dashboardCardSettings!: DashboardCardSettings[];
+    @Input() gameId: number | undefined;
+    @Input() playerId: number | undefined;
 
     @Output() onCardUpdate: EventEmitter<any> = new EventEmitter();
     @Output() onCardDelete: EventEmitter<any> = new EventEmitter();

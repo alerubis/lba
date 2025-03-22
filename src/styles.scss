@@ -103,6 +103,18 @@ body {
 
 }
 
+.lba-table {
+    @apply w-full;
+
+    th {
+        @apply text-gray-500 uppercase font-medium text-xs;
+    }
+
+    th, td {
+        @apply border-b border-gray-200 px-2 py-2;
+    }
+}
+
 .huge-icon {
     width: 128px !important;
     height: 128px !important;

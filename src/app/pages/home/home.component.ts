@@ -31,7 +31,7 @@ export class HomeComponent {
         },
         {
             title: 'Game analysis',
-            link: '/pages/game-analysis.jpg',
+            link: '/pages/games',
             image: 'images/stock/game-analysis.jpg',
             subtitle: 'Dive deep into match analysis with advanced statistics and insights. Identify trends, strengths, and areas of improvement to refine strategies and gain a competitive edge.'
         },

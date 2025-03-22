@@ -1,0 +1,84 @@
+@if (dataLoading) {
+    <mat-progress-bar class="!absolute top-0 z-50" mode="indeterminate"></mat-progress-bar>
+}
+
+<div class="page">
+
+    <app-breadcrumb [section]="'Elements'" [items]="[
+        { text: 'GAMES', route: ['../'] },
+        { text: getTeamFromId(game?.team_home_id)?.name + ' - ' + getTeamFromId(game?.team_guest_id)?.name, route: [] }
+    ]"
+    ></app-breadcrumb>
+
+    @if (game) {
+
+        <div class="page-header font-condensed">
+            <div class="flex flex-row items-start justify-center gap-12">
+                <div class="flex flex-col items-center gap-3">
+                    <div class="bg-white rounded-full p-2">
+                        <img class="w-32 h-32 rounded-full" [src]="getTeamFromId(game.team_home_id)?.logo_url"/>
+                    </div>
+                    <div class="text-2xl">
+                        {{ getTeamFromId(game.team_home_id)?.name }}
+                    </div>
+                </div>
+                <div class="flex flex-col items-center gap-18 mt-12">
+                    <div class="flex flex-row items-center justify-center gap-6 text-6xl">
+                        <div [ngClass]="{'font-bold': (game?.team_home_points || 0) > (game?.team_guest_points || 0)}">
+                            {{ game.team_home_points }}
+                        </div>
+                        <div>-</div>
+                        <div [ngClass]="{'font-bold': (game?.team_guest_points || 0) > (game?.team_home_points || 0)}">
+                            {{ game.team_guest_points }}
+                        </div>
+                    </div>
+                    <div>
+                        {{ game.date_hours_utc | date: 'dd/MM/yyyy HH:mm' }}
+                    </div>
+                </div>
+                <div class="flex flex-col items-center gap-3">
+                    <div class="bg-white rounded-full p-2">
+                        <img class="w-32 h-32 rounded-full" [src]="getTeamFromId(game.team_guest_id)?.logo_url"/>
+                    </div>
+                    <div class="text-2xl">
+                        {{ getTeamFromId(game.team_guest_id)?.name }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-content">
+
+            <div class="flex flex-col gap-6">
+
+                <div class="flex flex-row items-center">
+
+                    <div class="flex flex-col gap-1">
+                        <mat-label>Dashboard</mat-label>
+                        <mat-form-field appearance="outline">
+                            <mat-select matInput [(ngModel)]="selectedDashboardId">
+                                @for (dashboard of dashboards; track $index) {
+                                    <mat-option [value]="dashboard.dashboard_id">
+                                        {{ dashboard.description }}
+                                    </mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                </div>
+
+                @if (selectedDashboardId) {
+                    <app-dashboard
+                        [dashboardId]="selectedDashboardId"
+                        [gameId]="game?.id"
+                    ></app-dashboard>
+                }
+
+            </div>
+
+        </div>
+
+    }
+
+</div>

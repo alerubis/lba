@@ -12,6 +12,8 @@ export class BaseCardComponent implements OnInit, OnChanges {
 
     @Input({ required: true }) dashboardCard!: DashboardCard;
     @Input({ required: true }) dashboardCardSettings!: DashboardCardSettings[];
+    @Input() gameId: number | undefined;
+    @Input() playerId: number | undefined;
 
     constructor() {
 

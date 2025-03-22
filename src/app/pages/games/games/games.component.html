@@ -1,0 +1,131 @@
+@if (dataLoading) {
+    <mat-progress-bar class="!absolute top-0 z-50" mode="indeterminate"></mat-progress-bar>
+}
+
+<div class="page">
+
+    <app-breadcrumb [section]="'Elements'" [items]="[
+        { text: 'GAMES', route: [] }
+    ]"
+    ></app-breadcrumb>
+
+    <div class="page-header">
+        <div class="title">
+            GAMES
+        </div>
+        <div class="subtitle">
+            From here you can search games.
+        </div>
+    </div>
+
+    <div class="page-content">
+
+        <div class="flex flex-col gap-6">
+
+            <div class="flex flex-row items-center gap-6">
+
+                <div class="flex flex-col gap-1">
+                    <mat-label>League</mat-label>
+                    <mat-form-field appearance="outline">
+                        <mat-select matInput [(ngModel)]="selectedLeagueId">
+                            @for (league of leagues; track $index) {
+                                <mat-option [value]="league.id">
+                                    {{ league.description }}
+                                </mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <mat-label>Season</mat-label>
+                    <mat-form-field appearance="outline">
+                        <mat-select matInput [(ngModel)]="selectedLeagueYearId">
+                            @for (leagueYear of leaguesYears; track $index) {
+                                <mat-option [value]="leagueYear.id">
+                                    {{ leagueYear.date_start_utc | date: 'yyyy' }} / {{ leagueYear.date_end_utc | date: 'yyyy' }}
+                                </mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="flex flex-col gap-1 w-full">
+                    <mat-label>Team</mat-label>
+                    <mat-form-field appearance="outline">
+                        <mat-select matInput [(ngModel)]="selectedTeamId">
+                            <mat-option [value]="undefined"></mat-option>
+                            @for (team of teams; track $index) {
+                                <mat-option [value]="team.id">
+                                    {{ team.name }}
+                                </mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+            </div>
+
+            <div class="card w-full h-full">
+                <div class="card-title flex flex-row items-center justify-between !py-3 !pr-3">
+                    GAMES LIST ({{ games.length }})
+                </div>
+                <div class="card-content w-full h-full !p-6">
+                    <table class="lba-table">
+                        <thead>
+                            <tr>
+                                <th class="text-right">Home team</th>
+                                <th class="text-center">Result</th>
+                                <th class="text-left">Guest team</th>
+                                <th class="text-center">Date and time</th>
+                                <th class="text-center">Referees</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (game of games; track $index) {
+                                <tr class="cursor-pointer hover:bg-gray-100" [routerLink]="[game.id]">
+                                    <td class="text-center">
+                                        <div class="flex flex-row items-center justify-end gap-2">
+                                            <div>{{ getTeamFromId(game.team_home_id)?.name }}</div>
+                                            <img class="w-12 h-12" [src]="getTeamFromId(game.team_home_id)?.logo_url"/>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="flex flex-row items-center justify-center gap-2">
+                                            <div [ngClass]="{'font-bold': (game?.team_home_points || 0) > (game?.team_guest_points || 0)}">
+                                                {{ game.team_home_points }}
+                                            </div>
+                                            <div>-</div>
+                                            <div [ngClass]="{'font-bold': (game?.team_guest_points || 0) > (game?.team_home_points || 0)}">
+                                                {{ game.team_guest_points }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="flex flex-row items-center justify-start gap-2">
+                                            <img class="w-12 h-12" [src]="getTeamFromId(game.team_guest_id)?.logo_url"/>
+                                            <div>{{ getTeamFromId(game.team_guest_id)?.name }}</div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        {{ game.date_hours_utc | date: 'dd/MM/yyyy HH:mm' }}
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="flex flex-col text-sm">
+                                            <div>{{ getRefereeFullName(game.referee_1_id) }}</div>
+                                            <div>{{ getRefereeFullName(game.referee_2_id) }}</div>
+                                            <div>{{ getRefereeFullName(game.referee_3_id) }}</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

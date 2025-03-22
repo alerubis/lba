@@ -9,6 +9,8 @@ export class Game implements Table {
     type_game_id: number | undefined;
     team_home_id: number | undefined;
     team_guest_id: number | undefined;
+    team_home_points: number | undefined;
+    team_guest_points: number | undefined;
     date_hours_utc: Date | undefined;
     referee_1_id: number | undefined;
     referee_2_id: number | undefined;
@@ -21,6 +23,8 @@ export class Game implements Table {
             this.type_game_id = values.type_game_id;
             this.team_home_id = values.team_home_id;
             this.team_guest_id = values.team_guest_id;
+            this.team_home_points = values.team_home_points;
+            this.team_guest_points = values.team_guest_points;
             this.date_hours_utc = values.date_hours_utc;
             this.referee_1_id = values.referee_1_id;
             this.referee_2_id = values.referee_2_id;
@@ -39,6 +43,8 @@ export class Game implements Table {
         newGame.type_game_id = values.type_game_id;
         newGame.team_home_id = values.team_home_id;
         newGame.team_guest_id = values.team_guest_id;
+        newGame.team_home_points = values.team_home_points;
+        newGame.team_guest_points = values.team_guest_points;
         newGame.date_hours_utc = DbUtils.epochToDate(values.date_hours_utc);
         newGame.referee_1_id = values.referee_1_id;
         newGame.referee_2_id = values.referee_2_id;
@@ -53,6 +59,8 @@ export class Game implements Table {
             type_game_id: this.type_game_id,
             team_home_id: this.team_home_id,
             team_guest_id: this.team_guest_id,
+            team_home_points: this.team_home_points,
+            team_guest_points: this.team_guest_points,
             date_hours_utc: DbUtils.dateToEpoch(this.date_hours_utc),
             referee_1_id: this.referee_1_id,
             referee_2_id: this.referee_2_id,
@@ -66,6 +74,8 @@ export class Game implements Table {
             type_game_id: new FormControl(this.type_game_id),
             team_home_id: new FormControl(this.team_home_id),
             team_guest_id: new FormControl(this.team_guest_id),
+            team_home_points: new FormControl(this.team_home_points),
+            team_guest_points: new FormControl(this.team_guest_points),
             date_hours_utc: new FormControl(this.date_hours_utc),
             referee_1_id: new FormControl(this.referee_1_id),
             referee_2_id: new FormControl(this.referee_2_id),

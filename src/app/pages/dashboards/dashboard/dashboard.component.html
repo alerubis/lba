@@ -1,101 +1,12 @@
-@if (dataLoading) {
-    <mat-progress-bar class="!absolute top-0 z-50" mode="indeterminate"></mat-progress-bar>
-}
-
-<mat-sidenav-container class="min-h-screen">
-
-    <mat-sidenav-content>
-
-        <div class="page">
-
-            <app-breadcrumb [section]="'Elements'" [items]="[
-                { text: 'DASHBOARD', route: ['../'] },
-                { text: dashboard?.description, route: [] }
-            ]"
-            ></app-breadcrumb>
-
-            <div class="page-header">
-                <div class="flex flex-row items-start justify-between gap-6">
-                    <div class="title">
-                        {{ dashboard?.description }}
-                    </div>
-                    <button mat-flat-button (click)="updateDashboard(dashboard)">
-                        <mat-icon>edit</mat-icon>
-                        Edit dashboard
-                    </button>
-                </div>
-                <div class="subtitle">
-                    Dashboard detail.
-                </div>
-            </div>
-
-            <div class="page-content">
-
-                <div class="flex flex-row items-center justify-between gap-6 mb-6">
-                    <div class="text-green-700">
-                        @if (false) {
-                            Changes successfully saved to the database.
-                        }
-                    </div>
-                    <button mat-flat-button (click)="sidenav.open()">
-                        <mat-icon>add</mat-icon>
-                        Add new card
-                    </button>
-                </div>
-
-                <div class="bg-gray-200 p-3">
-                    <gridstack [options]="gridstackOptions" (changeCB)="handleChange($event)">
-                        @for (item of gridstackItems; track item.id) {
-                            <gridstack-item [options]="item">
-                                <app-card
-                                    [dashboardCard]="getDashboardCardFromItem(item)"
-                                    [dashboardCardSettings]="getDashboardCardSettingsFromItem(item)"
-                                    (onCardUpdate)="updateItem(item, $event)"
-                                    (onCardDelete)="deleteItem(item)"
-                                ></app-card>
-                            </gridstack-item>
-                        }
-                    </gridstack>
-                </div>
-
-            </div>
-
-        </div>
-
-    </mat-sidenav-content>
-
-    <mat-sidenav #sidenav [mode]="'over'" [position]="'end'">
-
-        <div class="flex flex-col gap-6 p-6">
-
-            @for (card of cards; track $index) {
-                <div class="relative group cursor-pointer" (click)="addCard(card)">
-                    <div class="flex flex-row items-center justify-center w-full h-full absolute hidden group-hover:flex z-10">
-                        <button mat-flat-button>
-                            <mat-icon>arrow_back</mat-icon>
-                            Add to dashboard
-                        </button>
-                    </div>
-                    <div class="card group-hover:grayscale group-hover:opacity-75">
-                        <div class="card-title">
-                            {{ card.description }}
-                        </div>
-                        <div class="card-content">
-                            <div class="flex flex-col items-center justify-center bg-white rounded p-6">
-                                <div class="text-center">
-                                    No template found.
-                                </div>
-                                <div class="text-gray-500 text-sm text-center">
-                                    Preview not yet implemented.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            }
-
-        </div>
-
-    </mat-sidenav>
-
-</mat-sidenav-container>
+<gridstack [options]="gridstackOptions">
+    @for (item of gridstackItems; track item.id) {
+        <gridstack-item [options]="item">
+            <app-card
+                [dashboardCard]="getDashboardCardFromItem(item)"
+                [dashboardCardSettings]="getDashboardCardSettingsFromItem(item)"
+                [gameId]="gameId"
+                [playerId]="playerId"
+            ></app-card>
+        </gridstack-item>
+    }
+</gridstack>
