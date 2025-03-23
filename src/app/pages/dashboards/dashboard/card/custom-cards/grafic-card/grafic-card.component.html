@@ -1,1 +1,31 @@
-<div echarts [options]="chartOption" [autoResize]="true" class="w-full h-full"></div>
+@if (dashboardCard.card_id?.substring(0,5) !== 'TABLE'){
+    <div echarts [options]="chartOption" [autoResize]="true" class="w-full h-full"></div>
+}
+@else{
+    <table class="lba-table">
+        <thead>
+            <tr>
+                <th>Giocatore</th>
+                @for (stat of stats; track $index) {
+                    <th>{{stat}}</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @for (player of playersSummary; track $index) {
+                <tr>
+                    
+                    <td>
+                        <div class="flex flex-row items-center justify-end gap-2">
+                            <img class="w-12 h-12" [src]="getPlayerFromId(player.player_id)?.logo_url"/>
+                            <div>{{ player.player_name }} {{ player.player_surname }}</div>
+                        </div>
+                    </td>
+                    @for (stat of stats; track $index) {
+                        <td>{{ getStat(player, stat) }}</td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+}

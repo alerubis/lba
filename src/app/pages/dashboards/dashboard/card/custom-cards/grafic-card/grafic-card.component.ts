@@ -9,6 +9,7 @@ import { VTeamYearLeagueSummarySecondsPlay } from '../../../../../../shared/type
 import { BaseCardComponent } from '../../base-card/base-card.component';
 import _ from 'lodash';
 import { VPlayerYearLeagueSummary } from '../../../../../../shared/types/db/auto/VPlayerYearLeagueSummary';
+import { Player } from '../../../../../../shared/types/db/auto/Player';
 
 @Component({
     selector: 'grafic-card',
@@ -24,14 +25,19 @@ import { VPlayerYearLeagueSummary } from '../../../../../../shared/types/db/auto
 export class GraficCardComponent extends BaseCardComponent {
 
     chartOption: EChartsCoreOption = {};
+    playersSummary: VPlayerYearLeagueSummary[] = [];
+    players: Player[] = [];
+    stats: string[] = [];
 
     constructor(private _dbService: DbService) {
         super();
     }
 
     override async loadChartOption(): Promise<void> {
-
-
+        this.players = await this._dbService.readList(new Player()) as Player[];
+        this.playersSummary  = await this._dbService.readList(new VPlayerYearLeagueSummary()) as VPlayerYearLeagueSummary[];
+        this.playersSummary  = this.playersSummary.slice(0, 10);
+        this.stats = this.dashboardCardSettings.find((setting) => setting.setting_id === 'STAT')?.value;
 
         if (this.dashboardCard.card_id === 'CALENDAR_PLAYER' || this.dashboardCard.card_id === 'CALENDAR_TEAM') {
             const data: [string, number][] = [
@@ -373,14 +379,11 @@ export class GraficCardComponent extends BaseCardComponent {
             const stat: string[] = this.dashboardCardSettings.find((setting) => setting.setting_id === 'STAT')?.value;
             const value = stat.map(a => [Math.floor(Math.random() * (90 - 10 + 1)) + 10])
             this.chartOption = {
-                title: {
-                    text: 'Statistiche Basket'
-                },
                 legend: {
                     data: ['Squadra A']
                 },
                 radar: {
-                    indicator: stat
+                    indicator: stat.map(label => ({ name: label }))
                 },
                 series: [
                     {
@@ -396,7 +399,7 @@ export class GraficCardComponent extends BaseCardComponent {
                 ]
             };
         }
-        else if (this.dashboardCard.card_id === 'SCATTER_3STAT_TEAM') {
+        else if (this.dashboardCard.card_id === 'SCATTER_3STAT_TEAM' || this.dashboardCard.card_id === 'SCATTER_3STAT_GAME') {
             let dati: any[] = [];
             const x = this.dashboardCardSettings.find((setting) => setting.setting_id === '1')?.value;
             const y = this.dashboardCardSettings.find((setting) => setting.setting_id === '2')?.value;
@@ -457,5 +460,13 @@ export class GraficCardComponent extends BaseCardComponent {
         else if (this.dashboardCard.card_id === 'TABLE_PLAYER_TEAM') {
 
         }
+    }
+    getStat(p: any, s: string): any{
+        if (p){
+            return p[s];
+        }
+    }
+    getPlayerFromId(id: number | undefined): Player | undefined {
+        return this.players.find(x => x.id === id);
     }
 }

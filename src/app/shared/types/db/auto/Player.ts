@@ -7,6 +7,7 @@ export class Player implements Table {
     id: number | undefined;
     name: string | undefined;
     surname: string | undefined;
+    logo_url: string | undefined;
     height: number | undefined;
     year: number | undefined;
 
@@ -15,6 +16,7 @@ export class Player implements Table {
             this.id = values.id;
             this.name = values.name;
             this.surname = values.surname;
+            this.logo_url = values.logo_url;
             this.height = values.height;
             this.year = values.year;
         }
@@ -29,6 +31,7 @@ export class Player implements Table {
         newPlayer.id = values.id;
         newPlayer.name = values.name;
         newPlayer.surname = values.surname;
+        newPlayer.logo_url = values.logo_url;
         newPlayer.height = values.height;
         newPlayer.year = values.year;
         return newPlayer;
@@ -39,6 +42,7 @@ export class Player implements Table {
             id: this.id,
             name: this.name,
             surname: this.surname,
+            logo_url: this.logo_url,
             height: this.height,
             year: this.year,
         }
@@ -48,6 +52,7 @@ export class Player implements Table {
         return {
             name: new FormControl(this.name),
             surname: new FormControl(this.surname),
+            logo_url: new FormControl(this.logo_url),
             height: new FormControl(this.height),
             year: new FormControl(this.year),
         }
