@@ -13,21 +13,42 @@ export class DbService {
     constructor(private _authService: AuthService) {
     }
 
-    readList(table: Table, where?: any, paginator?: MatPaginator, sort?: MatSort): Promise<Table[]> {
+    readList(table: Table, where?: any): Promise<Table[]> {
         return new Promise((resolve, reject) => {
             this._authService.wsCall('db/' + table.getName() + '/read', {
-                skip: (paginator?.pageIndex || 0) * (paginator?.pageSize || 100),
-                take: (paginator?.pageSize || 100),
+                skip: 0,
+                take: 1000000,
                 where: where,
-                orderBy: (sort?.active && sort.direction ? { [sort.active]: sort.direction } : undefined),
+                orderBy: undefined,
             }).subscribe({
                 next: response => {
                     const rows = response.rows.map((x: any) => table.fromDbValues(x));
-                    const count = response.count;
                     resolve(rows);
                 },
                 error: error => {
                     resolve([]);
+                }
+            });
+        });
+    }
+
+    readListPaginate(table: Table, where: any, paginator?: MatPaginator, sort?: MatSort): Observable<{ rows: Table[], count: number }> {
+        return new Observable((observer) => {
+            this._authService.wsCall('db/' + table.getName() + '/read', {
+                skip: (paginator?.pageIndex || 0) * (paginator?.pageSize || 10),
+                take: (paginator?.pageSize || 10),
+                where: where,
+                orderBy: (sort?.active && sort.direction ? { [sort.active]: sort.direction } : undefined),
+            }).subscribe({
+                next: response => {
+                    observer.next({
+                        rows: response.rows.map((x: any) => table.fromDbValues(x)),
+                        count: response.count,
+                    });
+                    observer.complete();
+                },
+                error: error => {
+                    observer.error(error);
                 }
             });
         });

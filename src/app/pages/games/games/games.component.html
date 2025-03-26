@@ -1,4 +1,4 @@
-@if (dataLoading) {
+@if (dataLoading || gamesLoading) {
     <mat-progress-bar class="!absolute top-0 z-50" mode="indeterminate"></mat-progress-bar>
 }
 
@@ -25,22 +25,9 @@
             <div class="flex flex-row items-center gap-6">
 
                 <div class="flex flex-col gap-1">
-                    <mat-label>League</mat-label>
-                    <mat-form-field appearance="outline">
-                        <mat-select matInput [(ngModel)]="selectedLeagueId">
-                            @for (league of leagues; track $index) {
-                                <mat-option [value]="league.id">
-                                    {{ league.description }}
-                                </mat-option>
-                            }
-                        </mat-select>
-                    </mat-form-field>
-                </div>
-
-                <div class="flex flex-col gap-1">
                     <mat-label>Season</mat-label>
                     <mat-form-field appearance="outline">
-                        <mat-select matInput [(ngModel)]="selectedLeagueYearId">
+                        <mat-select matInput [(ngModel)]="selectedLeagueYearId" (selectionChange)="loadGames()">
                             @for (leagueYear of leaguesYears; track $index) {
                                 <mat-option [value]="leagueYear.id">
                                     {{ leagueYear.date_start_utc | date: 'yyyy' }} / {{ leagueYear.date_end_utc | date: 'yyyy' }}
@@ -53,7 +40,7 @@
                 <div class="flex flex-col gap-1 w-full">
                     <mat-label>Team</mat-label>
                     <mat-form-field appearance="outline">
-                        <mat-select matInput [(ngModel)]="selectedTeamId">
+                        <mat-select matInput [(ngModel)]="selectedTeamId" (selectionChange)="loadGames()">
                             <mat-option [value]="undefined"></mat-option>
                             @for (team of teams; track $index) {
                                 <mat-option [value]="team.id">
@@ -68,16 +55,16 @@
 
             <div class="card w-full h-full">
                 <div class="card-title flex flex-row items-center justify-between !py-3 !pr-3">
-                    GAMES LIST ({{ games.length }})
+                    GAMES LIST ({{ gamesCount }})
                 </div>
                 <div class="card-content w-full h-full !p-6">
-                    <table class="lba-table">
+                    <table class="lba-table" matSort [matSortDisableClear]="true" (matSortChange)="handleSortChange()">
                         <thead>
                             <tr>
-                                <th class="text-right">Home team</th>
+                                <th class="text-right" mat-sort-header="team_home_id" [arrowPosition]="'before'">Home team</th>
                                 <th class="text-center">Result</th>
-                                <th class="text-left">Guest team</th>
-                                <th class="text-center">Date and time</th>
+                                <th class="text-left" mat-sort-header="team_guest_id">Guest team</th>
+                                <th class="text-left" mat-sort-header="date_hours_utc">Date and time</th>
                                 <th class="text-center">Referees</th>
                             </tr>
                         </thead>
@@ -107,7 +94,7 @@
                                             <div>{{ getTeamFromId(game.team_guest_id)?.name }}</div>
                                         </div>
                                     </td>
-                                    <td class="text-center">
+                                    <td class="text-left">
                                         {{ game.date_hours_utc | date: 'dd/MM/yyyy HH:mm' }}
                                     </td>
                                     <td class="text-center">
@@ -121,6 +108,12 @@
                             }
                         </tbody>
                     </table>
+                    <mat-paginator
+                        [length]="gamesCount"
+                        [pageSize]="10"
+                        [pageSizeOptions]="[10, 25, 50, 100]"
+                        (page)="handlePageChange()"
+                    ></mat-paginator>
                 </div>
             </div>
 
