@@ -1,15 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import * as echarts from 'echarts';
 import { EChartsCoreOption } from 'echarts/core';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import { DbService } from '../../../../../../shared/services/db.service';
-import { VTeamYearLeagueSummaryMinutesGame } from '../../../../../../shared/types/db/auto/VTeamYearLeagueSummaryMinutesGame';
-import { VTeamYearLeagueSummaryMinutesQuarter } from '../../../../../../shared/types/db/auto/VTeamYearLeagueSummaryMinutesQuarter';
-import { VTeamYearLeagueSummarySecondsPlay } from '../../../../../../shared/types/db/auto/VTeamYearLeagueSummarySecondsPlay';
 import { BaseCardComponent } from '../../base-card/base-card.component';
 import _ from 'lodash';
-import { VPlayerYearLeagueSummary } from '../../../../../../shared/types/db/auto/VPlayerYearLeagueSummary';
 import { Player } from '../../../../../../shared/types/db/auto/Player';
+import { Game } from '../../../../../../shared/types/db/auto/Game';
 
 @Component({
     selector: 'grafic-card',
@@ -27,6 +24,7 @@ export class GraficCardComponent extends BaseCardComponent {
     chartOption: EChartsCoreOption = {};
     playersSummary: VPlayerYearLeagueSummary[] = [];
     players: Player[] = [];
+    game: Game | undefined;
     stats: string[] = [];
 
     constructor(private _dbService: DbService) {
@@ -35,10 +33,11 @@ export class GraficCardComponent extends BaseCardComponent {
 
     override async loadChartOption(): Promise<void> {
         this.players = await this._dbService.readList(new Player()) as Player[];
+        this.game = await this._dbService.readUnique(new Game(), { game_id: this.gameId }) as Game;
         this.playersSummary  = await this._dbService.readList(new VPlayerYearLeagueSummary()) as VPlayerYearLeagueSummary[];
         this.playersSummary  = this.playersSummary.slice(0, 10);
         this.stats = this.dashboardCardSettings.find((setting) => setting.setting_id === 'STAT')?.value;
-
+        const team_id = this.game.team_home_id
         if (this.dashboardCard.card_id === 'CALENDAR_PLAYER' || this.dashboardCard.card_id === 'CALENDAR_TEAM') {
             const data: [string, number][] = [
                 ['2025-01-05', 20],
@@ -109,7 +108,7 @@ export class GraficCardComponent extends BaseCardComponent {
         else if (this.dashboardCard.card_id === 'LINE_GAME_GAME' || this.dashboardCard.card_id === 'LINE_GAME_PLAYER' || this.dashboardCard.card_id === 'LINE_GAME_TEAM') {
             let dati: any[] = [];
             const y = this.dashboardCardSettings.find((setting) => setting.setting_id === 'Y')?.value;
-            dati = await this._dbService.readList(new VTeamYearLeagueSummaryMinutesGame(), { team_id: 1, league_year_id: 1 }) as VTeamYearLeagueSummaryMinutesGame[];
+            dati = await this._dbService.readList(new VTeamYearLeagueSummaryMinutesGame(), { team_id: team_id, league_year_id: 1 }) as VTeamYearLeagueSummaryMinutesGame[];
             dati = _.orderBy(dati, a => +a.minute_in_game);
             dati = dati.map(a => [+a.minute_in_game, a[y]])
             this.chartOption = {
@@ -162,7 +161,7 @@ export class GraficCardComponent extends BaseCardComponent {
         else if (this.dashboardCard.card_id === 'LINE_QUARTER_GAME' || this.dashboardCard.card_id === 'LINE_QUARTER_PLAYER' || this.dashboardCard.card_id === 'LINE_QUARTER_TEAM') {
             let dati: any[] = [];
             const y = this.dashboardCardSettings.find((setting) => setting.setting_id === 'Y')?.value;
-            dati = await this._dbService.readList(new VTeamYearLeagueSummaryMinutesQuarter(), { team_id: 1, league_year_id: 1 }) as VTeamYearLeagueSummaryMinutesQuarter[];
+            dati = await this._dbService.readList(new VTeamYearLeagueSummaryMinutesQuarter(), { team_id: team_id, league_year_id: 1 }) as VTeamYearLeagueSummaryMinutesQuarter[];
             dati = _.orderBy(dati, a => +a.minute_in_quarter);
             dati = dati.map(a => [+a.minute_in_quarter + 1, a[y]])
             this.chartOption = {
@@ -214,7 +213,7 @@ export class GraficCardComponent extends BaseCardComponent {
         else if (this.dashboardCard.card_id === 'LINE_PLAY_GAME' || this.dashboardCard.card_id === 'LINE_PLAY_PLAYER' || this.dashboardCard.card_id === 'LINE_PLAY_TEAM') {
             let dati: any[] = [];
             const y = this.dashboardCardSettings.find((setting) => setting.setting_id === 'Y')?.value;
-            dati = await this._dbService.readList(new VTeamYearLeagueSummarySecondsPlay(), { team_id: 1, league_year_id: 1 }) as VTeamYearLeagueSummarySecondsPlay[];
+            dati = await this._dbService.readList(new VTeamYearLeagueSummarySecondsPlay(), { team_id: team_id, league_year_id: 1 }) as VTeamYearLeagueSummarySecondsPlay[];
             dati = _.orderBy(dati, a => +a.second_in_play);
             dati = dati.map(a => [+a.second_in_play, a[y]])
             this.chartOption = {
@@ -266,7 +265,7 @@ export class GraficCardComponent extends BaseCardComponent {
         else if (this.dashboardCard.card_id === 'LINE_MINUTES_PLAYED') {
             let dati: any[] = [];
             const y = this.dashboardCardSettings.find((setting) => setting.setting_id === 'Y')?.value;
-            dati = await this._dbService.readList(new VTeamYearLeagueSummaryMinutesQuarter(), { team_id: 1, league_year_id: 1 }) as VTeamYearLeagueSummaryMinutesQuarter[];
+            dati = await this._dbService.readList(new VTeamYearLeagueSummaryMinutesQuarter(), { team_id: team_id, league_year_id: 1 }) as VTeamYearLeagueSummaryMinutesQuarter[];
             dati = _.orderBy(dati, a => +a.minute_in_quarter);
             dati = dati.map(a => [+a.minute_in_quarter + 1, a[y]])
 
@@ -322,7 +321,7 @@ export class GraficCardComponent extends BaseCardComponent {
         else if (this.dashboardCard.card_id === 'LINE_CONSECUTIVE_MINUTES_PLAYED') {
             let dati: any[] = [];
             const y = this.dashboardCardSettings.find((setting) => setting.setting_id === 'Y')?.value;
-            dati = await this._dbService.readList(new VTeamYearLeagueSummaryMinutesQuarter(), { team_id: 1, league_year_id: 1 }) as VTeamYearLeagueSummaryMinutesQuarter[];
+            dati = await this._dbService.readList(new VTeamYearLeagueSummaryMinutesQuarter(), { team_id: team_id, league_year_id: 1 }) as VTeamYearLeagueSummaryMinutesQuarter[];
             dati = _.orderBy(dati, a => +a.minute_in_quarter);
             dati = dati.map(a => [+a.minute_in_quarter + 1, a[y]])
 

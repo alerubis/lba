@@ -1,3 +1,4 @@
+import { Dashboard } from './../../../shared/types/db/auto/Dashboard';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -12,7 +13,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { DbService } from '../../../shared/services/db.service';
-import { Dashboard } from '../../../shared/types/db/auto/Dashboard';
 import { CardType } from '../../../shared/types/db/auto/CardType';
 
 export interface DashboardDialogData {
@@ -77,6 +77,7 @@ export class DashboardDialogComponent implements OnInit{
         }
         this.createLoading = true;
         const dashboard = new Dashboard(this.dashboardForm.getRawValue());
+        dashboard.team_id = 1649;
         this._dbService.create(dashboard).subscribe({
             next: (r: any) => {
                 this.createLoading = false;

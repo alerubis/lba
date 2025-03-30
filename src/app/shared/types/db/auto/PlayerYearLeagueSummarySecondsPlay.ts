@@ -10,7 +10,7 @@ export class PlayerYearLeagueSummarySecondsPlay implements Table {
     league_id: number | undefined;
     league_name: string | undefined;
     second_in_play: number | undefined;
-    total_sub_plays: Date | undefined;
+    total_sub_plays: number | undefined;
     total_shots: any | undefined;
     one_point_shots_made: any | undefined;
     one_point_shots_miss: any | undefined;
@@ -102,7 +102,7 @@ export class PlayerYearLeagueSummarySecondsPlay implements Table {
             league_id: this.league_id,
             league_name: this.league_name,
             second_in_play: this.second_in_play,
-            total_sub_plays: DbUtils.dateToEpoch(this.total_sub_plays),
+            total_sub_plays: this.total_sub_plays,
             total_shots: this.total_shots,
             one_point_shots_made: this.one_point_shots_made,
             one_point_shots_miss: this.one_point_shots_miss,

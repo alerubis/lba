@@ -24,11 +24,11 @@
                 </div>
                 <div class="flex flex-col items-center gap-18 mt-12">
                     <div class="flex flex-row items-center justify-center gap-6 text-6xl">
-                        <div [ngClass]="{'font-bold': (game?.team_home_points || 0) > (game?.team_guest_points || 0)}">
+                        <div [ngClass]="{'font-bold': (game.team_home_points || 0) > (game.team_guest_points || 0)}">
                             {{ game.team_home_points }}
                         </div>
                         <div>-</div>
-                        <div [ngClass]="{'font-bold': (game?.team_guest_points || 0) > (game?.team_home_points || 0)}">
+                        <div [ngClass]="{'font-bold': (game.team_guest_points || 0) > (game.team_home_points || 0)}">
                             {{ game.team_guest_points }}
                         </div>
                     </div>
