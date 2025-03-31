@@ -24,6 +24,7 @@ export class CardComponent {
     @Input({ required: true }) dashboardCard!: DashboardCard;
     @Input({ required: true }) dashboardCardSettings!: DashboardCardSettings[];
     @Input() gameId: number | undefined;
+    @Input() gameIds: number[] = [];
     @Input() playerId: number | undefined;
     @Input() teamId: number | undefined;
 

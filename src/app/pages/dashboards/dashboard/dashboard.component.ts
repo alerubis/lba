@@ -20,7 +20,9 @@ export class DashboardComponent implements OnInit, OnChanges {
 
     @Input({ required: true }) dashboardId!: number;
     @Input() gameId: number | undefined;
+    @Input() teamId: number | undefined;
     @Input() playerId: number | undefined;
+    @Input() gameIds: number[] = [];
 
     dashboard: Dashboard | undefined;
     dashboardCards: DashboardCard[] = [];

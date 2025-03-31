@@ -1,0 +1,62 @@
+@if (dataLoading) {
+    <mat-progress-bar class="!absolute top-0 z-50" mode="indeterminate"></mat-progress-bar>
+}
+
+<div class="page">
+
+    <app-breadcrumb [section]="'Elements'" [items]="[
+        { text: 'TEAMS', route: ['../'] },
+        { text: team?.name, route: [] }
+    ]"
+    ></app-breadcrumb>
+
+    @if (team) {
+
+        <div class="page-header font-condensed">
+            <div class="flex flex-row items-start justify-center gap-12">
+                <div class="flex flex-col items-center gap-3">
+                    <div class="bg-white rounded-full p-2">
+                        <img class="w-32 h-32 rounded-full" [src]="team.logo_url"/>
+                    </div>
+                    <div class="text-2xl">
+                        {{ team.name }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-content">
+
+            <div class="flex flex-col gap-6">
+
+                <div class="flex flex-row items-center">
+
+                    <div class="flex flex-col gap-1 w-full">
+                        <mat-label>Dashboard</mat-label>
+                        <mat-form-field appearance="outline">
+                            <mat-select matInput [(ngModel)]="selectedDashboardId">
+                                @for (dashboard of dashboards; track $index) {
+                                    <mat-option [value]="dashboard.dashboard_id">
+                                        {{ dashboard.description }}
+                                    </mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                </div>
+
+                @if (selectedDashboardId) {
+                    <app-dashboard
+                        [dashboardId]="selectedDashboardId"
+                        [teamId]="team.id"
+                    ></app-dashboard>
+                }
+
+            </div>
+
+        </div>
+
+    }
+
+</div>

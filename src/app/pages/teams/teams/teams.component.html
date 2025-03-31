@@ -1,0 +1,62 @@
+@if (dataLoading || teamsLoading) {
+    <mat-progress-bar class="!absolute top-0 z-50" mode="indeterminate"></mat-progress-bar>
+}
+
+<div class="page">
+
+    <app-breadcrumb [section]="'Elements'" [items]="[
+        { text: 'TEAMS', route: [] }
+    ]"
+    ></app-breadcrumb>
+
+    <div class="page-header">
+        <div class="title">
+            TEAMS
+        </div>
+        <div class="subtitle">
+            From here you can search teams.
+        </div>
+    </div>
+
+    <div class="page-content">
+
+        <div class="flex flex-col gap-6">
+
+            <div class="card w-full h-full">
+                <div class="card-title flex flex-row items-center justify-between !py-3 !pr-3">
+                    TEAMS LIST ({{ teamsCount }})
+                </div>
+                <div class="card-content w-full h-full !p-6">
+                    <table class="lba-table" matSort [matSortDisableClear]="true" (matSortChange)="handleSortChange()">
+                        <thead>
+                            <tr>
+                                <th class="text-left" mat-sort-header="team_guest_id">Guest team</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (team of teams; track $index) {
+                                <tr class="cursor-pointer hover:bg-gray-100" [routerLink]="[team.id]">
+                                    <td class="text-center">
+                                        <div class="flex flex-row items-center justify-start gap-2">
+                                            <img class="w-12 h-12" [src]="team?.logo_url"/>
+                                            <div>{{ team?.name }}</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <mat-paginator
+                        [length]="teamsCount"
+                        [pageSize]="10"
+                        [pageSizeOptions]="[10, 25, 50, 100]"
+                        (page)="handlePageChange()"
+                    ></mat-paginator>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

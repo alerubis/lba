@@ -1,0 +1,93 @@
+@if (dataLoading || playersLoading) {
+    <mat-progress-bar class="!absolute top-0 z-50" mode="indeterminate"></mat-progress-bar>
+}
+
+<div class="page">
+
+    <app-breadcrumb [section]="'Elements'" [items]="[
+        { text: 'PLAYERS', route: [] }
+    ]"
+    ></app-breadcrumb>
+
+    <div class="page-header">
+        <div class="title">
+            PLAYERS
+        </div>
+        <div class="subtitle">
+            From here you can search players.
+        </div>
+    </div>
+
+    <div class="page-content">
+
+        <div class="flex flex-col gap-6">
+
+            <div class="flex flex-row items-center gap-6">
+
+                <div class="flex flex-col gap-1">
+                    <mat-label>Season</mat-label>
+                    <mat-form-field appearance="outline">
+                        <mat-select matInput [(ngModel)]="selectedLeagueYearId" (selectionChange)="loadPlayers()">
+                            @for (leagueYear of leaguesYears; track $index) {
+                                <mat-option [value]="leagueYear.id">
+                                    {{ leagueYear.date_start_utc | date: 'yyyy' }} / {{ leagueYear.date_end_utc | date: 'yyyy' }}
+                                </mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="flex flex-col gap-1 w-full">
+                    <mat-label>Team</mat-label>
+                    <mat-form-field appearance="outline">
+                        <mat-select matInput [(ngModel)]="selectedTeamId" (selectionChange)="loadPlayers()">
+                            <mat-option [value]="undefined"></mat-option>
+                            @for (team of teams; track $index) {
+                                <mat-option [value]="team.id">
+                                    {{ team.name }}
+                                </mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+            </div>
+
+            <div class="card w-full h-full">
+                <div class="card-title flex flex-row items-center justify-between !py-3 !pr-3">
+                    PLAYERS LIST ({{ playersCount }})
+                </div>
+                <div class="card-content w-full h-full !p-6">
+                    <table class="lba-table" matSort [matSortDisableClear]="true" (matSortChange)="handleSortChange()">
+                        <thead>
+                            <tr>
+                                <th class="text-left" mat-sort-header="team_guest_id">Player</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (player of players; track $index) {
+                                <tr class="cursor-pointer hover:bg-gray-100" [routerLink]="[player.id]"> 
+                                    <td class="text-center">
+                                        <div class="flex flex-row items-center justify-start gap-2">
+                                            <img class="w-12 h-12" [src]="player.logo_url"/>
+                                            <div>{{ player.name }} {{ player.surname }}</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <mat-paginator
+                        [length]="playersCount"
+                        [pageSize]="10"
+                        [pageSizeOptions]="[10, 25, 50, 100]"
+                        (page)="handlePageChange()"
+                    ></mat-paginator>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

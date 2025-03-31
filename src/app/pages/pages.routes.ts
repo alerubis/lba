@@ -21,6 +21,14 @@ export const routes: Routes = [
                 loadChildren: () => import('./games/games.routes').then(m => m.routes),
             },
             {
+                path: 'players',
+                loadChildren: () => import('./players/players.routes').then(m => m.routes),
+            },
+            {
+                path: 'teams',
+                loadChildren: () => import('./teams/teams.routes').then(m => m.routes),
+            },
+            {
                 path: '',
                 redirectTo: 'home',
                 pathMatch: 'full'

@@ -36,6 +36,18 @@ export class HomeComponent {
             subtitle: 'Dive deep into match analysis with advanced statistics and insights. Identify trends, strengths, and areas of improvement to refine strategies and gain a competitive edge.'
         },
         {
+            title: 'Team analysis',
+            link: '/pages/teams',
+            image: 'images/stock/game-analysis.jpg',
+            subtitle: 'Dive deep into match analysis with advanced statistics and insights. Identify trends, strengths, and areas of improvement to refine strategies and gain a competitive edge.'
+        },
+        {
+            title: 'Player analysis',
+            link: '/pages/players',
+            image: 'images/stock/game-analysis.jpg',
+            subtitle: 'Dive deep into match analysis with advanced statistics and insights. Identify trends, strengths, and areas of improvement to refine strategies and gain a competitive edge.'
+        },
+        {
             title: 'Live',
             link: '/pages/live',
             image: 'images/stock/live.jpg',
