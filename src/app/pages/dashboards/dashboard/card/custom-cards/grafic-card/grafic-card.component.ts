@@ -24,22 +24,12 @@ import { VPlayerGameMinuteBoxscore } from '../../../../../../shared/types/db/aut
 export class GraficCardComponent extends BaseCardComponent {
 
     chartOption: EChartsCoreOption = {};
-    playersSummary: any[] = [];
-    players: Player[] = [];
-    game: Game | undefined;
-    stats: string[] = [];
 
     constructor(private _dbService: DbService) {
         super();
     }
 
     override async loadChartOption(): Promise<void> {
-        this.players = await this._dbService.readList(new Player()) as Player[];
-        this.game = await this._dbService.readUnique(new Game(), { game_id: this.gameId }) as Game;
-        this.playersSummary  = []//await this._dbService.readList(new VPlayerYearLeagueSummary()) as VPlayerYearLeagueSummary[];
-        this.playersSummary  = this.playersSummary.slice(0, 10);
-        this.stats = this.dashboardCardSettings.find((setting) => setting.setting_id === 'STAT')?.value;
-        const team_id = this.game.team_home_id
         if (this.dashboardCard.card_id === 'CALENDAR_PLAYER' || this.dashboardCard.card_id === 'CALENDAR_TEAM') {
             const data: [string, number][] = [
                 ['2025-01-05', 20],
@@ -110,15 +100,20 @@ export class GraficCardComponent extends BaseCardComponent {
         else if (this.dashboardCard.card_id === 'LINE_GAME_GAME' || this.dashboardCard.card_id === 'LINE_GAME_PLAYER' || this.dashboardCard.card_id === 'LINE_GAME_TEAM') {
             let dati: any[] = [];
             const y = this.dashboardCardSettings.find((setting) => setting.setting_id === 'Y')?.value;
-            dati = await this._dbService.readList(new VPlayerGameMinuteBoxscore(), { player_id: this.playerId }) as VPlayerGameMinuteBoxscore[];
-            const grouped = _.groupBy(dati, 'minute');
+            if (this.playerId){
+                dati = await this._dbService.readList(new VPlayerGameMinuteBoxscore(), { player_id: this.playerId, game_id: {in: this.gameIds,}, }) as VPlayerGameMinuteBoxscore[];
+                const grouped = _.groupBy(dati, 'minute');
 
-            const datiMediati = Object.entries(grouped).map(([minute, items]) => {
-                const media = _.meanBy(items, item => +item[y]);
-                return [+minute, media];
-            });
-            
-            dati = _.orderBy(datiMediati, a => a[0]);
+                const datiMediati = Object.entries(grouped).map(([minute, items]) => {
+                    const media = _.meanBy(items, item => +item[y]);
+                    return [+minute, media];
+                });
+                
+                dati = _.orderBy(datiMediati, a => a[0]);    
+            }
+            if (this.teamId){
+                dati = await this._dbService.readList(new VPlayerGameMinuteBoxscore(), { player_id: this.playerId, game_id: {in: this.gameIds,}, }) as VPlayerGameMinuteBoxscore[];
+            }
 
             this.chartOption = {
                 xAxis: {
@@ -468,13 +463,5 @@ export class GraficCardComponent extends BaseCardComponent {
         else if (this.dashboardCard.card_id === 'TABLE_PLAYER_TEAM') {
 
         }
-    }
-    getStat(p: any, s: string): any{
-        if (p){
-            return p[s];
-        }
-    }
-    getPlayerFromId(id: number | undefined): Player | undefined {
-        return this.players.find(x => x.id === id);
     }
 }

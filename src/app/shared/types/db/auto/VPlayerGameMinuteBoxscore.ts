@@ -6,9 +6,9 @@ export class VPlayerGameMinuteBoxscore implements Table {
 
     player_id: number | undefined;
     game_id: number | undefined;
-    minute: Date | undefined;
-    fouls_committed: Date | undefined;
-    fouls_received: Date | undefined;
+    minute: number | undefined;
+    fouls_committed: number | undefined;
+    fouls_received: number | undefined;
     points: any | undefined;
     made_2pt: any | undefined;
     missed_2pt: any | undefined;
@@ -19,13 +19,13 @@ export class VPlayerGameMinuteBoxscore implements Table {
     made_ft: any | undefined;
     missed_ft: any | undefined;
     pct_ft: any | undefined;
-    off_reb: Date | undefined;
-    def_reb: Date | undefined;
-    blocks_made: Date | undefined;
-    blocks_suffered: Date | undefined;
-    turnovers: Date | undefined;
-    steals: Date | undefined;
-    assists: Date | undefined;
+    off_reb: number | undefined;
+    def_reb: number | undefined;
+    blocks_made: number | undefined;
+    blocks_suffered: number | undefined;
+    turnovers: number | undefined;
+    steals: number | undefined;
+    assists: number | undefined;
     player_name: string | undefined;
     player_surname: string | undefined;
     team_name: string | undefined;
@@ -74,9 +74,9 @@ export class VPlayerGameMinuteBoxscore implements Table {
         const newVPlayerGameMinuteBoxscore = new VPlayerGameMinuteBoxscore();
         newVPlayerGameMinuteBoxscore.player_id = values.player_id;
         newVPlayerGameMinuteBoxscore.game_id = values.game_id;
-        newVPlayerGameMinuteBoxscore.minute = DbUtils.epochToDate(values.minute);
-        newVPlayerGameMinuteBoxscore.fouls_committed = DbUtils.epochToDate(values.fouls_committed);
-        newVPlayerGameMinuteBoxscore.fouls_received = DbUtils.epochToDate(values.fouls_received);
+        newVPlayerGameMinuteBoxscore.minute = values.minute;
+        newVPlayerGameMinuteBoxscore.fouls_committed = values.fouls_committed;
+        newVPlayerGameMinuteBoxscore.fouls_received = values.fouls_received;
         newVPlayerGameMinuteBoxscore.points = values.points;
         newVPlayerGameMinuteBoxscore.made_2pt = values.made_2pt;
         newVPlayerGameMinuteBoxscore.missed_2pt = values.missed_2pt;
@@ -87,13 +87,13 @@ export class VPlayerGameMinuteBoxscore implements Table {
         newVPlayerGameMinuteBoxscore.made_ft = values.made_ft;
         newVPlayerGameMinuteBoxscore.missed_ft = values.missed_ft;
         newVPlayerGameMinuteBoxscore.pct_ft = values.pct_ft;
-        newVPlayerGameMinuteBoxscore.off_reb = DbUtils.epochToDate(values.off_reb);
-        newVPlayerGameMinuteBoxscore.def_reb = DbUtils.epochToDate(values.def_reb);
-        newVPlayerGameMinuteBoxscore.blocks_made = DbUtils.epochToDate(values.blocks_made);
-        newVPlayerGameMinuteBoxscore.blocks_suffered = DbUtils.epochToDate(values.blocks_suffered);
-        newVPlayerGameMinuteBoxscore.turnovers = DbUtils.epochToDate(values.turnovers);
-        newVPlayerGameMinuteBoxscore.steals = DbUtils.epochToDate(values.steals);
-        newVPlayerGameMinuteBoxscore.assists = DbUtils.epochToDate(values.assists);
+        newVPlayerGameMinuteBoxscore.off_reb = values.off_reb;
+        newVPlayerGameMinuteBoxscore.def_reb = values.def_reb;
+        newVPlayerGameMinuteBoxscore.blocks_made = values.blocks_made;
+        newVPlayerGameMinuteBoxscore.blocks_suffered = values.blocks_suffered;
+        newVPlayerGameMinuteBoxscore.turnovers = values.turnovers;
+        newVPlayerGameMinuteBoxscore.steals = values.steals;
+        newVPlayerGameMinuteBoxscore.assists = values.assists;
         newVPlayerGameMinuteBoxscore.player_name = values.player_name;
         newVPlayerGameMinuteBoxscore.player_surname = values.player_surname;
         newVPlayerGameMinuteBoxscore.team_name = values.team_name;
@@ -107,9 +107,9 @@ export class VPlayerGameMinuteBoxscore implements Table {
         return {
             player_id: this.player_id,
             game_id: this.game_id,
-            minute: DbUtils.dateToEpoch(this.minute),
-            fouls_committed: DbUtils.dateToEpoch(this.fouls_committed),
-            fouls_received: DbUtils.dateToEpoch(this.fouls_received),
+            minute: this.minute,
+            fouls_committed: this.fouls_committed,
+            fouls_received: this.fouls_received,
             points: this.points,
             made_2pt: this.made_2pt,
             missed_2pt: this.missed_2pt,
@@ -120,13 +120,13 @@ export class VPlayerGameMinuteBoxscore implements Table {
             made_ft: this.made_ft,
             missed_ft: this.missed_ft,
             pct_ft: this.pct_ft,
-            off_reb: DbUtils.dateToEpoch(this.off_reb),
-            def_reb: DbUtils.dateToEpoch(this.def_reb),
-            blocks_made: DbUtils.dateToEpoch(this.blocks_made),
-            blocks_suffered: DbUtils.dateToEpoch(this.blocks_suffered),
-            turnovers: DbUtils.dateToEpoch(this.turnovers),
-            steals: DbUtils.dateToEpoch(this.steals),
-            assists: DbUtils.dateToEpoch(this.assists),
+            off_reb: this.off_reb,
+            def_reb: this.def_reb,
+            blocks_made: this.blocks_made,
+            blocks_suffered: this.blocks_suffered,
+            turnovers: this.turnovers,
+            steals: this.steals,
+            assists: this.assists,
             player_name: this.player_name,
             player_surname: this.player_surname,
             team_name: this.team_name,

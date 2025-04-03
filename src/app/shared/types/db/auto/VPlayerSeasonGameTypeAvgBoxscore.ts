@@ -11,7 +11,7 @@ export class VPlayerSeasonGameTypeAvgBoxscore implements Table {
     league_year_id: number | undefined;
     league_id: number | undefined;
     type_game_id: number | undefined;
-    games: Date | undefined;
+    games: number | undefined;
     fouls_committed: any | undefined;
     fouls_received: any | undefined;
     points: any | undefined;
@@ -77,7 +77,7 @@ export class VPlayerSeasonGameTypeAvgBoxscore implements Table {
         newVPlayerSeasonGameTypeAvgBoxscore.league_year_id = values.league_year_id;
         newVPlayerSeasonGameTypeAvgBoxscore.league_id = values.league_id;
         newVPlayerSeasonGameTypeAvgBoxscore.type_game_id = values.type_game_id;
-        newVPlayerSeasonGameTypeAvgBoxscore.games = DbUtils.epochToDate(values.games);
+        newVPlayerSeasonGameTypeAvgBoxscore.games = values.games;
         newVPlayerSeasonGameTypeAvgBoxscore.fouls_committed = values.fouls_committed;
         newVPlayerSeasonGameTypeAvgBoxscore.fouls_received = values.fouls_received;
         newVPlayerSeasonGameTypeAvgBoxscore.points = values.points;
@@ -109,7 +109,7 @@ export class VPlayerSeasonGameTypeAvgBoxscore implements Table {
             league_year_id: this.league_year_id,
             league_id: this.league_id,
             type_game_id: this.type_game_id,
-            games: DbUtils.dateToEpoch(this.games),
+            games: this.games,
             fouls_committed: this.fouls_committed,
             fouls_received: this.fouls_received,
             points: this.points,

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,7 +18,7 @@ import { GraficCardComponent } from './custom-cards/grafic-card/grafic-card.comp
     GraficCardComponent
 ],
 })
-export class CardComponent {
+export class CardComponent{
 
     @Input() edit: boolean = false;
     @Input({ required: true }) dashboardCard!: DashboardCard;
@@ -36,6 +36,11 @@ export class CardComponent {
         private _matDialog: MatDialog,
     ) {
 
+    }
+    
+    arraysEqual(arr1: number[], arr2: number[]): boolean {
+        if (arr1.length !== arr2.length) return false;
+        return arr1.every((val, index) => val === arr2[index]);
     }
 
     editCardSettings(): void {

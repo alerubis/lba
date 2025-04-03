@@ -15,6 +15,7 @@ export class BaseCardComponent implements OnInit, OnChanges {
     @Input() gameId: number | undefined;
     @Input() gameIds: number[] | undefined;
     @Input() playerId: number | undefined;
+    @Input() teamId: number | undefined;
 
     constructor() {
 

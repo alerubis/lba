@@ -134,4 +134,12 @@ export class PlayerComponent {
         this.selectedTypeGameId = (this.getTypeGame().map(x => x.id).filter((id): id is number => id !== undefined)) || [];
         this.selectedGameId = (this.getGame().map(x => x.id).filter((id): id is number => id !== undefined)) || [];
     }
+
+    selezionaTutte(): void{
+        this.loadDataSelect();
+    }
+
+    selezionaNessuna(): void{
+        this.selectedGameId = [];
+    }
 }

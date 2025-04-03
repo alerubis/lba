@@ -23,7 +23,7 @@ export class DashboardComponent implements OnInit, OnChanges {
     @Input() teamId: number | undefined;
     @Input() playerId: number | undefined;
     @Input() gameIds: number[] = [];
-
+    
     dashboard: Dashboard | undefined;
     dashboardCards: DashboardCard[] = [];
     dashboardCardsSettings: DashboardCardSettings[] = [];
@@ -49,20 +49,35 @@ export class DashboardComponent implements OnInit, OnChanges {
 
     ngOnChanges(changes: SimpleChanges): void {
         let shouldReload: boolean = false;
-        const dashboardId = changes['dashboardId'];
-        if (dashboardId) {
-            if (!dashboardId.isFirstChange()) {
-                const currentValue = dashboardId.currentValue;
-                const previousValue = dashboardId.previousValue;
-                if (currentValue != previousValue) {
-                    shouldReload = true;
-                }
+    
+        const dashboardIdChange = changes['dashboardId'];
+        const gameIdsChange = changes['gameIds'];
+    
+        if (dashboardIdChange && !dashboardIdChange.isFirstChange()) {
+            if (dashboardIdChange.currentValue !== dashboardIdChange.previousValue) {
+                shouldReload = true;
             }
         }
+    
+        if (gameIdsChange && !gameIdsChange.isFirstChange()) {
+            const curr = gameIdsChange.currentValue as number[];
+            const prev = gameIdsChange.previousValue as number[];
+            // Verifica se i contenuti dell'array sono cambiati
+            if (!this.arraysEqual(curr, prev)) {
+                shouldReload = true;
+            }
+        }
+    
         if (shouldReload) {
             this.loadData();
         }
     }
+    
+    arraysEqual(arr1: number[], arr2: number[]): boolean {
+        if (arr1.length !== arr2.length) return false;
+        return arr1.every((val, index) => val === arr2[index]);
+    }
+    
 
     async loadData(): Promise<void> {
         this.dataLoading = true;
@@ -76,6 +91,7 @@ export class DashboardComponent implements OnInit, OnChanges {
             this.dashboardCardsSettings = [];
         }
         this.loadGridstackItems();
+        this.gameIds = [...this.gameIds];
         this.dataLoading = false;
     }
 

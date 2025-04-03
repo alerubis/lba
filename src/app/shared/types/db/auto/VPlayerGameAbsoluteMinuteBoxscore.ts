@@ -12,7 +12,7 @@ export class VPlayerGameAbsoluteMinuteBoxscore implements Table {
     type_game_id: number | undefined;
     league_year_id: number | undefined;
     league_id: number | undefined;
-    absolute_minute: Date | undefined;
+    absolute_minute: number | undefined;
     fouls_committed: any | undefined;
     fouls_received: any | undefined;
     points: any | undefined;
@@ -80,7 +80,7 @@ export class VPlayerGameAbsoluteMinuteBoxscore implements Table {
         newVPlayerGameAbsoluteMinuteBoxscore.type_game_id = values.type_game_id;
         newVPlayerGameAbsoluteMinuteBoxscore.league_year_id = values.league_year_id;
         newVPlayerGameAbsoluteMinuteBoxscore.league_id = values.league_id;
-        newVPlayerGameAbsoluteMinuteBoxscore.absolute_minute = DbUtils.epochToDate(values.absolute_minute);
+        newVPlayerGameAbsoluteMinuteBoxscore.absolute_minute = values.absolute_minute;
         newVPlayerGameAbsoluteMinuteBoxscore.fouls_committed = values.fouls_committed;
         newVPlayerGameAbsoluteMinuteBoxscore.fouls_received = values.fouls_received;
         newVPlayerGameAbsoluteMinuteBoxscore.points = values.points;
@@ -113,7 +113,7 @@ export class VPlayerGameAbsoluteMinuteBoxscore implements Table {
             type_game_id: this.type_game_id,
             league_year_id: this.league_year_id,
             league_id: this.league_id,
-            absolute_minute: DbUtils.dateToEpoch(this.absolute_minute),
+            absolute_minute: this.absolute_minute,
             fouls_committed: this.fouls_committed,
             fouls_received: this.fouls_received,
             points: this.points,
