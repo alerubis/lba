@@ -28,13 +28,17 @@ export class BaseCardComponent implements OnInit, OnChanges {
 
     ngOnChanges(changes: SimpleChanges): void {
         let shouldReload: boolean = false;
-        const changesDashboardSettings = changes['dashboardCardSettings'];
-        if (changesDashboardSettings) {
-            if (!changesDashboardSettings.isFirstChange()) {
-                const previousValue = changesDashboardSettings.previousValue;
-                const currentValue = changesDashboardSettings.currentValue;
-                if (!_.isEqual(previousValue, currentValue)) {
-                    shouldReload = true;
+        const changesToDetect = ['dashboardCardSettings', 'gameId', 'gameIds', 'playerId', 'teamId'];
+        for (const changeId of changesToDetect) {
+            const changeToDetect = changes[changeId];
+            if (changeToDetect) {
+                if (!changeToDetect.isFirstChange()) {
+                    const previousValue = changeToDetect.previousValue;
+                    const currentValue = changeToDetect.currentValue;
+                    if (!_.isEqual(previousValue, currentValue)) {
+                        shouldReload = true;
+                        console.log('è cambiato', changeId, 'da', previousValue, 'a', currentValue);
+                    }
                 }
             }
         }

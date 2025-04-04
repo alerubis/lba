@@ -6,9 +6,7 @@ export class VPlayerGameTotalBoxscore implements Table {
 
     player_id: number | undefined;
     game_id: number | undefined;
-    player_name: string | undefined;
-    player_surname: string | undefined;
-    team_name: string | undefined;
+    team_id: number | undefined;
     type_game_id: number | undefined;
     league_year_id: number | undefined;
     league_id: number | undefined;
@@ -36,9 +34,7 @@ export class VPlayerGameTotalBoxscore implements Table {
         if (values) {
             this.player_id = values.player_id;
             this.game_id = values.game_id;
-            this.player_name = values.player_name;
-            this.player_surname = values.player_surname;
-            this.team_name = values.team_name;
+            this.team_id = values.team_id;
             this.type_game_id = values.type_game_id;
             this.league_year_id = values.league_year_id;
             this.league_id = values.league_id;
@@ -72,9 +68,7 @@ export class VPlayerGameTotalBoxscore implements Table {
         const newVPlayerGameTotalBoxscore = new VPlayerGameTotalBoxscore();
         newVPlayerGameTotalBoxscore.player_id = values.player_id;
         newVPlayerGameTotalBoxscore.game_id = values.game_id;
-        newVPlayerGameTotalBoxscore.player_name = values.player_name;
-        newVPlayerGameTotalBoxscore.player_surname = values.player_surname;
-        newVPlayerGameTotalBoxscore.team_name = values.team_name;
+        newVPlayerGameTotalBoxscore.team_id = values.team_id;
         newVPlayerGameTotalBoxscore.type_game_id = values.type_game_id;
         newVPlayerGameTotalBoxscore.league_year_id = values.league_year_id;
         newVPlayerGameTotalBoxscore.league_id = values.league_id;
@@ -104,9 +98,7 @@ export class VPlayerGameTotalBoxscore implements Table {
         return {
             player_id: this.player_id,
             game_id: this.game_id,
-            player_name: this.player_name,
-            player_surname: this.player_surname,
-            team_name: this.team_name,
+            team_id: this.team_id,
             type_game_id: this.type_game_id,
             league_year_id: this.league_year_id,
             league_id: this.league_id,
@@ -136,9 +128,7 @@ export class VPlayerGameTotalBoxscore implements Table {
         return {
             player_id: new FormControl(this.player_id),
             game_id: new FormControl(this.game_id),
-            player_name: new FormControl(this.player_name),
-            player_surname: new FormControl(this.player_surname),
-            team_name: new FormControl(this.team_name),
+            team_id: new FormControl(this.team_id),
             type_game_id: new FormControl(this.type_game_id),
             league_year_id: new FormControl(this.league_year_id),
             league_id: new FormControl(this.league_id),

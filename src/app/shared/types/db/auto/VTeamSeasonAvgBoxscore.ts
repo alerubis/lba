@@ -2,13 +2,11 @@ import { FormControl, Validators } from '@angular/forms';
 import { DbUtils } from '../DbUtils';
 import { Table } from '../Table';
 
-export class VPlayerSeasonGameTypeAvgBoxscore implements Table {
+export class VTeamSeasonAvgBoxscore implements Table {
 
-    player_id: number | undefined;
     team_id: number | undefined;
     league_year_id: number | undefined;
     league_id: number | undefined;
-    type_game_id: number | undefined;
     games: number | undefined;
     fouls_committed: any | undefined;
     fouls_received: any | undefined;
@@ -32,11 +30,9 @@ export class VPlayerSeasonGameTypeAvgBoxscore implements Table {
 
     constructor(values?: any) {
         if (values) {
-            this.player_id = values.player_id;
             this.team_id = values.team_id;
             this.league_year_id = values.league_year_id;
             this.league_id = values.league_id;
-            this.type_game_id = values.type_game_id;
             this.games = values.games;
             this.fouls_committed = values.fouls_committed;
             this.fouls_received = values.fouls_received;
@@ -61,46 +57,42 @@ export class VPlayerSeasonGameTypeAvgBoxscore implements Table {
     }
 
     getName(): string {
-        return 'v_player_season_game_type_avg_boxscore';
+        return 'v_team_season_avg_boxscore';
     }
 
-    fromDbValues(values: any): VPlayerSeasonGameTypeAvgBoxscore {
-        const newVPlayerSeasonGameTypeAvgBoxscore = new VPlayerSeasonGameTypeAvgBoxscore();
-        newVPlayerSeasonGameTypeAvgBoxscore.player_id = values.player_id;
-        newVPlayerSeasonGameTypeAvgBoxscore.team_id = values.team_id;
-        newVPlayerSeasonGameTypeAvgBoxscore.league_year_id = values.league_year_id;
-        newVPlayerSeasonGameTypeAvgBoxscore.league_id = values.league_id;
-        newVPlayerSeasonGameTypeAvgBoxscore.type_game_id = values.type_game_id;
-        newVPlayerSeasonGameTypeAvgBoxscore.games = values.games;
-        newVPlayerSeasonGameTypeAvgBoxscore.fouls_committed = values.fouls_committed;
-        newVPlayerSeasonGameTypeAvgBoxscore.fouls_received = values.fouls_received;
-        newVPlayerSeasonGameTypeAvgBoxscore.points = values.points;
-        newVPlayerSeasonGameTypeAvgBoxscore.made_2pt = values.made_2pt;
-        newVPlayerSeasonGameTypeAvgBoxscore.missed_2pt = values.missed_2pt;
-        newVPlayerSeasonGameTypeAvgBoxscore.pct_2pt = values.pct_2pt;
-        newVPlayerSeasonGameTypeAvgBoxscore.made_3pt = values.made_3pt;
-        newVPlayerSeasonGameTypeAvgBoxscore.missed_3pt = values.missed_3pt;
-        newVPlayerSeasonGameTypeAvgBoxscore.pct_3pt = values.pct_3pt;
-        newVPlayerSeasonGameTypeAvgBoxscore.made_ft = values.made_ft;
-        newVPlayerSeasonGameTypeAvgBoxscore.missed_ft = values.missed_ft;
-        newVPlayerSeasonGameTypeAvgBoxscore.pct_ft = values.pct_ft;
-        newVPlayerSeasonGameTypeAvgBoxscore.off_reb = values.off_reb;
-        newVPlayerSeasonGameTypeAvgBoxscore.def_reb = values.def_reb;
-        newVPlayerSeasonGameTypeAvgBoxscore.blocks_made = values.blocks_made;
-        newVPlayerSeasonGameTypeAvgBoxscore.blocks_suffered = values.blocks_suffered;
-        newVPlayerSeasonGameTypeAvgBoxscore.turnovers = values.turnovers;
-        newVPlayerSeasonGameTypeAvgBoxscore.steals = values.steals;
-        newVPlayerSeasonGameTypeAvgBoxscore.assists = values.assists;
-        return newVPlayerSeasonGameTypeAvgBoxscore;
+    fromDbValues(values: any): VTeamSeasonAvgBoxscore {
+        const newVTeamSeasonAvgBoxscore = new VTeamSeasonAvgBoxscore();
+        newVTeamSeasonAvgBoxscore.team_id = values.team_id;
+        newVTeamSeasonAvgBoxscore.league_year_id = values.league_year_id;
+        newVTeamSeasonAvgBoxscore.league_id = values.league_id;
+        newVTeamSeasonAvgBoxscore.games = values.games;
+        newVTeamSeasonAvgBoxscore.fouls_committed = values.fouls_committed;
+        newVTeamSeasonAvgBoxscore.fouls_received = values.fouls_received;
+        newVTeamSeasonAvgBoxscore.points = values.points;
+        newVTeamSeasonAvgBoxscore.made_2pt = values.made_2pt;
+        newVTeamSeasonAvgBoxscore.missed_2pt = values.missed_2pt;
+        newVTeamSeasonAvgBoxscore.pct_2pt = values.pct_2pt;
+        newVTeamSeasonAvgBoxscore.made_3pt = values.made_3pt;
+        newVTeamSeasonAvgBoxscore.missed_3pt = values.missed_3pt;
+        newVTeamSeasonAvgBoxscore.pct_3pt = values.pct_3pt;
+        newVTeamSeasonAvgBoxscore.made_ft = values.made_ft;
+        newVTeamSeasonAvgBoxscore.missed_ft = values.missed_ft;
+        newVTeamSeasonAvgBoxscore.pct_ft = values.pct_ft;
+        newVTeamSeasonAvgBoxscore.off_reb = values.off_reb;
+        newVTeamSeasonAvgBoxscore.def_reb = values.def_reb;
+        newVTeamSeasonAvgBoxscore.blocks_made = values.blocks_made;
+        newVTeamSeasonAvgBoxscore.blocks_suffered = values.blocks_suffered;
+        newVTeamSeasonAvgBoxscore.turnovers = values.turnovers;
+        newVTeamSeasonAvgBoxscore.steals = values.steals;
+        newVTeamSeasonAvgBoxscore.assists = values.assists;
+        return newVTeamSeasonAvgBoxscore;
     }
 
     toDbValues(): any {
         return {
-            player_id: this.player_id,
             team_id: this.team_id,
             league_year_id: this.league_year_id,
             league_id: this.league_id,
-            type_game_id: this.type_game_id,
             games: this.games,
             fouls_committed: this.fouls_committed,
             fouls_received: this.fouls_received,
@@ -126,11 +118,9 @@ export class VPlayerSeasonGameTypeAvgBoxscore implements Table {
 
     toFormGroup(): any {
         return {
-            player_id: new FormControl(this.player_id),
             team_id: new FormControl(this.team_id),
             league_year_id: new FormControl(this.league_year_id),
             league_id: new FormControl(this.league_id),
-            type_game_id: new FormControl(this.type_game_id),
             games: new FormControl(this.games),
             fouls_committed: new FormControl(this.fouls_committed),
             fouls_received: new FormControl(this.fouls_received),

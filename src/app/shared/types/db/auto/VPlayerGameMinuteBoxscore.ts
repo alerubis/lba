@@ -26,9 +26,7 @@ export class VPlayerGameMinuteBoxscore implements Table {
     turnovers: number | undefined;
     steals: number | undefined;
     assists: number | undefined;
-    player_name: string | undefined;
-    player_surname: string | undefined;
-    team_name: string | undefined;
+    team_id: number | undefined;
     type_game_id: number | undefined;
     league_year_id: number | undefined;
     league_id: number | undefined;
@@ -57,9 +55,7 @@ export class VPlayerGameMinuteBoxscore implements Table {
             this.turnovers = values.turnovers;
             this.steals = values.steals;
             this.assists = values.assists;
-            this.player_name = values.player_name;
-            this.player_surname = values.player_surname;
-            this.team_name = values.team_name;
+            this.team_id = values.team_id;
             this.type_game_id = values.type_game_id;
             this.league_year_id = values.league_year_id;
             this.league_id = values.league_id;
@@ -94,9 +90,7 @@ export class VPlayerGameMinuteBoxscore implements Table {
         newVPlayerGameMinuteBoxscore.turnovers = values.turnovers;
         newVPlayerGameMinuteBoxscore.steals = values.steals;
         newVPlayerGameMinuteBoxscore.assists = values.assists;
-        newVPlayerGameMinuteBoxscore.player_name = values.player_name;
-        newVPlayerGameMinuteBoxscore.player_surname = values.player_surname;
-        newVPlayerGameMinuteBoxscore.team_name = values.team_name;
+        newVPlayerGameMinuteBoxscore.team_id = values.team_id;
         newVPlayerGameMinuteBoxscore.type_game_id = values.type_game_id;
         newVPlayerGameMinuteBoxscore.league_year_id = values.league_year_id;
         newVPlayerGameMinuteBoxscore.league_id = values.league_id;
@@ -127,9 +121,7 @@ export class VPlayerGameMinuteBoxscore implements Table {
             turnovers: this.turnovers,
             steals: this.steals,
             assists: this.assists,
-            player_name: this.player_name,
-            player_surname: this.player_surname,
-            team_name: this.team_name,
+            team_id: this.team_id,
             type_game_id: this.type_game_id,
             league_year_id: this.league_year_id,
             league_id: this.league_id,
@@ -160,9 +152,7 @@ export class VPlayerGameMinuteBoxscore implements Table {
             turnovers: new FormControl(this.turnovers),
             steals: new FormControl(this.steals),
             assists: new FormControl(this.assists),
-            player_name: new FormControl(this.player_name),
-            player_surname: new FormControl(this.player_surname),
-            team_name: new FormControl(this.team_name),
+            team_id: new FormControl(this.team_id),
             type_game_id: new FormControl(this.type_game_id),
             league_year_id: new FormControl(this.league_year_id),
             league_id: new FormControl(this.league_id),

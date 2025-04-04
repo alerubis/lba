@@ -5,9 +5,7 @@ import { Table } from '../Table';
 export class VPlayerSeasonAvgBoxscore implements Table {
 
     player_id: number | undefined;
-    player_name: string | undefined;
-    player_surname: string | undefined;
-    team_name: string | undefined;
+    team_id: number | undefined;
     league_year_id: number | undefined;
     league_id: number | undefined;
     games: number | undefined;
@@ -34,9 +32,7 @@ export class VPlayerSeasonAvgBoxscore implements Table {
     constructor(values?: any) {
         if (values) {
             this.player_id = values.player_id;
-            this.player_name = values.player_name;
-            this.player_surname = values.player_surname;
-            this.team_name = values.team_name;
+            this.team_id = values.team_id;
             this.league_year_id = values.league_year_id;
             this.league_id = values.league_id;
             this.games = values.games;
@@ -69,9 +65,7 @@ export class VPlayerSeasonAvgBoxscore implements Table {
     fromDbValues(values: any): VPlayerSeasonAvgBoxscore {
         const newVPlayerSeasonAvgBoxscore = new VPlayerSeasonAvgBoxscore();
         newVPlayerSeasonAvgBoxscore.player_id = values.player_id;
-        newVPlayerSeasonAvgBoxscore.player_name = values.player_name;
-        newVPlayerSeasonAvgBoxscore.player_surname = values.player_surname;
-        newVPlayerSeasonAvgBoxscore.team_name = values.team_name;
+        newVPlayerSeasonAvgBoxscore.team_id = values.team_id;
         newVPlayerSeasonAvgBoxscore.league_year_id = values.league_year_id;
         newVPlayerSeasonAvgBoxscore.league_id = values.league_id;
         newVPlayerSeasonAvgBoxscore.games = values.games;
@@ -100,9 +94,7 @@ export class VPlayerSeasonAvgBoxscore implements Table {
     toDbValues(): any {
         return {
             player_id: this.player_id,
-            player_name: this.player_name,
-            player_surname: this.player_surname,
-            team_name: this.team_name,
+            team_id: this.team_id,
             league_year_id: this.league_year_id,
             league_id: this.league_id,
             games: this.games,
@@ -131,9 +123,7 @@ export class VPlayerSeasonAvgBoxscore implements Table {
     toFormGroup(): any {
         return {
             player_id: new FormControl(this.player_id),
-            player_name: new FormControl(this.player_name),
-            player_surname: new FormControl(this.player_surname),
-            team_name: new FormControl(this.team_name),
+            team_id: new FormControl(this.team_id),
             league_year_id: new FormControl(this.league_year_id),
             league_id: new FormControl(this.league_id),
             games: new FormControl(this.games),

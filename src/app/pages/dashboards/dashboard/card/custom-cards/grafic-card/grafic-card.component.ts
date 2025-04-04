@@ -5,9 +5,6 @@ import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import { DbService } from '../../../../../../shared/services/db.service';
 import { BaseCardComponent } from '../../base-card/base-card.component';
 import _ from 'lodash';
-import { Player } from '../../../../../../shared/types/db/auto/Player';
-import { Game } from '../../../../../../shared/types/db/auto/Game';
-import { VPlayerGameMinuteBoxscoreBase } from '../../../../../../shared/types/db/auto/VPlayerGameMinuteBoxscoreBase';
 import { VPlayerGameMinuteBoxscore } from '../../../../../../shared/types/db/auto/VPlayerGameMinuteBoxscore';
 
 @Component({
@@ -108,8 +105,8 @@ export class GraficCardComponent extends BaseCardComponent {
                     const media = _.meanBy(items, item => +item[y]);
                     return [+minute, media];
                 });
-                
-                dati = _.orderBy(datiMediati, a => a[0]);    
+
+                dati = _.orderBy(datiMediati, a => a[0]);
             }
             if (this.teamId){
                 dati = await this._dbService.readList(new VPlayerGameMinuteBoxscore(), { player_id: this.playerId, game_id: {in: this.gameIds,}, }) as VPlayerGameMinuteBoxscore[];
@@ -449,7 +446,7 @@ export class GraficCardComponent extends BaseCardComponent {
                     }
                   }
                 }
-              };              
+              };
         }
         else if (this.dashboardCard.card_id === 'TABLE_LINEUP_GAME') {
 
