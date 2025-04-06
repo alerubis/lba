@@ -37,7 +37,7 @@ export class BaseCardComponent implements OnInit, OnChanges {
                     const currentValue = changeToDetect.currentValue;
                     if (!_.isEqual(previousValue, currentValue)) {
                         shouldReload = true;
-                        console.log('è cambiato', changeId, 'da', previousValue, 'a', currentValue);
+                        //console.log('è cambiato', changeId, 'da', previousValue, 'a', currentValue);
                     }
                 }
             }

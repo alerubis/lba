@@ -2,16 +2,13 @@ import { FormControl, Validators } from '@angular/forms';
 import { DbUtils } from '../DbUtils';
 import { Table } from '../Table';
 
-export class VPlayerGameTotalBoxscore implements Table {
+export class VPlayerGameMinutePlayingBoxscore implements Table {
 
     player_id: number | undefined;
     game_id: number | undefined;
-    team_id: number | undefined;
-    type_game_id: number | undefined;
-    league_year_id: number | undefined;
-    league_id: number | undefined;
-    fouls_committed: any | undefined;
-    fouls_received: any | undefined;
+    minute: number | undefined;
+    fouls_committed: number | undefined;
+    fouls_received: number | undefined;
     points: any | undefined;
     made_2pt: any | undefined;
     missed_2pt: any | undefined;
@@ -22,23 +19,19 @@ export class VPlayerGameTotalBoxscore implements Table {
     made_ft: any | undefined;
     missed_ft: any | undefined;
     pct_ft: any | undefined;
-    off_reb: any | undefined;
-    def_reb: any | undefined;
-    blocks_made: any | undefined;
-    blocks_suffered: any | undefined;
-    turnovers: any | undefined;
-    steals: any | undefined;
-    assists: any | undefined;
-    minute: number | undefined;
+    off_reb: number | undefined;
+    def_reb: number | undefined;
+    blocks_made: number | undefined;
+    blocks_suffered: number | undefined;
+    turnovers: number | undefined;
+    steals: number | undefined;
+    assists: number | undefined;
 
     constructor(values?: any) {
         if (values) {
             this.player_id = values.player_id;
             this.game_id = values.game_id;
-            this.team_id = values.team_id;
-            this.type_game_id = values.type_game_id;
-            this.league_year_id = values.league_year_id;
-            this.league_id = values.league_id;
+            this.minute = values.minute;
             this.fouls_committed = values.fouls_committed;
             this.fouls_received = values.fouls_received;
             this.points = values.points;
@@ -58,53 +51,45 @@ export class VPlayerGameTotalBoxscore implements Table {
             this.turnovers = values.turnovers;
             this.steals = values.steals;
             this.assists = values.assists;
-            this.minute = values.minute;
         }
     }
 
     getName(): string {
-        return 'v_player_game_total_boxscore';
+        return 'v_player_game_minute_playing_boxscore';
     }
 
-    fromDbValues(values: any): VPlayerGameTotalBoxscore {
-        const newVPlayerGameTotalBoxscore = new VPlayerGameTotalBoxscore();
-        newVPlayerGameTotalBoxscore.player_id = values.player_id;
-        newVPlayerGameTotalBoxscore.game_id = values.game_id;
-        newVPlayerGameTotalBoxscore.team_id = values.team_id;
-        newVPlayerGameTotalBoxscore.type_game_id = values.type_game_id;
-        newVPlayerGameTotalBoxscore.league_year_id = values.league_year_id;
-        newVPlayerGameTotalBoxscore.league_id = values.league_id;
-        newVPlayerGameTotalBoxscore.fouls_committed = values.fouls_committed;
-        newVPlayerGameTotalBoxscore.fouls_received = values.fouls_received;
-        newVPlayerGameTotalBoxscore.points = values.points;
-        newVPlayerGameTotalBoxscore.made_2pt = values.made_2pt;
-        newVPlayerGameTotalBoxscore.missed_2pt = values.missed_2pt;
-        newVPlayerGameTotalBoxscore.pct_2pt = values.pct_2pt;
-        newVPlayerGameTotalBoxscore.made_3pt = values.made_3pt;
-        newVPlayerGameTotalBoxscore.missed_3pt = values.missed_3pt;
-        newVPlayerGameTotalBoxscore.pct_3pt = values.pct_3pt;
-        newVPlayerGameTotalBoxscore.made_ft = values.made_ft;
-        newVPlayerGameTotalBoxscore.missed_ft = values.missed_ft;
-        newVPlayerGameTotalBoxscore.pct_ft = values.pct_ft;
-        newVPlayerGameTotalBoxscore.off_reb = values.off_reb;
-        newVPlayerGameTotalBoxscore.def_reb = values.def_reb;
-        newVPlayerGameTotalBoxscore.blocks_made = values.blocks_made;
-        newVPlayerGameTotalBoxscore.blocks_suffered = values.blocks_suffered;
-        newVPlayerGameTotalBoxscore.turnovers = values.turnovers;
-        newVPlayerGameTotalBoxscore.steals = values.steals;
-        newVPlayerGameTotalBoxscore.assists = values.assists;
-        newVPlayerGameTotalBoxscore.minute = values.minute;
-        return newVPlayerGameTotalBoxscore;
+    fromDbValues(values: any): VPlayerGameMinutePlayingBoxscore {
+        const newVPlayerGameMinutePlayingBoxscore = new VPlayerGameMinutePlayingBoxscore();
+        newVPlayerGameMinutePlayingBoxscore.player_id = values.player_id;
+        newVPlayerGameMinutePlayingBoxscore.game_id = values.game_id;
+        newVPlayerGameMinutePlayingBoxscore.minute = values.minute;
+        newVPlayerGameMinutePlayingBoxscore.fouls_committed = values.fouls_committed;
+        newVPlayerGameMinutePlayingBoxscore.fouls_received = values.fouls_received;
+        newVPlayerGameMinutePlayingBoxscore.points = values.points;
+        newVPlayerGameMinutePlayingBoxscore.made_2pt = values.made_2pt;
+        newVPlayerGameMinutePlayingBoxscore.missed_2pt = values.missed_2pt;
+        newVPlayerGameMinutePlayingBoxscore.pct_2pt = values.pct_2pt;
+        newVPlayerGameMinutePlayingBoxscore.made_3pt = values.made_3pt;
+        newVPlayerGameMinutePlayingBoxscore.missed_3pt = values.missed_3pt;
+        newVPlayerGameMinutePlayingBoxscore.pct_3pt = values.pct_3pt;
+        newVPlayerGameMinutePlayingBoxscore.made_ft = values.made_ft;
+        newVPlayerGameMinutePlayingBoxscore.missed_ft = values.missed_ft;
+        newVPlayerGameMinutePlayingBoxscore.pct_ft = values.pct_ft;
+        newVPlayerGameMinutePlayingBoxscore.off_reb = values.off_reb;
+        newVPlayerGameMinutePlayingBoxscore.def_reb = values.def_reb;
+        newVPlayerGameMinutePlayingBoxscore.blocks_made = values.blocks_made;
+        newVPlayerGameMinutePlayingBoxscore.blocks_suffered = values.blocks_suffered;
+        newVPlayerGameMinutePlayingBoxscore.turnovers = values.turnovers;
+        newVPlayerGameMinutePlayingBoxscore.steals = values.steals;
+        newVPlayerGameMinutePlayingBoxscore.assists = values.assists;
+        return newVPlayerGameMinutePlayingBoxscore;
     }
 
     toDbValues(): any {
         return {
             player_id: this.player_id,
             game_id: this.game_id,
-            team_id: this.team_id,
-            type_game_id: this.type_game_id,
-            league_year_id: this.league_year_id,
-            league_id: this.league_id,
+            minute: this.minute,
             fouls_committed: this.fouls_committed,
             fouls_received: this.fouls_received,
             points: this.points,
@@ -124,7 +109,6 @@ export class VPlayerGameTotalBoxscore implements Table {
             turnovers: this.turnovers,
             steals: this.steals,
             assists: this.assists,
-            minute: this.minute,
         }
     }
 
@@ -132,10 +116,7 @@ export class VPlayerGameTotalBoxscore implements Table {
         return {
             player_id: new FormControl(this.player_id),
             game_id: new FormControl(this.game_id),
-            team_id: new FormControl(this.team_id),
-            type_game_id: new FormControl(this.type_game_id),
-            league_year_id: new FormControl(this.league_year_id),
-            league_id: new FormControl(this.league_id),
+            minute: new FormControl(this.minute),
             fouls_committed: new FormControl(this.fouls_committed),
             fouls_received: new FormControl(this.fouls_received),
             points: new FormControl(this.points),
@@ -155,7 +136,6 @@ export class VPlayerGameTotalBoxscore implements Table {
             turnovers: new FormControl(this.turnovers),
             steals: new FormControl(this.steals),
             assists: new FormControl(this.assists),
-            minute: new FormControl(this.minute),
         }
     }
 

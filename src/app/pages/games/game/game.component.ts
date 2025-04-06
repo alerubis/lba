@@ -66,6 +66,7 @@ export class GameComponent {
             this.game = undefined;
         }
         this.dashboards = await this._dbService.readList(new Dashboard()) as Dashboard[];
+        this.dashboards = this.dashboards.filter(x=>x.card_type_id === 'GAME');
         this.teams = await this._dbService.readList(new Team()) as Team[];
         if (!this.selectedDashboardId && this.dashboards.length > 0) {
             this.selectedDashboardId = this.dashboards[0].dashboard_id;

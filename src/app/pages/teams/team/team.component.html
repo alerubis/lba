@@ -25,10 +25,69 @@
             </div>
         </div>
 
+        
+
         <div class="page-content">
 
             <div class="flex flex-col gap-6">
 
+                <div class="flex flex-row items-center gap-6">
+
+                    <div class="flex flex-col gap-1 w-1/6">
+                        <mat-label>League</mat-label>
+                        <mat-form-field appearance="outline">
+                            <mat-select matInput [(ngModel)]="selectedLeagueId" (selectionChange)="loadDataSelect('lega')">
+                                @for (league of leagues; track $index) {
+                                    <mat-option [value]="league.id">
+                                        {{ league.description }}
+                                    </mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="flex flex-col gap-1 w-1/6">
+                        <mat-label>Season</mat-label>
+                        <mat-form-field appearance="outline">
+                            <mat-select matInput [(ngModel)]="selectedLeagueYearId" (selectionChange)="loadDataSelect()">
+                                @for (leagueYear of getSeason(); track $index) {
+                                    <mat-option [value]="leagueYear.id">
+                                        {{ leagueYear.date_start_utc | date: 'yyyy' }} / {{ leagueYear.date_end_utc | date: 'yyyy' }}
+                                    </mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="flex flex-col gap-1 w-1/6">
+                        <mat-label>Type game</mat-label>
+                        <mat-form-field appearance="outline">
+                            <mat-select matInput [(ngModel)]="selectedTypeGameId" multiple>
+                                @for (league of getTypeGame(); track $index) {
+                                    <mat-option [value]="league.id">
+                                        {{ league.description }}
+                                    </mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="flex flex-col gap-1 w-1/2">
+                        <mat-label>Game (<span class="cursor-pointer hover:bg-gray-100" (click)="selezionaTutte()">seleziona tutte</span>/
+                            <span class="cursor-pointer hover:bg-gray-100" (click)="selezionaNessuna()">nessuna</span>)
+                        </mat-label>
+                        <mat-form-field appearance="outline">
+                            <mat-select matInput [(ngModel)]="selectedGameId" multiple>
+                                @for (game of getGame(); track $index) {
+                                    <mat-option [value]="game.id">
+                                        {{ getTeamFromId(game.team_home_id)?.name }} - {{ getTeamFromId(game.team_guest_id)?.name }}
+                                    </mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+    
+                </div>
                 <div class="flex flex-row items-center">
 
                     <div class="flex flex-col gap-1 w-full">
@@ -50,13 +109,13 @@
                     <app-dashboard
                         [dashboardId]="selectedDashboardId"
                         [teamId]="team.id"
+                        [gameIds]="selectedGameId"
                     ></app-dashboard>
                 }
 
             </div>
 
         </div>
-
     }
 
 </div>

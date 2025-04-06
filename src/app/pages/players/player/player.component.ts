@@ -18,6 +18,7 @@ import { League } from '../../../shared/types/db/auto/League';
 import { TypeLeagueTypeGame } from '../../../shared/types/db/auto/TypeLeagueTypeGame';
 import { TypeGame } from '../../../shared/types/db/auto/TypeGame';
 import { Game } from '../../../shared/types/db/auto/Game';
+import { PlayerTeamGame } from '../../../shared/types/db/auto/PlayerTeamGame';
 
 @Component({
     selector: 'app-player',
@@ -33,12 +34,11 @@ import { Game } from '../../../shared/types/db/auto/Game';
         MatSelectModule,
         FormsModule,
         DatePipe,
-        NgClass,
     ]
 })
 export class PlayerComponent {
 
-    cardId: number | undefined;
+    playerId: number | undefined;
     player: Player | undefined;
     dashboards: Dashboard[] = [];
     teams: Team[] = [];
@@ -56,6 +56,7 @@ export class PlayerComponent {
     typeLeagueTypeGame: TypeLeagueTypeGame[] = [];
     typeGame: TypeGame[] = [];
     game: Game[] = [];
+    playerTeamGame: PlayerTeamGame[] = [];
 
     constructor(
         private _activatedRoute: ActivatedRoute,
@@ -68,7 +69,7 @@ export class PlayerComponent {
         this._activatedRoute.paramMap.subscribe((params: ParamMap) => {
             const idFromParams = params.get('id');
             if (idFromParams) {
-                this.cardId = +idFromParams;
+                this.playerId = +idFromParams;
             }
             this.loadData();
         });
@@ -76,12 +77,13 @@ export class PlayerComponent {
 
     async loadData(): Promise<void> {
         this.dataLoading = true;
-        if (this.cardId) {
-            this.player = await this._dbService.readUnique(new Player(), { id: this.cardId }) as Player;
+        if (this.playerId) {
+            this.player = await this._dbService.readUnique(new Player(), { id: this.playerId }) as Player;
         } else {
             this.player = undefined;
         }
         this.dashboards = await this._dbService.readList(new Dashboard()) as Dashboard[];
+        this.dashboards = this.dashboards.filter(x=>x.card_type_id === 'PLAYER');
         this.teams = await this._dbService.readList(new Team()) as Team[];
         if (!this.selectedDashboardId && this.dashboards.length > 0) {
             this.selectedDashboardId = this.dashboards[0].dashboard_id;
@@ -91,7 +93,11 @@ export class PlayerComponent {
         this.leagues = await this._dbService.readList(new League()) as League[];
         this.typeLeagueTypeGame = await this._dbService.readList(new TypeLeagueTypeGame()) as TypeLeagueTypeGame[];
         this.typeGame = await this._dbService.readList(new TypeGame()) as TypeGame[];
-        this.game = await this._dbService.readList(new Game()) as Game[];
+        this.playerTeamGame = await this._dbService.readList(new PlayerTeamGame(), { player_id: this.playerId }) as PlayerTeamGame[];
+        if (this.playerTeamGame.length > 0){
+            const gameIds = this.playerTeamGame.map(x=>x.game_id);
+            this.game = await this._dbService.readList(new Game(), {id: {in: gameIds,},}) as Game[];
+        }
 
         if (!this.selectedLeagueId){
             this.selectedLeagueId = this.leagues[0].id;

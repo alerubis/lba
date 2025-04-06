@@ -10,6 +10,8 @@ export class PlayerTeamGamePlay implements Table {
     play_id: number | undefined;
     seconds_start: number | undefined;
     seconds_end: number | undefined;
+    total_seconds_played_before: number | undefined;
+    consecutive_seconds_playing: number | undefined;
 
     constructor(values?: any) {
         if (values) {
@@ -19,6 +21,8 @@ export class PlayerTeamGamePlay implements Table {
             this.play_id = values.play_id;
             this.seconds_start = values.seconds_start;
             this.seconds_end = values.seconds_end;
+            this.total_seconds_played_before = values.total_seconds_played_before;
+            this.consecutive_seconds_playing = values.consecutive_seconds_playing;
         }
     }
 
@@ -34,6 +38,8 @@ export class PlayerTeamGamePlay implements Table {
         newPlayerTeamGamePlay.play_id = values.play_id;
         newPlayerTeamGamePlay.seconds_start = values.seconds_start;
         newPlayerTeamGamePlay.seconds_end = values.seconds_end;
+        newPlayerTeamGamePlay.total_seconds_played_before = values.total_seconds_played_before;
+        newPlayerTeamGamePlay.consecutive_seconds_playing = values.consecutive_seconds_playing;
         return newPlayerTeamGamePlay;
     }
 
@@ -45,6 +51,8 @@ export class PlayerTeamGamePlay implements Table {
             play_id: this.play_id,
             seconds_start: this.seconds_start,
             seconds_end: this.seconds_end,
+            total_seconds_played_before: this.total_seconds_played_before,
+            consecutive_seconds_playing: this.consecutive_seconds_playing,
         }
     }
 
@@ -56,6 +64,8 @@ export class PlayerTeamGamePlay implements Table {
             play_id: new FormControl(this.play_id),
             seconds_start: new FormControl(this.seconds_start),
             seconds_end: new FormControl(this.seconds_end),
+            total_seconds_played_before: new FormControl(this.total_seconds_played_before),
+            consecutive_seconds_playing: new FormControl(this.consecutive_seconds_playing),
         }
     }
 
