@@ -34,12 +34,19 @@ export class GraficCardComponent extends BaseCardComponent {
     chartOption: EChartsCoreOption = {};
     statTable: string[] = [];
     rows: any[] = [];
+    player1: Player = new Player();
+    player2: Player = new Player();
+    player3: Player = new Player();
+    player4: Player = new Player();
+    player5: Player = new Player();
+    minuti: any[] = [];
 
     constructor(private _dbService: DbService) {
         super();
     }
 
     override async loadChartOption(): Promise<void> {
+
         if (this.dashboardCard.card_id === 'CALENDAR_PLAYER' || this.dashboardCard.card_id === 'CALENDAR_TEAM') {
             let dati: any[] = [];
             let range = 2
@@ -238,12 +245,12 @@ export class GraficCardComponent extends BaseCardComponent {
                     ]
                 },
                 legend: {
-                    data: ['Squadra A'],
+                    data: ['A'],
                     top: 'top'
                 },
                 series: [
                     {
-                        name: 'Squadra A',
+                        name: 'A',
                         type: 'line',
                         smooth: 0.5,
                         symbol: 'none',
@@ -359,12 +366,12 @@ export class GraficCardComponent extends BaseCardComponent {
                     ]
                 },
                 legend: {
-                    data: ['Squadra A'],
+                    data: ['A'],
                     top: 'top'
                 },
                 series: [
                     {
-                        name: 'Squadra A',
+                        name: 'A',
                         type: 'line',
                         smooth: 0.5,
                         symbol: 'none',
@@ -411,12 +418,12 @@ export class GraficCardComponent extends BaseCardComponent {
                     ]
                 },
                 legend: {
-                    data: ['Squadra A'],
+                    data: ['A'],
                     top: 'top'
                 },
                 series: [
                     {
-                        name: 'Squadra A',
+                        name: 'A',
                         type: 'line',
                         smooth: 0.5,
                         symbol: 'none',
@@ -489,12 +496,12 @@ export class GraficCardComponent extends BaseCardComponent {
                     ]
                 },
                 legend: {
-                    data: ['Squadra A'],
+                    data: ['A'],
                     top: 'top'
                 },
                 series: [
                     {
-                        name: 'Squadra A',
+                        name: 'A',
                         type: 'line',
                         smooth: 0.5,
                         symbol: 'none',
@@ -567,12 +574,12 @@ export class GraficCardComponent extends BaseCardComponent {
                     ]
                 },
                 legend: {
-                    data: ['Squadra A'],
+                    data: ['A'],
                     top: 'top'
                 },
                 series: [
                     {
-                        name: 'Squadra A',
+                        name: 'A',
                         type: 'line',
                         smooth: 0.5,
                         symbol: 'none',
@@ -658,8 +665,8 @@ export class GraficCardComponent extends BaseCardComponent {
             }
             else if (this.teamId) {
                 dati = await this._dbService.readList(new VTeamGameTotalBoxscore(), { team_id: this.teamId, game_id: { in: this.gameIds, }, }) as VTeamGameTotalBoxscore[];
-                const game = await this._dbService.readList(new VGame(), { id: { in: this.gameIds, }, }) as VGame[];        
-                dati = dati.map(a => [a[x], a[y], a[l], game.find(x => x.id === a.game_id)?.team_home_id === this.teamId ? game.find(x => x.id === a.game_id)?.team_guest_name : game.find(x => x.id === a.game_id)?.team_home_name ]);
+                const game = await this._dbService.readList(new VGame(), { id: { in: this.gameIds, }, }) as VGame[];
+                dati = dati.map(a => [a[x], a[y], a[l], game.find(x => x.id === a.game_id)?.team_home_id === this.teamId ? game.find(x => x.id === a.game_id)?.team_guest_name : game.find(x => x.id === a.game_id)?.team_home_name]);
             }
 
             // Step 1: calcolo min e max dei valori nella dimensione 2
@@ -714,13 +721,20 @@ export class GraficCardComponent extends BaseCardComponent {
                         }
                     }
                 }
-            };            
+            };
         }
         else if (this.dashboardCard.card_id === 'TABLE_LINEUP_GAME') {
 
         }
         else if (this.dashboardCard.card_id === 'TABLE_LINEUP_TEAM') {
+            this.statTable = this.dashboardCardSettings.find((setting) => setting.setting_id === 'STAT')?.value;
 
+            if (this.gameIds && this.gameIds.length > 0 && this.teamId) {
+                const result = await this._dbService.callCustomRoute<any[]>('lineup-boxscore', { team_id: this.teamId, game_ids: this.gameIds, });
+                this.rows = result.map(row => ({
+                    ...row
+                }));
+            }
         }
         else if (this.dashboardCard.card_id === 'TABLE_GAME_PLAYER' || this.dashboardCard.card_id === 'TABLE_PLAYER_GAME' || this.dashboardCard.card_id === 'TABLE_GAME_TEAM') {
             this.statTable = this.dashboardCardSettings.find((setting) => setting.setting_id === 'STAT')?.value;
@@ -745,6 +759,129 @@ export class GraficCardComponent extends BaseCardComponent {
                     ...row,
                     description: game.find(x => x.id === row.game_id)?.team_home_id === this.teamId ? game.find(x => x.id === row.game_id)?.team_guest_name : game.find(x => x.id === row.game_id)?.team_home_name
                 }));
+            }
+        }
+        else if (this.dashboardCard.card_id === 'LINEUP') {
+            if (this.gameId) {
+                this.minuti = await this._dbService.callCustomLineupRoute<any[]>('lineup-boxscore', { game_id: this.gameId, });
+                for (let i = 1; i < this.minuti.length; i++) {
+                    // Trova il minuto precedente valido per team A
+                    let j = i - 1;
+                    let prevA: number[] = [];
+                    while (j >= 0) {
+                        if (this.minuti[j].teamA_players.length > 0) {
+                            prevA = this.minuti[j].teamA_players.map((p: any) => p.id);
+                            break;
+                        }
+                        j--;
+                    }
+
+                    const currA = this.minuti[i].teamA_players;
+                    this.minuti[i].teamA_players = currA.map((p: any) => ({
+                        ...p,
+                        entered: !prevA.includes(p.id)
+                    }));
+
+                    // Trova il minuto precedente valido per team B
+                    j = i - 1;
+                    let prevB: number[] = [];
+                    while (j >= 0) {
+                        if (this.minuti[j].teamB_players.length > 0) {
+                            prevB = this.minuti[j].teamB_players.map((p: any) => p.id);
+                            break;
+                        }
+                        j--;
+                    }
+
+                    const currB = this.minuti[i].teamB_players;
+                    this.minuti[i].teamB_players = currB.map((p: any) => ({
+                        ...p,
+                        entered: !prevB.includes(p.id)
+                    }));
+                }
+
+                let dati: any[] = [];
+                const y = this.dashboardCardSettings.find((setting) => setting.setting_id === 'Y')?.value;
+
+                dati = await this._dbService.readList(new VPlayerGameMinuteBoxscore(), { game_id: this.gameId, }) as VPlayerGameMinuteBoxscore[];
+                const grouped = _.groupBy(dati, 'minute');
+
+                const datiMediati = Object.entries(grouped).map(([minute, items]) => {
+                    let value: number;
+
+                    if (y.startsWith('pct_')) {
+                        const suffix = y.slice(4); // es. '2pt' da 'pct_2pt'
+                        const madeKey = `made_${suffix}`;
+                        const missedKey = `missed_${suffix}`;
+                        const madeSum = _.sumBy(items, item => +item[madeKey] || 0);
+                        const missedSum = _.sumBy(items, item => +item[missedKey] || 0);
+                        const total = madeSum + missedSum;
+                        value = total > 0 ? (madeSum * 100) / total : 0;
+                    } else {
+                        value = _.meanBy(items, item => +item[y] || 0);
+                    }
+
+                    return [+minute, value];
+                });
+
+                dati = _.orderBy(datiMediati, a => a[0]);
+
+                this.chartOption = {
+                    xAxis: {
+                        type: 'category',
+                        boundaryGap: false,
+                        name: 'Minutes Game',
+                        nameLocation: 'middle',
+                        nameGap: 25
+                    },
+                    yAxis: {
+                        type: 'value',
+                        boundaryGap: [0, '30%'],
+                        name: '',
+                        nameLocation: 'middle',
+                        nameGap: 50,
+                        axisLabel: { show: false },
+                        axisLine: { show: false },
+                        splitLine: { show: false }
+                    },
+                    grid: {
+                        left: '0%',
+                        right: '0%',
+                        top: '10%',
+                        bottom: '0%',
+                        containLabel: false
+                    },
+                    visualMap: {
+                        type: 'piecewise',
+                        show: false,
+                        dimension: 0,
+                        seriesIndex: [0, 1],
+                        pieces: [
+                            { gt: 0, lt: 10, color: 'rgba(60, 179, 113, 0.4)' },
+                            { gt: 10, lt: 20, color: 'rgba(255, 165, 0, 0.4)' },
+                            { gt: 20, lt: 30, color: 'rgba(255, 0, 0, 0.4)' },
+                            { gt: 30, lt: 40, color: 'rgba(255, 0, 165, 0.4)' }
+                        ]
+                    },
+                    legend: {
+                        data: ['A'],
+                        top: 'top'
+                    },
+                    series: [
+                        {
+                            name: 'A',
+                            type: 'line',
+                            smooth: 0.5,
+                            symbol: 'none',
+                            lineStyle: {
+                                color: '#1f77b4',
+                                width: 3
+                            },
+                            areaStyle: { opacity: 0.5 },
+                            data: dati
+                        }
+                    ]
+                };
             }
         }
     }
