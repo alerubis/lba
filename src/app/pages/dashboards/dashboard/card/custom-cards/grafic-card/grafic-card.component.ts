@@ -1,29 +1,32 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import * as echarts from 'echarts';
 import { EChartsCoreOption } from 'echarts/core';
+import _ from 'lodash';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import { DbService } from '../../../../../../shared/services/db.service';
-import { BaseCardComponent } from '../../base-card/base-card.component';
-import _ from 'lodash';
-import { VPlayerGameMinuteBoxscore } from '../../../../../../shared/types/db/auto/VPlayerGameMinuteBoxscore';
-import { VPlayerGameAbsoluteMinuteBoxscore } from '../../../../../../shared/types/db/auto/VPlayerGameAbsoluteMinuteBoxscore';
-import { VPlayerGameTotalBoxscore } from '../../../../../../shared/types/db/auto/VPlayerGameTotalBoxscore';
-import { Game } from '../../../../../../shared/types/db/auto/Game';
-import { VGame } from '../../../../../../shared/types/db/auto/Vgame';
-import { VPlayerGameMinutePlayedBeforeBoxscore } from '../../../../../../shared/types/db/auto/VPlayerGameMinutePlayedBeforeBoxscore';
-import { VPlayerGameMinutePlayingBoxscore } from '../../../../../../shared/types/db/auto/VPlayerGameMinutePlayingBoxscore';
-import { VTeamGameTotalBoxscore } from '../../../../../../shared/types/db/auto/VTeamGameTotalBoxscore';
 import { Player } from '../../../../../../shared/types/db/auto/Player';
 import { PlayerTeamGame } from '../../../../../../shared/types/db/auto/PlayerTeamGame';
-import { VTeamGameMinuteBoxscore } from '../../../../../../shared/types/db/auto/VTeamGameMinuteBoxscore';
+import { VGame } from '../../../../../../shared/types/db/auto/Vgame';
+import { VPlayerGameAbsoluteMinuteBoxscore } from '../../../../../../shared/types/db/auto/VPlayerGameAbsoluteMinuteBoxscore';
+import { VPlayerGameMinuteBoxscore } from '../../../../../../shared/types/db/auto/VPlayerGameMinuteBoxscore';
+import { VPlayerGameMinutePlayedBeforeBoxscore } from '../../../../../../shared/types/db/auto/VPlayerGameMinutePlayedBeforeBoxscore';
+import { VPlayerGameMinutePlayingBoxscore } from '../../../../../../shared/types/db/auto/VPlayerGameMinutePlayingBoxscore';
+import { VPlayerGameTotalBoxscore } from '../../../../../../shared/types/db/auto/VPlayerGameTotalBoxscore';
 import { VTeamGameAbsoluteMinuteBoxscore } from '../../../../../../shared/types/db/auto/VTeamGameAbsoluteMinuteBoxscore';
+import { VTeamGameMinuteBoxscore } from '../../../../../../shared/types/db/auto/VTeamGameMinuteBoxscore';
+import { VTeamGameTotalBoxscore } from '../../../../../../shared/types/db/auto/VTeamGameTotalBoxscore';
+import { BaseCardComponent } from '../../base-card/base-card.component';
+import { NgClass } from '@angular/common';
 
 @Component({
     selector: 'grafic-card',
     templateUrl: './grafic-card.component.html',
     standalone: true,
     imports: [
-        NgxEchartsDirective
+        NgxEchartsDirective,
+        MatProgressSpinnerModule,
+        NgClass,
     ],
     providers: [
         provideEchartsCore({ echarts }),
@@ -41,11 +44,15 @@ export class GraficCardComponent extends BaseCardComponent {
     player5: Player = new Player();
     minuti: any[] = [];
 
+    loading: boolean = false;
+
     constructor(private _dbService: DbService) {
         super();
     }
 
     override async loadChartOption(): Promise<void> {
+
+        this.loading = true;
 
         if (this.dashboardCard.card_id === 'CALENDAR_PLAYER' || this.dashboardCard.card_id === 'CALENDAR_TEAM') {
             let dati: any[] = [];
@@ -884,5 +891,8 @@ export class GraficCardComponent extends BaseCardComponent {
                 };
             }
         }
+
+        this.loading = false;
+
     }
 }
