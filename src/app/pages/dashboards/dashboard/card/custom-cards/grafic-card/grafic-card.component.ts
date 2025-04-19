@@ -17,6 +17,8 @@ import { Player } from '../../../../../../shared/types/db/auto/Player';
 import { PlayerTeamGame } from '../../../../../../shared/types/db/auto/PlayerTeamGame';
 import { VTeamGameMinuteBoxscore } from '../../../../../../shared/types/db/auto/VTeamGameMinuteBoxscore';
 import { VTeamGameAbsoluteMinuteBoxscore } from '../../../../../../shared/types/db/auto/VTeamGameAbsoluteMinuteBoxscore';
+import { HttpClient } from '@angular/common/http';
+import { SubPlay } from '../../../../../../shared/types/db/auto/SubPlay';
 
 @Component({
     selector: 'grafic-card',
@@ -40,8 +42,12 @@ export class GraficCardComponent extends BaseCardComponent {
     player4: Player = new Player();
     player5: Player = new Player();
     minuti: any[] = [];
+    courtMap: any;
 
-    constructor(private _dbService: DbService) {
+    constructor(
+        private _dbService: DbService,
+        private http: HttpClient
+    ) {
         super();
     }
 
@@ -218,6 +224,13 @@ export class GraficCardComponent extends BaseCardComponent {
             }
 
             this.chartOption = {
+                grid: {
+                    top: 20,
+                    bottom: 20,
+                    left: 20,
+                    right: 20,
+                    containLabel: true
+                },
                 xAxis: {
                     type: 'category',
                     boundaryGap: false,
@@ -227,10 +240,7 @@ export class GraficCardComponent extends BaseCardComponent {
                 },
                 yAxis: {
                     type: 'value',
-                    boundaryGap: [0, '30%'],
-                    name: y,
-                    nameLocation: 'middle',
-                    nameGap: 50
+                    boundaryGap: [0, '20%']
                 },
                 visualMap: {
                     type: 'piecewise',
@@ -238,19 +248,19 @@ export class GraficCardComponent extends BaseCardComponent {
                     dimension: 0,
                     seriesIndex: [0, 1],
                     pieces: [
-                        { gt: 0, lt: 10, color: 'rgba(60, 179, 113, 0.4)' },
-                        { gt: 10, lt: 20, color: 'rgba(255, 165, 0, 0.4)' },
-                        { gt: 20, lt: 30, color: 'rgba(255, 0, 0, 0.4)' },
-                        { gt: 30, lt: 40, color: 'rgba(255, 0, 165, 0.4)' }
+                        { gt: 0, lt: 10, color: 'rgba(0, 0, 255, 0.4)' },
+                        { gt: 10, lt: 20, color: 'rgba(0, 0, 255, 0.1)' },
+                        { gt: 20, lt: 30, color: 'rgba(0, 0, 255, 0.4)' },
+                        { gt: 30, lt: 40, color: 'rgba(0, 0, 255, 0.1)' },
                     ]
                 },
                 legend: {
-                    data: ['A'],
+                    data: [y],
                     top: 'top'
                 },
                 series: [
                     {
-                        name: 'A',
+                        name: y,
                         type: 'line',
                         smooth: 0.5,
                         symbol: 'none',
@@ -262,7 +272,7 @@ export class GraficCardComponent extends BaseCardComponent {
                         data: dati
                     }
                 ]
-            };
+            };            
         }
         else if (this.dashboardCard.card_id === 'LINE_QUARTER_GAME' || this.dashboardCard.card_id === 'LINE_QUARTER_PLAYER' || this.dashboardCard.card_id === 'LINE_QUARTER_TEAM') {
             let dati: any[] = [];
@@ -340,6 +350,13 @@ export class GraficCardComponent extends BaseCardComponent {
                 dati = _.orderBy(datiMediati, a => a[0]);
             }
             this.chartOption = {
+                grid: {
+                    top: 20,
+                    bottom: 20,
+                    left: 20,
+                    right: 20,
+                    containLabel: true
+                },
                 xAxis: {
                     type: 'category',
                     boundaryGap: false,
@@ -349,10 +366,7 @@ export class GraficCardComponent extends BaseCardComponent {
                 },
                 yAxis: {
                     type: 'value',
-                    boundaryGap: [0, '30%'],
-                    name: y,
-                    nameLocation: 'middle',
-                    nameGap: 50
+                    boundaryGap: [0, '20%']
                 },
                 visualMap: {
                     type: 'piecewise',
@@ -360,18 +374,18 @@ export class GraficCardComponent extends BaseCardComponent {
                     dimension: 0,
                     seriesIndex: [0, 1],
                     pieces: [
-                        { gt: 0, lt: 5, color: 'rgba(60, 179, 113, 0.4)' },
-                        { gt: 5, lt: 8, color: 'rgba(255, 165, 0, 0.4)' },
-                        { gt: 8, lt: 10, color: 'rgba(255, 0, 0, 0.4)' }
+                        { gt: 0, lt: 5, color: 'rgba(0, 0, 255, 0.1)' },
+                        { gt: 5, lt: 8, color: 'rgba(0, 0, 255, 0.2)' },
+                        { gt: 8, lt: 10, color: 'rgba(0, 0, 255, 0.4)' }
                     ]
                 },
                 legend: {
-                    data: ['A'],
+                    data: [y],
                     top: 'top'
                 },
                 series: [
                     {
-                        name: 'A',
+                        name: y,
                         type: 'line',
                         smooth: 0.5,
                         symbol: 'none',
@@ -469,19 +483,23 @@ export class GraficCardComponent extends BaseCardComponent {
             }
 
             this.chartOption = {
+                grid: {
+                    top: 20,
+                    bottom: 20,
+                    left: 20,
+                    right: 20,
+                    containLabel: true
+                },
                 xAxis: {
                     type: 'category',
                     boundaryGap: false,
-                    name: 'Minutes Quarter',
+                    name: 'Minutes Played',
                     nameLocation: 'middle',
                     nameGap: 25
                 },
                 yAxis: {
                     type: 'value',
-                    boundaryGap: [0, '30%'],
-                    name: y,
-                    nameLocation: 'middle',
-                    nameGap: 50
+                    boundaryGap: [0, '20%']
                 },
                 visualMap: {
                     type: 'piecewise',
@@ -489,19 +507,19 @@ export class GraficCardComponent extends BaseCardComponent {
                     dimension: 0,
                     seriesIndex: [0, 1],
                     pieces: [
-                        { gt: 0, lt: 10, color: 'rgba(60, 179, 113, 0.4)' },
-                        { gt: 10, lt: 20, color: 'rgba(255, 165, 0, 0.4)' },
-                        { gt: 20, lt: 30, color: 'rgba(255, 0, 0, 0.4)' },
-                        { gt: 30, lt: 40, color: 'rgba(255, 0, 165, 0.4)' }
+                        { gt: 0, lt: 10, color: 'rgba(0, 0, 255, 0.4)' },
+                        { gt: 10, lt: 20, color: 'rgba(0, 0, 255, 0.1)' },
+                        { gt: 20, lt: 30, color: 'rgba(0, 0, 255, 0.4)' },
+                        { gt: 30, lt: 40, color: 'rgba(0, 0, 255, 0.1)' },
                     ]
                 },
                 legend: {
-                    data: ['A'],
+                    data: [y],
                     top: 'top'
                 },
                 series: [
                     {
-                        name: 'A',
+                        name: y,
                         type: 'line',
                         smooth: 0.5,
                         symbol: 'none',
@@ -547,19 +565,23 @@ export class GraficCardComponent extends BaseCardComponent {
             }
 
             this.chartOption = {
+                grid: {
+                    top: 20,
+                    bottom: 20,
+                    left: 20,
+                    right: 20,
+                    containLabel: true
+                },
                 xAxis: {
                     type: 'category',
                     boundaryGap: false,
-                    name: 'Minutes Quarter',
+                    name: 'Consecutive Minutes Played',
                     nameLocation: 'middle',
                     nameGap: 25
                 },
                 yAxis: {
                     type: 'value',
-                    boundaryGap: [0, '30%'],
-                    name: y,
-                    nameLocation: 'middle',
-                    nameGap: 50
+                    boundaryGap: [0, '20%']
                 },
                 visualMap: {
                     type: 'piecewise',
@@ -567,19 +589,19 @@ export class GraficCardComponent extends BaseCardComponent {
                     dimension: 0,
                     seriesIndex: [0, 1],
                     pieces: [
-                        { gt: 0, lt: 10, color: 'rgba(60, 179, 113, 0.4)' },
-                        { gt: 10, lt: 20, color: 'rgba(255, 165, 0, 0.4)' },
-                        { gt: 20, lt: 30, color: 'rgba(255, 0, 0, 0.4)' },
-                        { gt: 30, lt: 40, color: 'rgba(255, 0, 165, 0.4)' }
+                        { gt: 0, lt: 10, color: 'rgba(0, 0, 255, 0.4)' },
+                        { gt: 10, lt: 20, color: 'rgba(0, 0, 255, 0.1)' },
+                        { gt: 20, lt: 30, color: 'rgba(0, 0, 255, 0.4)' },
+                        { gt: 30, lt: 40, color: 'rgba(0, 0, 255, 0.1)' },
                     ]
                 },
                 legend: {
-                    data: ['A'],
+                    data: [y],
                     top: 'top'
                 },
                 series: [
                     {
-                        name: 'A',
+                        name: y,
                         type: 'line',
                         smooth: 0.5,
                         symbol: 'none',
@@ -884,5 +906,243 @@ export class GraficCardComponent extends BaseCardComponent {
                 };
             }
         }
+        else if (this.dashboardCard.card_id === 'SHOT_CHART_PLAYER' || this.dashboardCard.card_id === 'SHOT_CHART_GAME' || this.dashboardCard.card_id === 'SHOT_CHART_TEAM') {
+            this.http.get<any>('assets/court.json').subscribe(courtMap => {
+                this.courtMap = courtMap;
+                echarts.registerMap('nbaCourt', courtMap.borderGeoJSON);
+                this.buildChart();
+            });
+        }
+    }
+
+    async buildChart() {
+        let shots: any[] = [];
+
+        if (this.playerId) {
+            const tiri = await this._dbService.readList(new SubPlay(), { game_made_id: { in: this.gameIds, }, player_made_id: this.playerId, shot_id: { in: [1,2,3,4], },}) as SubPlay[];
+            shots = tiri.map(t => ({
+                x: (t.y || 0) * 0.54 - 27,
+                y: (this.getX(t.x) || 0) * 0.51 - 2,
+                made: this.getMade(t.shot_id)
+            })); 
+        }
+        else if (this.gameId) {
+            const tiri = await this._dbService.readList(new SubPlay(), { game_made_id: this.gameId, shot_id: { in: [1,2,3,4], },}) as SubPlay[];
+            shots = tiri.map(t => ({
+                x: (t.y || 0) * 0.54 - 27,
+                y: (this.getX(t.x) || 0) * 0.51 - 2,
+                made: this.getMade(t.shot_id)
+            }));              
+        }
+        else if (this.teamId) {
+            const tiri = await this._dbService.readList(new SubPlay(), { game_made_id: { in: this.gameIds, }, team_made_id: this.teamId, shot_id: { in: [1,2,3,4], },}) as SubPlay[];
+            shots = tiri.map(t => ({
+                x: (t.y || 0) * 0.54 - 27,
+                y: (this.getX(t.x) || 0) * 0.51 - 2,
+                made: this.getMade(t.shot_id)
+            })); 
+        }
+
+        const shotPoints = shots.map(s => [s.x, s.y, s.made ? 1 : 0]);
+        const radius = 1;
+        const hexBinResult = this.hexBinStatistics(shotPoints, radius);
+
+        const data = hexBinResult.bins.map((bin: any) => {
+            const made = bin.points.reduce((sum: any, p: any) => sum + p[2], 0);
+            return [
+                bin.x,
+                bin.y,
+                bin.points.length,
+                +((made / bin.points.length) * 100).toFixed(2)
+            ];
+        });
+
+        const renderItemHexBin = (params: any, api: any) => this.renderItemHexBin(params, api, hexBinResult);
+        const renderItemNBACourt = (param: any, api: any) => this.renderItemNBACourt(param, api);
+
+        this.chartOption = {
+            backgroundColor: '#333',
+            tooltip: {
+                backgroundColor: 'rgba(255,255,255,0.9)',
+                textStyle: { color: '#333' }
+            },
+            animation: false,
+            geo: {
+                map: 'nbaCourt',
+                roam: true,
+                silent: true,
+                itemStyle: { color: '#333', borderWidth: 0 },
+                left: 0, right: 0, top: 0, bottom: 0
+            },
+            visualMap: {
+                type: 'continuous',
+                orient: 'horizontal',
+                right: 30,
+                top: 40,
+                min: 0,
+                max: 100,
+                dimension: 3,
+                calculable: true,
+                textStyle: { color: '#eee' },
+                formatter: '{value} %',
+                inRange: {
+                    color: ['red', '#6abe83', '#00ff00'] // grigio → verde chiaro → verde pieno
+                },
+            },
+            series: [
+                {
+                    type: 'custom',
+                    coordinateSystem: 'geo',
+                    geoIndex: 0,
+                    renderItem: renderItemHexBin,
+                    dimensions: [null, null, 'FGA', 'FG%'],
+                    encode: { tooltip: [2, 3] },
+                    data
+                },
+                {
+                    coordinateSystem: 'geo',
+                    type: 'custom',
+                    geoIndex: 0,
+                    renderItem: renderItemNBACourt,
+                    silent: true,
+                    data: [0]
+                }
+            ]
+        };
+    }
+
+    getMade(shot_id: any): boolean{
+        if (shot_id == 1 || shot_id == 3){
+            return true;
+        }
+        return false;
+    }
+
+    getX(x: any): number{
+        if (x<50){
+            return x*2;
+        }
+        return (-x+100)*2;
+    }
+
+    renderItemNBACourt(param: any, api: any) {
+        return {
+            type: 'group',
+            children: this.courtMap.geometry.map((item: any) => {
+                return {
+                    type: item.type,
+                    style: {
+                        stroke: '#aaa',
+                        fill: null,
+                        lineWidth: 1.5
+                    },
+                    shape: {
+                        points: item.points.map(api.coord)
+                    }
+                };
+            })
+        };
+    }
+
+    renderItemHexBin(params: any, api: any, hexBinResult: any) {
+        const center = api.coord([api.value(0), api.value(1)]);
+        const points = [];
+        const pointsBG = [];
+        const maxViewRadius = api.size([1, 0])[0];
+        const minViewRadius = Math.min(maxViewRadius, 4);
+        const extentMax = Math.log(Math.sqrt(hexBinResult.maxBinLen));
+        const viewRadius = echarts.number.linearMap(
+            Math.log(Math.sqrt(api.value(2))),
+            [0, extentMax],
+            [minViewRadius, maxViewRadius]
+        );
+        let angle = Math.PI / 6;
+        for (let i = 0; i < 6; i++, angle += Math.PI / 3) {
+            points.push([
+                center[0] + viewRadius * Math.cos(angle),
+                center[1] + viewRadius * Math.sin(angle)
+            ]);
+            pointsBG.push([
+                center[0] + maxViewRadius * Math.cos(angle),
+                center[1] + maxViewRadius * Math.sin(angle)
+            ]);
+        }
+        return {
+            type: 'group',
+            children: [
+                {
+                    type: 'polygon',
+                    shape: { points },
+                    style: {
+                        stroke: '#ccc',
+                        fill: api.visual('color'),
+                        lineWidth: 1
+                    }
+                },
+                {
+                    type: 'polygon',
+                    shape: { points: pointsBG },
+                    style: {
+                        stroke: null,
+                        fill: 'rgba(0,0,0,0.5)',
+                        lineWidth: 0
+                    },
+                    z2: -19
+                }
+            ]
+        };
+    }
+
+    hexBinStatistics(points: any, r: number) {
+        const dx = r * 2 * Math.sin(Math.PI / 3);
+        const dy = r * 1.5;
+        const binsById: { [key: string]: any } = {};
+        const bins: any[] = [];
+
+        for (let i = 0; i < points.length; ++i) {
+            let [px, py, made] = points[i];
+            if (isNaN(px) || isNaN(py)) continue;
+
+            let pj = Math.round((py = py / dy));
+            let pi = Math.round((px = px / dx - (pj & 1) / 2));
+            const py1 = py - pj;
+
+            if (Math.abs(py1) * 3 > 1) {
+                const px1 = px - pi;
+                const pi2 = pi + ((px < pi ? -1 : 1) / 2);
+                const pj2 = pj + (py < pj ? -1 : 1);
+                const px2 = px - pi2;
+                const py2 = py - pj2;
+
+                if (px1 * px1 + py1 * py1 > px2 * px2 + py2 * py2) {
+                    pi = pi2 + ((pj & 1) ? 1 : -1) / 2;
+                    pj = pj2;
+                }
+            }
+
+            const id = `${pi}-${pj}`;
+            let bin = binsById[id];
+            if (bin) {
+                bin.points.push([px * dx, py * dy, made]);
+            } else {
+                bin = {
+                    points: [[px * dx, py * dy, made]],
+                    x: (pi + (pj & 1) / 2) * dx,
+                    y: pj * dy
+                };
+                binsById[id] = bin;
+                bins.push(bin);
+            }
+        }
+
+        let maxBinLen = -Infinity;
+        for (let i = 0; i < bins.length; i++) {
+            maxBinLen = Math.max(maxBinLen, bins[i].points.length);
+        }
+
+        return {
+            maxBinLen,
+            bins
+        };
     }
 }

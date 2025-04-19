@@ -2,6 +2,7 @@ import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/cor
 import { DashboardCard } from '../../../../../shared/types/db/auto/DashboardCard';
 import { DashboardCardSettings } from '../../../../../shared/types/db/auto/DashboardCardSettings';
 import _ from 'lodash';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
     selector: 'app-base-card',
