@@ -1,3 +1,3 @@
 export const environment = {
-    wsUrl: 'http://localhost:8080/'
+    wsUrl: 'https://lbaws-production.up.railway.app/'
 };
