@@ -438,12 +438,12 @@ export class GraficCardComponent extends BaseCardComponent {
                     ]
                 },
                 legend: {
-                    data: ['A'],
+                    data: [y],
                     top: 'top'
                 },
                 series: [
                     {
-                        name: 'A',
+                        name: y,
                         type: 'line',
                         smooth: 0.5,
                         symbol: 'none',
@@ -783,7 +783,7 @@ export class GraficCardComponent extends BaseCardComponent {
             }
             else if (this.teamId) {
                 const game = await this._dbService.readList(new VGame(), { id: { in: this.gameIds, }, }) as VGame[];
-                this.rows = (await this._dbService.readList(new VTeamGameTotalBoxscore(), { player_id: this.playerId, game_id: { in: this.gameIds } }) as VTeamGameTotalBoxscore[]).map(row => ({
+                this.rows = (await this._dbService.readList(new VTeamGameTotalBoxscore(), { team_id: this.teamId, game_id: { in: this.gameIds } }) as VTeamGameTotalBoxscore[]).map(row => ({
                     ...row,
                     description: game.find(x => x.id === row.game_id)?.team_home_id === this.teamId ? game.find(x => x.id === row.game_id)?.team_guest_name : game.find(x => x.id === row.game_id)?.team_home_name
                 }));
@@ -885,19 +885,19 @@ export class GraficCardComponent extends BaseCardComponent {
                         dimension: 0,
                         seriesIndex: [0, 1],
                         pieces: [
-                            { gt: 0, lt: 10, color: 'rgba(60, 179, 113, 0.4)' },
-                            { gt: 10, lt: 20, color: 'rgba(255, 165, 0, 0.4)' },
-                            { gt: 20, lt: 30, color: 'rgba(255, 0, 0, 0.4)' },
-                            { gt: 30, lt: 40, color: 'rgba(255, 0, 165, 0.4)' }
-                        ]
+                            { gt: 0, lt: 10, color: 'rgba(0, 0, 255, 0.4)' },
+                            { gt: 10, lt: 20, color: 'rgba(0, 0, 255, 0.1)' },
+                            { gt: 20, lt: 30, color: 'rgba(0, 0, 255, 0.4)' },
+                            { gt: 30, lt: 40, color: 'rgba(0, 0, 255, 0.1)' },
+                            ]
                     },
                     legend: {
-                        data: ['A'],
+                        data: [y],
                         top: 'top'
                     },
                     series: [
                         {
-                            name: 'A',
+                            name: y,
                             type: 'line',
                             smooth: 0.5,
                             symbol: 'none',
@@ -928,7 +928,7 @@ export class GraficCardComponent extends BaseCardComponent {
         if (this.playerId) {
             const tiri = await this._dbService.readList(new SubPlay(), { game_made_id: { in: this.gameIds, }, player_made_id: this.playerId, shot_id: { in: [1,2,3,4], },}) as SubPlay[];
             shots = tiri.map(t => ({
-                x: (t.y || 0) * 0.54 - 27,
+                x: (t.y || 0) * 0.51 - 26,
                 y: (this.getX(t.x) || 0) * 0.51 - 2,
                 made: this.getMade(t.shot_id)
             })); 
@@ -936,7 +936,7 @@ export class GraficCardComponent extends BaseCardComponent {
         else if (this.gameId) {
             const tiri = await this._dbService.readList(new SubPlay(), { game_made_id: this.gameId, shot_id: { in: [1,2,3,4], },}) as SubPlay[];
             shots = tiri.map(t => ({
-                x: (t.y || 0) * 0.54 - 27,
+                x: (t.y || 0) * 0.51 - 26,
                 y: (this.getX(t.x) || 0) * 0.51 - 2,
                 made: this.getMade(t.shot_id)
             }));              
@@ -944,7 +944,7 @@ export class GraficCardComponent extends BaseCardComponent {
         else if (this.teamId) {
             const tiri = await this._dbService.readList(new SubPlay(), { game_made_id: { in: this.gameIds, }, team_made_id: this.teamId, shot_id: { in: [1,2,3,4], },}) as SubPlay[];
             shots = tiri.map(t => ({
-                x: (t.y || 0) * 0.54 - 27,
+                x: (t.y || 0) * 0.51 - 26,
                 y: (this.getX(t.x) || 0) * 0.51 - 2,
                 made: this.getMade(t.shot_id)
             })); 
@@ -976,7 +976,7 @@ export class GraficCardComponent extends BaseCardComponent {
             animation: false,
             geo: {
                 map: 'nbaCourt',
-                roam: true,
+                roam: false,
                 silent: true,
                 itemStyle: { color: '#333', borderWidth: 0 },
                 left: 0, right: 0, top: 0, bottom: 0

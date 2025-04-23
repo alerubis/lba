@@ -70,6 +70,9 @@
         <thead>
             <tr class="border-b border-gray-300">
                 <th class="min-w-[250px] text-left border-r border-gray-300">Items</th>
+                @if (dashboardCard.card_id === 'TABLE_LINEUP_TEAM') {
+                    <th class="px-4 text-center border-r border-gray-300">MIN</th>
+                }
                 @for (stat of statTable; track $index) {
                 <th class="px-4 text-center border-r border-gray-300">{{ stat }}</th>
                 }
@@ -84,11 +87,19 @@
                         <div>{{ row.description }}</div>
                         }
                         @else {
-                        <div>{{ row.player1 }}, {{ row.player2 }}, {{ row.player3 }}, {{ row.player4 }}, {{ row.player5
-                            }}</div>
+                        <div class="flex flex-row">
+                            <img class="w-8 h-8 rounded-full" [src]="row.player1.logo_url" [title]="row.player1.name + ' ' + row.player1.surname">
+                            <img class="w-8 h-8 rounded-full" [src]="row.player2.logo_url" [title]="row.player2.name + ' ' + row.player2.surname">
+                            <img class="w-8 h-8 rounded-full" [src]="row.player3.logo_url" [title]="row.player3.name + ' ' + row.player3.surname">
+                            <img class="w-8 h-8 rounded-full" [src]="row.player4.logo_url" [title]="row.player4.name + ' ' + row.player4.surname">
+                            <img class="w-8 h-8 rounded-full" [src]="row.player5.logo_url" [title]="row.player5.name + ' ' + row.player5.surname">
+                        </div>
                         }
                     </div>
                 </td>
+                @if (dashboardCard.card_id === 'TABLE_LINEUP_TEAM') {
+                    <td class="text-center px-4 py-2 border-r border-gray-300">{{ row.minutes_played.toFixed(0) }}</td>
+                }
                 @for (stat of statTable; track $index) {
                 <td class="text-center px-4 py-2 border-r border-gray-300">{{ row[stat] }}</td>
                 }
