@@ -20,6 +20,7 @@ import { VTeamGameMinuteBoxscore } from '../../../../../../shared/types/db/auto/
 import { VTeamGameTotalBoxscore } from '../../../../../../shared/types/db/auto/VTeamGameTotalBoxscore';
 import { BaseCardComponent } from '../../base-card/base-card.component';
 import { NgClass } from '@angular/common';
+import { Game } from '../../../../../../shared/types/db/auto/Game';
 
 @Component({
     selector: 'grafic-card',
@@ -153,35 +154,11 @@ export class GraficCardComponent extends BaseCardComponent {
                 }
             };
         }
-        else if (this.dashboardCard.card_id === 'LINE_GAME_GAME' || this.dashboardCard.card_id === 'LINE_GAME_PLAYER' || this.dashboardCard.card_id === 'LINE_GAME_TEAM') {
+        else if (this.dashboardCard.card_id === 'LINE_GAME_PLAYER' || this.dashboardCard.card_id === 'LINE_GAME_TEAM') {
             let dati: any[] = [];
             const y = this.dashboardCardSettings.find((setting) => setting.setting_id === 'Y')?.value;
             if (this.playerId) {
                 dati = await this._dbService.readList(new VPlayerGameMinuteBoxscore(), { player_id: this.playerId, game_id: { in: this.gameIds, }, }) as VPlayerGameMinuteBoxscore[];
-                const grouped = _.groupBy(dati, 'minute');
-
-                const datiMediati = Object.entries(grouped).map(([minute, items]) => {
-                    let value: number;
-
-                    if (y.startsWith('pct_')) {
-                        const suffix = y.slice(4); // es. '2pt' da 'pct_2pt'
-                        const madeKey = `made_${suffix}`;
-                        const missedKey = `missed_${suffix}`;
-                        const madeSum = _.sumBy(items, item => +item[madeKey] || 0);
-                        const missedSum = _.sumBy(items, item => +item[missedKey] || 0);
-                        const total = madeSum + missedSum;
-                        value = total > 0 ? (madeSum * 100) / total : 0;
-                    } else {
-                        value = _.meanBy(items, item => +item[y] || 0);
-                    }
-
-                    return [+minute, value];
-                });
-
-                dati = _.orderBy(datiMediati, a => a[0]);
-            }
-            else if (this.gameId) {
-                dati = await this._dbService.readList(new VPlayerGameMinuteBoxscore(), { game_id: this.gameId, }) as VPlayerGameMinuteBoxscore[];
                 const grouped = _.groupBy(dati, 'minute');
 
                 const datiMediati = Object.entries(grouped).map(([minute, items]) => {
@@ -280,16 +257,26 @@ export class GraficCardComponent extends BaseCardComponent {
                 ]
             };            
         }
-        else if (this.dashboardCard.card_id === 'LINE_QUARTER_GAME' || this.dashboardCard.card_id === 'LINE_QUARTER_PLAYER' || this.dashboardCard.card_id === 'LINE_QUARTER_TEAM') {
-            let dati: any[] = [];
+        else if (this.dashboardCard.card_id === 'LINE_GAME_GAME') {
+            let datiH: any[] = [];
+            let datiG: any[] = [];
+
             const y = this.dashboardCardSettings.find((setting) => setting.setting_id === 'Y')?.value;
-            if (this.playerId) {
-                dati = await this._dbService.readList(new VPlayerGameAbsoluteMinuteBoxscore(), { player_id: this.playerId, game_id: { in: this.gameIds, }, }) as VPlayerGameAbsoluteMinuteBoxscore[];
-                const grouped = _.groupBy(dati, 'absolute_minute');
+            const dati = await this._dbService.readList(new VPlayerGameMinuteBoxscore(), { game_id: this.gameId, }) as VPlayerGameMinuteBoxscore[];
+            let game: any;
 
-                const datiMediati = Object.entries(grouped).map(([absolute_minute, items]) => {
+            if (this.gameId){  
+                game = await this._dbService.readUnique(new VGame(), { id: this.gameId, }) as VGame;
+  
+                datiH = dati.filter(x=>x.team_id === game.team_home_id);
+                datiG = dati.filter(x=>x.team_id === game.team_guest_id);
+    
+                const groupedH = _.groupBy(datiH, 'minute');
+                const groupedG = _.groupBy(datiG, 'minute');
+    
+                const datiMediatiH = Object.entries(groupedH).map(([minute, items]) => {
                     let value: number;
-
+    
                     if (y.startsWith('pct_')) {
                         const suffix = y.slice(4); // es. '2pt' da 'pct_2pt'
                         const madeKey = `made_${suffix}`;
@@ -301,14 +288,102 @@ export class GraficCardComponent extends BaseCardComponent {
                     } else {
                         value = _.meanBy(items, item => +item[y] || 0);
                     }
-
-                    return [+absolute_minute, value];
+    
+                    return [+minute, value];
                 });
-
-                dati = _.orderBy(datiMediati, a => a[0]);
+                datiH = _.orderBy(datiMediatiH, a => a[0]);
+    
+                const datiMediatiG = Object.entries(groupedG).map(([minute, items]) => {
+                    let value: number;
+    
+                    if (y.startsWith('pct_')) {
+                        const suffix = y.slice(4); // es. '2pt' da 'pct_2pt'
+                        const madeKey = `made_${suffix}`;
+                        const missedKey = `missed_${suffix}`;
+                        const madeSum = _.sumBy(items, item => +item[madeKey] || 0);
+                        const missedSum = _.sumBy(items, item => +item[missedKey] || 0);
+                        const total = madeSum + missedSum;
+                        value = total > 0 ? (madeSum * 100) / total : 0;
+                    } else {
+                        value = _.meanBy(items, item => +item[y] || 0);
+                    }
+    
+                    return [+minute, value];
+                });
+                datiG = _.orderBy(datiMediatiG, a => a[0]);    
             }
-            else if (this.gameId) {
-                dati = await this._dbService.readList(new VPlayerGameAbsoluteMinuteBoxscore(), { game_id: this.gameId, }) as VPlayerGameAbsoluteMinuteBoxscore[];
+
+            this.chartOption = {
+                grid: {
+                    top: 20,
+                    bottom: 20,
+                    left: 20,
+                    right: 20,
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    name: 'Minutes Game',
+                    nameLocation: 'middle',
+                    nameGap: 25
+                },
+                yAxis: {
+                    type: 'value',
+                    boundaryGap: [0, '20%']
+                },
+                visualMap: {
+                    type: 'piecewise',
+                    show: false,
+                    dimension: 0,
+                    seriesIndex: [0, 1],
+                    pieces: [
+                        { gt: 0, lt: 10, color: 'rgba(0, 0, 255, 0.4)' },
+                        { gt: 10, lt: 20, color: 'rgba(0, 0, 255, 0.1)' },
+                        { gt: 20, lt: 30, color: 'rgba(0, 0, 255, 0.4)' },
+                        { gt: 30, lt: 40, color: 'rgba(0, 0, 255, 0.1)' }
+                    ]
+                },
+                legend: {
+                    data: [
+                        y + ' ' + game?.team_home_name,
+                        y + ' ' + game?.team_guest_name
+                    ],
+                    top: 'top'
+                },
+                series: [
+                    {
+                        name: y + ' ' + game?.team_home_name,
+                        type: 'line',
+                        smooth: 0.5,
+                        symbol: 'none',
+                        lineStyle: {
+                            color: '#1f77b4',
+                            width: 3
+                        },
+                        areaStyle: { opacity: 0.5 },
+                        data: datiH
+                    },
+                    {
+                        name: y + ' ' + game?.team_guest_name,
+                        type: 'line',
+                        smooth: 0.5,
+                        symbol: 'none',
+                        lineStyle: {
+                            color: '#ff7f0e',
+                            width: 3
+                        },
+                        areaStyle: { opacity: 0.5 },
+                        data: datiG
+                    }
+                ]
+            };
+        }
+        else if (this.dashboardCard.card_id === 'LINE_QUARTER_PLAYER' || this.dashboardCard.card_id === 'LINE_QUARTER_TEAM') {
+            let dati: any[] = [];
+            const y = this.dashboardCardSettings.find((setting) => setting.setting_id === 'Y')?.value;
+            if (this.playerId) {
+                dati = await this._dbService.readList(new VPlayerGameAbsoluteMinuteBoxscore(), { player_id: this.playerId, game_id: { in: this.gameIds, }, }) as VPlayerGameAbsoluteMinuteBoxscore[];
                 const grouped = _.groupBy(dati, 'absolute_minute');
 
                 const datiMediati = Object.entries(grouped).map(([absolute_minute, items]) => {
@@ -401,6 +476,127 @@ export class GraficCardComponent extends BaseCardComponent {
                         },
                         areaStyle: { opacity: 0.5 },
                         data: dati
+                    }
+                ]
+            };
+        }
+        else if (this.dashboardCard.card_id === 'LINE_QUARTER_GAME') {
+            let datiH: any[] = [];
+            let datiG: any[] = [];
+
+            const y = this.dashboardCardSettings.find((setting) => setting.setting_id === 'Y')?.value;
+            const dati = await this._dbService.readList(new VPlayerGameAbsoluteMinuteBoxscore(), { game_id: this.gameId, }) as VPlayerGameAbsoluteMinuteBoxscore[];
+            let game: any;
+
+            if (this.gameId){  
+                game = await this._dbService.readUnique(new VGame(), { id: this.gameId, }) as VGame;
+  
+                datiH = dati.filter(x=>x.team_id === game.team_home_id);
+                datiG = dati.filter(x=>x.team_id === game.team_guest_id);
+    
+                const groupedH = _.groupBy(datiH, 'absolute_minute');
+                const groupedG = _.groupBy(datiG, 'absolute_minute');
+    
+                const datiMediatiH = Object.entries(groupedH).map(([absolute_minute, items]) => {
+                    let value: number;
+    
+                    if (y.startsWith('pct_')) {
+                        const suffix = y.slice(4); // es. '2pt' da 'pct_2pt'
+                        const madeKey = `made_${suffix}`;
+                        const missedKey = `missed_${suffix}`;
+                        const madeSum = _.sumBy(items, item => +item[madeKey] || 0);
+                        const missedSum = _.sumBy(items, item => +item[missedKey] || 0);
+                        const total = madeSum + missedSum;
+                        value = total > 0 ? (madeSum * 100) / total : 0;
+                    } else {
+                        value = _.meanBy(items, item => +item[y] || 0);
+                    }
+    
+                    return [+absolute_minute, value];
+                });
+                datiH = _.orderBy(datiMediatiH, a => a[0]);
+    
+                const datiMediatiG = Object.entries(groupedG).map(([absolute_minute, items]) => {
+                    let value: number;
+    
+                    if (y.startsWith('pct_')) {
+                        const suffix = y.slice(4); // es. '2pt' da 'pct_2pt'
+                        const madeKey = `made_${suffix}`;
+                        const missedKey = `missed_${suffix}`;
+                        const madeSum = _.sumBy(items, item => +item[madeKey] || 0);
+                        const missedSum = _.sumBy(items, item => +item[missedKey] || 0);
+                        const total = madeSum + missedSum;
+                        value = total > 0 ? (madeSum * 100) / total : 0;
+                    } else {
+                        value = _.meanBy(items, item => +item[y] || 0);
+                    }
+    
+                    return [+absolute_minute, value];
+                });
+                datiG = _.orderBy(datiMediatiG, a => a[0]);    
+            }
+
+            this.chartOption = {
+                grid: {
+                    top: 20,
+                    bottom: 20,
+                    left: 20,
+                    right: 20,
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    name: 'Minutes Quarter',
+                    nameLocation: 'middle',
+                    nameGap: 25
+                },
+                yAxis: {
+                    type: 'value',
+                    boundaryGap: [0, '20%']
+                },
+                visualMap: {
+                    type: 'piecewise',
+                    show: false,
+                    dimension: 0,
+                    seriesIndex: [0, 1],
+                    pieces: [
+                        { gt: 0, lt: 5, color: 'rgba(0, 0, 255, 0.1)' },
+                        { gt: 5, lt: 8, color: 'rgba(0, 0, 255, 0.2)' },
+                        { gt: 8, lt: 10, color: 'rgba(0, 0, 255, 0.4)' }
+                    ]
+                },
+                legend: {
+                    data: [
+                        y + ' ' + game?.team_home_name,
+                        y + ' ' + game?.team_guest_name
+                    ],
+                    top: 'top'
+                },
+                series: [
+                    {
+                        name: y + ' ' + game?.team_home_name,
+                        type: 'line',
+                        smooth: 0.5,
+                        symbol: 'none',
+                        lineStyle: {
+                            color: '#1f77b4',
+                            width: 3
+                        },
+                        areaStyle: { opacity: 0.5 },
+                        data: datiH
+                    },
+                    {
+                        name: y + ' ' + game?.team_guest_name,
+                        type: 'line',
+                        smooth: 0.5,
+                        symbol: 'none',
+                        lineStyle: {
+                            color: '#ff7f0e',
+                            width: 3
+                        },
+                        areaStyle: { opacity: 0.5 },
+                        data: datiG
                     }
                 ]
             };
