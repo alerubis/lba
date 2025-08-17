@@ -13,9 +13,41 @@ export class DbService {
     constructor(private _authService: AuthService) {
     }
 
+    viewLineupRoute<T>(payload: any): Promise<T> {
+        return new Promise((resolve, reject) => {
+            this._authService.wsCall('db/view-routes/view', payload).subscribe({
+                next: response => resolve(response),
+                error: error => resolve([] as any)
+            });
+        });
+    }
+    plusMinusLineupRoute<T>(payload: any): Promise<T> {
+        return new Promise((resolve, reject) => {
+            this._authService.wsCall('db/view-routes/plus-minus', payload).subscribe({
+                next: response => resolve(response),
+                error: error => resolve([] as any)
+            });
+        });
+    }
+    minuteLineupRoute<T>(payload: any): Promise<T> {
+        return new Promise((resolve, reject) => {
+            this._authService.wsCall('db/view-routes/minute', payload).subscribe({
+                next: response => resolve(response),
+                error: error => resolve([] as any)
+            });
+        });
+    }
     callCustomRoute<T>(url: string, payload: any): Promise<T> {
         return new Promise((resolve, reject) => {
             this._authService.wsCall('db/' + url + '/lineup', payload).subscribe({
+                next: response => resolve(response),
+                error: error => resolve([] as any)
+            });
+        });
+    }
+    callCustomFirstLineup<T>(url: string, payload: any): Promise<T> {
+        return new Promise((resolve, reject) => {
+            this._authService.wsCall('db/' + url + '/first-lineup', payload).subscribe({
                 next: response => resolve(response),
                 error: error => resolve([] as any)
             });

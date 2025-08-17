@@ -11,10 +11,13 @@ import { HttpClient } from '@angular/common/http';
 })
 export class BaseCardComponent implements OnInit, OnChanges {
 
+    @Input() edit: boolean = false;
     @Input({ required: true }) dashboardCard!: DashboardCard;
     @Input({ required: true }) dashboardCardSettings!: DashboardCardSettings[];
     @Input() gameId: number | undefined;
     @Input() gameIds: number[] | undefined;
+    @Input() playerIds: number[] | undefined;
+    @Input() playerOutIds: number[] | undefined;
     @Input() playerId: number | undefined;
     @Input() teamId: number | undefined;
 
@@ -29,7 +32,7 @@ export class BaseCardComponent implements OnInit, OnChanges {
 
     ngOnChanges(changes: SimpleChanges): void {
         let shouldReload: boolean = false;
-        const changesToDetect = ['dashboardCardSettings', 'gameId', 'gameIds', 'playerId', 'teamId'];
+        const changesToDetect = ['dashboardCardSettings', 'gameId', 'gameIds', 'playerId', 'teamId', 'playerIds', 'playerOutIds'];
         for (const changeId of changesToDetect) {
             const changeToDetect = changes[changeId];
             if (changeToDetect) {

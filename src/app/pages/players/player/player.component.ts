@@ -61,6 +61,7 @@ export class PlayerComponent {
     constructor(
         private _activatedRoute: ActivatedRoute,
         private _dbService: DbService,
+        private route: ActivatedRoute,
     ) {
 
     }
@@ -71,11 +72,20 @@ export class PlayerComponent {
             if (idFromParams) {
                 this.playerId = +idFromParams;
             }
-            this.loadData();
+            let gameid: string = '';
+            this.route.queryParams.subscribe(params => {
+                gameid = params['gId'];
+            });
+            if (gameid != ''){
+                this.loadData(gameid);
+            }
+            else {
+                this.loadData();
+            }
         });
     }
 
-    async loadData(): Promise<void> {
+    async loadData(gameid?: string): Promise<void> {
         this.dataLoading = true;
         if (this.playerId) {
             this.player = await this._dbService.readUnique(new Player(), { id: this.playerId }) as Player;
@@ -109,7 +119,12 @@ export class PlayerComponent {
             this.selectedTypeGameId = (this.getTypeGame().map(x => x.id).filter((id): id is number => id !== undefined)) || [];
         }
         if (this.selectedGameId.length === 0){
-            this.selectedGameId = (this.getGame().map(x => x.id).filter((id): id is number => id !== undefined)) || [];
+            if (gameid){
+                this.selectedGameId = [+gameid];
+            }
+            else {
+                this.selectedGameId = (this.getGame().map(x => x.id).filter((id): id is number => id !== undefined)) || [];
+            }
         }
 
         this.dataLoading = false;

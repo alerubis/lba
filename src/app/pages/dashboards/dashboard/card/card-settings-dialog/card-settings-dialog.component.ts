@@ -14,6 +14,7 @@ import { CardSettings } from '../../../../../shared/types/db/auto/CardSettings';
 import { DashboardCard } from '../../../../../shared/types/db/auto/DashboardCard';
 import { DashboardCardSettings } from '../../../../../shared/types/db/auto/DashboardCardSettings';
 import { MatSelectModule } from '@angular/material/select';
+import { Formula } from '../../../../../shared/types/db/auto/Formula';
 
 export interface CardSettingsDialogData {
     dashboardCard: DashboardCard;
@@ -42,6 +43,7 @@ export class CardSettingsDialogComponent implements OnInit{
     dashboardCard: DashboardCard;
     dashboardCardSettings: DashboardCardSettings[];
     cardSettings: CardSettings[] = [];
+    formulas: Formula[] = [];
 
     dataLoading: boolean = false;
     updateLoading: boolean = false;
@@ -62,6 +64,7 @@ export class CardSettingsDialogComponent implements OnInit{
     async loadData(): Promise<void> {
         this.dataLoading = true;
         this.cardSettings = await this._dbService.readList(new CardSettings(), { card_id: this.dashboardCard.card_id }) as CardSettings[];
+        this.formulas = await this._dbService.readList(new Formula()) as Formula[];
         this.dataLoading = false;
     }
 
@@ -71,7 +74,7 @@ export class CardSettingsDialogComponent implements OnInit{
         if (cardSetting && cardSetting.possible_values) {
             possibleValues = cardSetting.possible_values;
         }
-        return possibleValues;
+        return [...this.formulas.map(x=>x.name), ...possibleValues];
     }
 
     //#region Actions

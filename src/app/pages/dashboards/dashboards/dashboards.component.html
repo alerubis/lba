@@ -64,6 +64,50 @@
 
         </div>
 
+        <div class="card">
+
+            <div class="card-title flex flex-row items-center justify-between">
+
+                <div>
+                    Formulas
+                </div>
+
+                <button mat-flat-button (click)="createFormula()">
+                    <mat-icon>add</mat-icon>
+                    New formula
+                </button>
+
+            </div>
+
+            <div class="bg-gray-200 p-6">
+
+                @if (formulas.length > 0) {
+
+                    <div class="flex flex-col divide-y divide-gray-300">
+                        @for (formula of formulas; track $index) {
+                            <div class="bg-white p-6 hover:bg-gray-100 cursor-pointer" (click)="updateFormula(formula)">
+                                {{ formula.name }}
+                            </div>
+                        }
+                    </div>
+
+                } @else {
+
+                    <div class="flex flex-col items-center justify-center bg-white rounded p-6">
+                        <div class="text-center">
+                            No formulas found.
+                        </div>
+                        <div class="text-gray-500 text-sm text-center">
+                            Create your first formula by clicking the button "New formula".
+                        </div>
+                    </div>
+
+                }
+
+            </div>
+
+        </div>
+
     </div>
 
 </div>

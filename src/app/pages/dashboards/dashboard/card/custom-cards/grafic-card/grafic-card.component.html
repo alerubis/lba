@@ -1,9 +1,8 @@
-
 @if (loading) {
-    <div class="absolute justify-center w-full h-full z-10">
-        <div class="absolute w-full h-full bg-gray-100 opacity-50 z-20"></div>
-        <mat-spinner class="z-30 m-auto mt-12"></mat-spinner>
-    </div>
+<div class="absolute justify-center w-full h-full z-10">
+    <div class="absolute w-full h-full bg-gray-100 opacity-50 z-20"></div>
+    <mat-spinner class="z-30 m-auto mt-12"></mat-spinner>
+</div>
 }
 
 @if (dashboardCard.card_id === 'LINEUP') {
@@ -25,7 +24,7 @@
                         @if (m.teamA_players.length > 0) {
                         <!-- TEAM A -->
                         @for (p of m.teamA_players; track $index) {
-                        <img class="w-8 h-8 rounded-full" [class.ring-2]="p.entered" [class.ring-green-400]="p.entered"
+                        <img class="w-10 h-10 rounded-full" [class.ring-2]="p.entered" [class.ring-green-400]="p.entered"
                             [src]="p.logo_url" [title]="p.name + ' ' + p.surname">
                         }
                         }
@@ -34,12 +33,12 @@
                 }
             </tr>
 
-            <!-- Riga grafico (colspan 40) -->
+            <!-- Riga grafico (colspan 40)
             <tr class="border-b border-gray-200">
                 <td [attr.colspan]="minuti.length">
                     <div echarts [options]="chartOption" [autoResize]="true" class="w-full h-60"></div>
                 </td>
-            </tr>
+            </tr> -->
 
             <!-- Riga Team B -->
             <tr class="border-b border-gray-100 hover:bg-gray-50">
@@ -49,7 +48,7 @@
                         @if (m.teamB_players.length > 0) {
                         <!-- TEAM B -->
                         @for (p of m.teamB_players; track $index) {
-                        <img class="w-8 h-8 rounded-full" [class.ring-2]="p.entered" [class.ring-green-400]="p.entered"
+                        <img class="w-10 h-10 rounded-full" [class.ring-2]="p.entered" [class.ring-green-400]="p.entered"
                             [src]="p.logo_url" [title]="p.name + ' ' + p.surname">
                         }
                         }
@@ -62,7 +61,7 @@
 </div>
 }
 @else if (dashboardCard.card_id?.substring(0,5) !== 'TABLE'){
-<div echarts [options]="chartOption" [autoResize]="true" class="w-full h-full"></div>
+    <div echarts [options]="chartOption" [autoResize]="true" class="w-full h-full"></div>
 }
 @else {
 <div class="overflow-auto w-full h-full">
@@ -74,26 +73,52 @@
                     <th class="px-4 text-center border-r border-gray-300">MIN</th>
                 }
                 @for (stat of statTable; track $index) {
-                <th class="px-4 text-center border-r border-gray-300">{{ stat }}</th>
+                    <th [colSpan]="getColSpan(stat, dashboardCard.card_id)" class="px-4 text-center border-r border-gray-300">{{ stat }}</th>
                 }
             </tr>
         </thead>
         <tbody>
+            <!-- Riga MEDIA -->
+            @if (dashboardCard.card_id !== 'TABLE_LINEUP_TEAM') {
+                <tr class="border-b border-gray-200 bg-gray-100 font-semibold">
+                    <td class="px-4 py-2 border-r border-gray-300">Media</td>
+                    @if (dashboardCard.card_id === 'TABLE_LINEUP_TEAM') {
+                        <td class="text-center px-4 py-2 border-r border-gray-300">{{ 0 }}</td>
+                    }
+                    @for (stat of statTable; track $index) {
+                        <td class="text-center px-4 py-2 border-r border-gray-300">{{ avgRow[stat] }}</td>
+                        @if (dashboardCard.card_id === 'TABLE_GAME_LINEUP' || dashboardCard.card_id === 'TABLE_GAME_TEAM') {
+                            <td class="text-red-600 text-center px-4 py-2 border-r border-gray-300">{{ avgRow[`${stat}o`] }}</td>
+                            @if (stat === 'points') {
+                                <td class="text-red-600 text-center px-4 py-2 border-r border-gray-300">{{ getPlusMinus(avgRow[stat], avgRow[`${stat}o`]) }}</td>
+                            }
+                        }
+                    }
+                </tr>
+            }
+
+            <!-- Dati delle righe -->
             @for (row of rows; track $index) {
-            <tr class="border-b border-gray-100 hover:bg-gray-50">
+            <tr class="cursor-pointer hover:bg-gray-100" [routerLink]="getRouterLinkTable(row, dashboardCard.card_id)" 
+                                                         [queryParams]="getQueryParams(row, dashboardCard.card_id)">
                 <td class="whitespace-nowrap px-4 py-2 border-r border-gray-300">
                     <div class="flex flex-row items-center justify-start gap-2">
                         @if (dashboardCard.card_id !== 'TABLE_LINEUP_TEAM') {
-                        <div>{{ row.description }}</div>
+                            <div [ngClass]="{ 'text-green-500': row.win, 'text-red-500': row.win === false }">{{ row.description }}</div>
                         }
                         @else {
-                        <div class="flex flex-row">
-                            <img class="w-8 h-8 rounded-full" [src]="row.player1.logo_url" [title]="row.player1.name + ' ' + row.player1.surname">
-                            <img class="w-8 h-8 rounded-full" [src]="row.player2.logo_url" [title]="row.player2.name + ' ' + row.player2.surname">
-                            <img class="w-8 h-8 rounded-full" [src]="row.player3.logo_url" [title]="row.player3.name + ' ' + row.player3.surname">
-                            <img class="w-8 h-8 rounded-full" [src]="row.player4.logo_url" [title]="row.player4.name + ' ' + row.player4.surname">
-                            <img class="w-8 h-8 rounded-full" [src]="row.player5.logo_url" [title]="row.player5.name + ' ' + row.player5.surname">
-                        </div>
+                            <div class="flex flex-row">
+                                <img class="w-10 h-10 rounded-full" [src]="row.player1.logo_url"
+                                    [title]="row.player1.name + ' ' + row.player1.surname">
+                                <img class="w-10 h-10 rounded-full" [src]="row.player2.logo_url"
+                                    [title]="row.player2.name + ' ' + row.player2.surname">
+                                <img class="w-10 h-10 rounded-full" [src]="row.player3.logo_url"
+                                    [title]="row.player3.name + ' ' + row.player3.surname">
+                                <img class="w-10 h-10 rounded-full" [src]="row.player4.logo_url"
+                                    [title]="row.player4.name + ' ' + row.player4.surname">
+                                <img class="w-10 h-10 rounded-full" [src]="row.player5.logo_url"
+                                    [title]="row.player5.name + ' ' + row.player5.surname">
+                            </div>
                         }
                     </div>
                 </td>
@@ -101,7 +126,13 @@
                     <td class="text-center px-4 py-2 border-r border-gray-300">{{ row.minutes_played.toFixed(0) }}</td>
                 }
                 @for (stat of statTable; track $index) {
-                <td class="text-center px-4 py-2 border-r border-gray-300">{{ row[stat] }}</td>
+                    <td class="text-center px-4 py-2 border-r border-gray-300">{{ formula(stat, row) }}</td>
+                    @if (dashboardCard.card_id === 'TABLE_GAME_LINEUP' || dashboardCard.card_id === 'TABLE_GAME_TEAM') {
+                        <td class="text-red-600 text-center px-4 py-2 border-r border-gray-300">{{ formula(stat, row, [], true) }}</td>
+                        @if (stat === 'points') {
+                            <td class="text-red-600 text-center px-4 py-2 border-r border-gray-300">{{ getPlusMinus(row[stat], row[`${stat}o`]) }}</td>
+                        }    
+                    }
                 }
             </tr>
             }

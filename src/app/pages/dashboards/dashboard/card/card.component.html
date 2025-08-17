@@ -17,12 +17,15 @@
     <div class="card-content w-full h-full">
         @if (dashboardCard.card_id) {
             <grafic-card
+                [edit]="edit"
                 [dashboardCard]="dashboardCard"
                 [dashboardCardSettings]="dashboardCardSettings"
                 [gameIds]="gameIds"
                 [playerId]="playerId"
                 [gameId]="gameId"
                 [teamId]="teamId"
+                [playerIds]="playerIds"
+                [playerOutIds]="playerOutIds"
             ></grafic-card>
         }
         @else {

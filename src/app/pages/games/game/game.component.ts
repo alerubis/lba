@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute, ParamMap, RouterLink } from '@angular/router';
 import { DbService } from '../../../shared/services/db.service';
 import { Game } from '../../../shared/types/db/auto/Game';
 import { DashboardComponent } from '../../dashboards/dashboard/dashboard.component';
@@ -29,6 +29,7 @@ import { DatePipe, NgClass } from '@angular/common';
         FormsModule,
         NgClass,
         DatePipe,
+        RouterLink,
     ]
 })
 export class GameComponent {

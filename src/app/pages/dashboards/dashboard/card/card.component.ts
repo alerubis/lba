@@ -7,6 +7,8 @@ import { DashboardCard } from '../../../../shared/types/db/auto/DashboardCard';
 import { CardSettingsDialogComponent } from './card-settings-dialog/card-settings-dialog.component';
 import { DashboardCardSettings } from '../../../../shared/types/db/auto/DashboardCardSettings';
 import { GraficCardComponent } from './custom-cards/grafic-card/grafic-card.component';
+import html2canvas from 'html2canvas';
+import { ElementRef, ViewChild } from '@angular/core';
 
 @Component({
     selector: 'app-card',
@@ -27,9 +29,12 @@ export class CardComponent{
     @Input() gameIds: number[] = [];
     @Input() playerId: number | undefined;
     @Input() teamId: number | undefined;
+    @Input() playerIds: number[] = [];
+    @Input() playerOutIds: number[] = [];
 
     @Output() onCardUpdate: EventEmitter<any> = new EventEmitter();
     @Output() onCardDelete: EventEmitter<any> = new EventEmitter();
+    @ViewChild('cardContainer', { static: false }) cardContainerRef!: ElementRef;
 
     constructor(
         private _dbService: DbService,
@@ -65,5 +70,31 @@ export class CardComponent{
             this.onCardDelete.emit(response);
         });
     }
+    async salvaCardComeImmagine(): Promise<void> {
+        if (!this.cardContainerRef?.nativeElement) return;
+    
+        const element = this.cardContainerRef.nativeElement;
+    
+        const canvas = await html2canvas(this.cardContainerRef.nativeElement, {
+            backgroundColor: '#ffffff', // colore semplice compatibile
+            useCORS: true,
+            ignoreElements: (el) => {
+                const style = getComputedStyle(el);
+                return style.backgroundColor.includes('oklch');
+            }
+        });        
+    
+        const base64Image = canvas.toDataURL('image/png');
+    
+        // ESEMPIO 1: scarica subito il file
+        const link = document.createElement('a');
+        link.href = base64Image;
+        link.download = `snapshot-${this.dashboardCard.card_id}.png`;
+        link.click();
+    
+        // ESEMPIO 2: salvalo nel localStorage (facoltativo)
+        // localStorage.setItem(`snapshot-${this.dashboardCard.card_id}`, base64Image);
+    }
+    
 
 }

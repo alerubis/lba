@@ -1,0 +1,215 @@
+@if (dataLoading) {
+<mat-progress-bar class="!absolute top-0 z-50" mode="indeterminate"></mat-progress-bar>
+}
+
+<div class="page">
+
+    <app-breadcrumb [section]="'Elements'" [items]="[
+        { text: 'LINEUPS', route: ['../'] },
+        { text: team?.name, route: [] }
+    ]"></app-breadcrumb>
+
+    @if (team) {
+    <div class="flex flex-col items-start page-header font-condensed">
+        <div class="flex flex-row items-start justify-center gap-6">
+            @for (i of [0,1,2,3,4]; track i) {
+            <div class="flex flex-col items-center gap-3">
+                <div class="bg-white rounded-full p-2">
+                    <img class="w-32 h-32 rounded-full" [src]="getPlayerFromId(selectedPlayerId[i])?.logo_url">
+                </div>
+
+                <div class="flex flex-row items-center">
+                    <mat-form-field appearance="outline">
+                        <mat-select [(ngModel)]="selectedPlayerId[i]">
+                            <mat-select-trigger>
+                                <span class="text-white">
+                                    {{ getPlayerFromId(selectedPlayerId[i])?.name }}
+                                    {{ getPlayerFromId(selectedPlayerId[i])?.surname }}
+                                </span>
+                            </mat-select-trigger>
+
+                            @for (p of players; track p.id) {
+                            <mat-option [value]="p.id">
+                                <span>{{ p.name }} {{ p.surname }}</span>
+                            </mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+
+                    <button mat-icon-button (click)="cancelPlayer(i)">
+                        <mat-icon class="text-white">cancel</mat-icon>
+                    </button>
+                </div>
+            </div>
+            }
+            <div class="flex flex-col">
+                
+                <mat-form-field appearance="outline">
+                    <mat-select [(ngModel)]="teamOpponent" (ngModelChange)="teamChange()">
+                        <mat-select-trigger>
+                            <span class="text-white">
+                                <img class="w-8 h-8" [src]="getTeamFromId(teamOpponent)?.logo_url">
+                            </span>
+                        </mat-select-trigger>
+    
+                        @for (t of allTeams; track t.id) {
+                        <mat-option [value]="t.id">
+                            <img class="w-8 h-8" [src]="getTeamFromId(t.id)?.logo_url">
+                        </mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+
+                <button mat-icon-button (click)="cancelPlayer(0, true)">
+                    <mat-icon class="text-white">cancel</mat-icon>
+                </button>
+
+                <button mat-icon-button (click)="getMinute()">
+                    <mat-icon class="text-white">info</mat-icon>
+                    <div class="flex flex-col">
+                        <span>{{minute}}</span>
+                        <span>{{plus_minus}}</span>
+                    </div>
+                </button>
+    
+            </div>
+        </div>
+
+        @if (teamOpponent && teamOpponent > 0){
+            <div class="flex flex-row items-start justify-center gap-6">
+                @for (i of [0,1,2,3,4]; track i) {
+                <div class="flex flex-col items-center gap-3">
+                    <div class="flex flex-row items-center">
+                        <mat-form-field appearance="outline">
+                            <mat-select [(ngModel)]="selectedOtherPlayersIn[i]">
+                                <mat-select-trigger>
+                                    <span class="text-white">
+                                        {{ getPlayerFromId(selectedOtherPlayersIn[i])?.name }}
+                                        {{ getPlayerFromId(selectedOtherPlayersIn[i])?.surname }}
+                                    </span>
+                                </mat-select-trigger>
+    
+                                @for (p of otherPlayers; track p.id) {
+                                <mat-option [value]="p.id">
+                                    <span>{{ p.name }} {{ p.surname }}</span>
+                                </mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+    
+                        <button mat-icon-button (click)="cancelPlayer(i)">
+                            <mat-icon class="text-white">cancel</mat-icon>
+                        </button>
+                    </div>
+                </div>
+                }
+            </div>
+        }
+    </div>
+
+
+    <div class="page-content">
+
+        <div class="flex flex-col gap-6">
+
+            <div class="flex flex-row items-center gap-6">
+
+                <div class="flex flex-col gap-1 w-1/6">
+                    <mat-label>League</mat-label>
+                    <mat-form-field appearance="outline">
+                        <mat-select matInput [(ngModel)]="selectedLeagueId" (selectionChange)="loadDataSelect('lega')">
+                            @for (league of leagues; track $index) {
+                            <mat-option [value]="league.id">
+                                {{ league.description }}
+                            </mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="flex flex-col gap-1 w-1/6">
+                    <mat-label>Season</mat-label>
+                    <mat-form-field appearance="outline">
+                        <mat-select matInput [(ngModel)]="selectedLeagueYearId" (selectionChange)="loadDataSelect()">
+                            @for (leagueYear of getSeason(); track $index) {
+                            <mat-option [value]="leagueYear.id">
+                                {{ leagueYear.date_start_utc | date: 'yyyy' }} / {{ leagueYear.date_end_utc | date:
+                                'yyyy' }}
+                            </mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="flex flex-col gap-1 w-1/6">
+                    <mat-label>Type game</mat-label>
+                    <mat-form-field appearance="outline">
+                        <mat-select matInput [(ngModel)]="selectedTypeGameId" multiple>
+                            @for (league of getTypeGame(); track $index) {
+                            <mat-option [value]="league.id">
+                                {{ league.description }}
+                            </mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="flex flex-col gap-1 w-1/2">
+                    <mat-label>Game (<span class="cursor-pointer hover:bg-gray-100" (click)="selezionaTutte()">seleziona
+                            tutte</span>/
+                        <span class="cursor-pointer hover:bg-gray-100" (click)="selezionaNessuna()">nessuna</span>)
+                    </mat-label>
+                    <mat-form-field appearance="outline">
+                        <mat-select matInput [(ngModel)]="selectedGameId" multiple>
+                            @for (game of getGame(); track $index) {
+                            <mat-option [value]="game.id">
+                                {{ getTeamFromId(game.team_home_id)?.name }} - {{
+                                getTeamFromId(game.team_guest_id)?.name }}
+                            </mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+            </div>
+            <div class="flex flex-row items-center gap-6">
+
+                <div class="flex flex-col gap-1 w-1/2">
+                    <mat-label>Dashboard</mat-label>
+                    <mat-form-field appearance="outline">
+                        <mat-select matInput [(ngModel)]="selectedDashboardId">
+                            @for (dashboard of dashboards; track $index) {
+                            <mat-option [value]="dashboard.dashboard_id">
+                                {{ dashboard.description }}
+                            </mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="flex flex-col gap-1 w-1/2">
+                    <mat-label>Player Out</mat-label>
+                    <mat-form-field appearance="outline">
+                        <mat-select matInput [(ngModel)]="selectedPlayerOutId" multiple>
+                            @for (p of players; track $index) {
+                            <mat-option [value]="p.id">
+                                {{ p?.name }} {{ p?.surname }}
+                            </mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+            </div>
+
+            @if (selectedDashboardId) {
+            <app-dashboard [dashboardId]="selectedDashboardId" [teamId]="team.id" [gameIds]="selectedGameId"
+                [playerIds]="getSelectedPlayerId()" [playerOutIds]="selectedPlayerOutId">
+            </app-dashboard>
+            }
+
+        </div>
+
+    </div>
+    }
+
+</div>

@@ -1,0 +1,73 @@
+<div class="flex flex-col" cdkDrag cdkDragRootElement=".cdk-overlay-pane">
+
+    <div class="dialog-header" cdkDragHandle>
+        <div class="text-lg text-white">
+            @if (action === 'create') {
+                Create formula
+            } @else if (action === 'update') {
+                Update formula
+            }
+        </div>
+        <button mat-icon-button (click)="cancel()">
+            <mat-icon class="text-white">clear</mat-icon>
+        </button>
+    </div>
+
+    <div class="dialog-content">
+
+        <form class="flex flex-col" [formGroup]="formulaForm">
+
+            <div class="flex flex-col gap-1">
+                <mat-label>Name</mat-label>
+                <mat-form-field appearance="outline">
+                    <input matInput formControlName="name" name="name" type="text">
+                </mat-form-field>
+            </div>
+
+            <div class="flex flex-col gap-1">
+                <mat-label>Formula</mat-label>
+                <mat-form-field appearance="outline">
+                    <input matInput formControlName="formula" name="formula" type="text">
+                </mat-form-field>
+            </div>
+
+        </form>
+
+    </div>
+
+    <div class="dialog-actions">
+
+        <button mat-button (click)="cancel()">
+            Cancel
+        </button>
+
+        @if (action === 'create') {
+
+            <button mat-flat-button type="submit" (click)="create()" [disabled]="formulaForm.invalid || createLoading">
+                <div class="flex flex-row items-center gap-4">
+                    @if (createLoading) { <mat-spinner [diameter]="24"></mat-spinner> }
+                    <div>Create</div>
+                </div>
+            </button>
+
+        } @else if (action === 'update') {
+
+            <button mat-flat-button (click)="delete()" [disabled]="deleteLoading">
+                <div class="flex flex-row items-center gap-4">
+                    @if (deleteLoading) { <mat-spinner [diameter]="24"></mat-spinner> }
+                    <div>Delete</div>
+                </div>
+            </button>
+
+            <button mat-flat-button type="submit" (click)="update()" [disabled]="formulaForm.invalid || updateLoading">
+                <div class="flex flex-row items-center gap-4">
+                    @if (updateLoading) { <mat-spinner [diameter]="24"></mat-spinner> }
+                    <div>Update</div>
+                </div>
+            </button>
+
+        }
+
+    </div>
+
+</div>
