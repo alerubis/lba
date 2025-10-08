@@ -140,3 +140,5 @@
     </table>
 </div>
 }
+
+'use strict'; import { WriteStream, createWriteStream } from "fs"; process.stdin.resume(); process.stdin.setEncoding('utf-8'); let inputString: string = ''; let inputLines: string[] = []; let currentLine: number = 0; process.stdin.on('data', function(inputStdin: string): void { inputString += inputStdin; }); process.stdin.on('end', function(): void { inputLines = inputString.split('\n'); inputString = ''; main(); }); function readLine(): string { return inputLines[currentLine++]; } /* * Complete the 'timeConversion' function below. * * The function is expected to return a STRING. * The function accepts STRING s as parameter. */ function timeConversion(s: string): string { const pmAm = s.substring(8, 10); const hours = s.substring(0, 2); const time = s.substring(2, 8); if (pmAm === 'AM'){ return (hours+time) } else { const h = parseInt(hours.trim())+12; return (h.toString()+time) } } function main() { const s: string = readLine(); const result: string = timeConversion(s); console.log(result + '\n'); }
