@@ -33,6 +33,10 @@ export const routes: Routes = [
                 loadChildren: () => import('./lineups/lineups.routes').then(m => m.routes),
             },
             {
+                path: 'reports',
+                loadChildren: () => import('./reports/reports.routes').then(m => m.routes),
+            },
+            {
                 path: '',
                 redirectTo: 'home',
                 pathMatch: 'full'

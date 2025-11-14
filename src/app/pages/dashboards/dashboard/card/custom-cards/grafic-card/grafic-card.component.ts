@@ -51,7 +51,9 @@ export class GraficCardComponent extends BaseCardComponent {
     minuti: any[] = [];
     formule: Formula[] = [];
     courtMap: any;
-    avgRow: { [key: string]: number } = {};
+    avgRow1: { [key: string]: number } = {};
+    avgRow4: { [key: string]: number } = {};
+    avgRowAll: { [key: string]: number } = {};
 
     constructor(
         private _dbService: DbService,
@@ -1649,28 +1651,40 @@ export class GraficCardComponent extends BaseCardComponent {
 
     calcolaMedieStatistiche(oppositor?: boolean): void {
         this.rows = _.orderBy(this.rows, x => x.game_id);
-        this.avgRow = {};
+        this.avgRow1 = {};
+        this.avgRow4 = {};
+        this.avgRowAll = {};
 
         if (!this.rows || this.rows.length === 0) return;
 
         for (const stat of this.statTable) {
-            
-            const valore = this.formula(stat, null, this.rows);
-            this.avgRow[stat] = +valore;
+
+            const valoreAll = this.formula(stat, null, this.rows);
+            const valore4 = this.formula(stat, null, this.rows.slice(-4));
+            const valore1 = this.formula(stat, null, this.rows.slice(-1));
+
+            this.avgRowAll[stat] = +valoreAll;
+            this.avgRow4[stat] = +valore4;
+            this.avgRow1[stat] = +valore1;
 
             if (oppositor) {
                 const statO = `${stat}o`;
 
-                const valore = this.formula(stat, null, this.rows, true);
-                this.avgRow[statO] = +valore;
+                const valoreAll = this.formula(stat, null, this.rows, true);
+                const valore4 = this.formula(stat, null, this.rows.slice(-4), true);
+                const valore1 = this.formula(stat, null, this.rows.slice(-1), true);
+                this.avgRowAll[statO] = +valoreAll;
+                this.avgRow4[statO] = +valore4;
+                this.avgRow1[statO] = +valore1;
             }
         }
 
         if (this.dashboardCard.card_id === 'TABLE_LINEUP_TEAM') {
             const minVals = this.rows.map(row => +row.minutes_played || 0);
             const minMedia = minVals.reduce((a, b) => a + b, 0) / minVals.length;
-            this.avgRow['minutes_played'] = +minMedia.toFixed(1);
+            this.avgRow1['minutes_played'] = +minMedia.toFixed(1);
         }
+
     }
 
     getRouterLinkTable(row: any, card: string | undefined): any[] {

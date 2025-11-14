@@ -202,8 +202,12 @@
             </div>
 
             @if (selectedDashboardId) {
-            <app-dashboard [dashboardId]="selectedDashboardId" [teamId]="team.id" [gameIds]="selectedGameId"
-                [playerIds]="getSelectedPlayerId()" [playerOutIds]="selectedPlayerOutId">
+            <app-dashboard
+                [dashboardId]="selectedDashboardId"
+                [teamId]="team.id"
+                [gameIds]="selectedGameId"
+                [playerIds]="getSelectedPlayerId()"
+                [playerOutIds]="selectedPlayerOutId">
             </app-dashboard>
             }
 

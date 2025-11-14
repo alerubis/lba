@@ -79,22 +79,54 @@
         </thead>
         <tbody>
             <!-- Riga MEDIA -->
-            @if (dashboardCard.card_id !== 'TABLE_LINEUP_TEAM') {
-                <tr class="border-b border-gray-200 bg-gray-100 font-semibold">
-                    <td class="px-4 py-2 border-r border-gray-300">Media</td>
-                    @if (dashboardCard.card_id === 'TABLE_LINEUP_TEAM') {
-                        <td class="text-center px-4 py-2 border-r border-gray-300">{{ 0 }}</td>
-                    }
-                    @for (stat of statTable; track $index) {
-                        <td class="text-center px-4 py-2 border-r border-gray-300">{{ avgRow[stat] }}</td>
-                        @if (dashboardCard.card_id === 'TABLE_GAME_LINEUP' || dashboardCard.card_id === 'TABLE_GAME_TEAM') {
-                            <td class="text-red-600 text-center px-4 py-2 border-r border-gray-300">{{ avgRow[`${stat}o`] }}</td>
-                            @if (stat === 'points') {
-                                <td class="text-red-600 text-center px-4 py-2 border-r border-gray-300">{{ getPlusMinus(avgRow[stat], avgRow[`${stat}o`]) }}</td>
+            @if (dashboardCard.card_id !== 'TABLE_LINEUP_TEAM' && dashboardCard.card_id !== 'TABLE_PLAYER_GAME') {
+                @if (this.rows.length > 2) {
+                    <tr class="border-b border-gray-200 bg-gray-100 font-semibold">
+                        <td class="px-4 py-2 border-r border-gray-300">Media</td>
+                        @if (dashboardCard.card_id === 'TABLE_LINEUP_TEAM') {
+                            <td class="text-center px-4 py-2 border-r border-gray-300">{{ 0 }}</td>
+                        }
+                        @for (stat of statTable; track $index) {
+                            <td class="text-center px-4 py-2 border-r border-gray-300">{{ avgRowAll[stat] }}</td>
+                            @if (dashboardCard.card_id === 'TABLE_GAME_LINEUP' || dashboardCard.card_id === 'TABLE_GAME_TEAM') {
+                                <td class="text-red-600 text-center px-4 py-2 border-r border-gray-300">{{ avgRowAll[`${stat}o`] }}</td>
+                                @if (stat === 'points') {
+                                    <td class="text-red-600 text-center px-4 py-2 border-r border-gray-300">{{ getPlusMinus(avgRowAll[stat], avgRowAll[`${stat}o`]) }}</td>
+                                }
                             }
                         }
-                    }
-                </tr>
+                    </tr>
+                    <tr class="border-b border-gray-200 bg-gray-100 font-semibold">
+                        <td class="px-4 py-2 border-r border-gray-300">Last 4</td>
+                        @if (dashboardCard.card_id === 'TABLE_LINEUP_TEAM') {
+                            <td class="text-center px-4 py-2 border-r border-gray-300">{{ 0 }}</td>
+                        }
+                        @for (stat of statTable; track $index) {
+                            <td class="text-center px-4 py-2 border-r border-gray-300">{{ avgRow4[stat] }}</td>
+                            @if (dashboardCard.card_id === 'TABLE_GAME_LINEUP' || dashboardCard.card_id === 'TABLE_GAME_TEAM') {
+                                <td class="text-red-600 text-center px-4 py-2 border-r border-gray-300">{{ avgRow4[`${stat}o`] }}</td>
+                                @if (stat === 'points') {
+                                    <td class="text-red-600 text-center px-4 py-2 border-r border-gray-300">{{ getPlusMinus(avgRow4[stat], avgRow4[`${stat}o`]) }}</td>
+                                }
+                            }
+                        }
+                    </tr>
+                    <tr class="border-b border-gray-200 bg-gray-100 font-semibold">
+                        <td class="px-4 py-2 border-r border-gray-300">Last </td>
+                        @if (dashboardCard.card_id === 'TABLE_LINEUP_TEAM') {
+                            <td class="text-center px-4 py-2 border-r border-gray-300">{{ 0 }}</td>
+                        }
+                        @for (stat of statTable; track $index) {
+                            <td class="text-center px-4 py-2 border-r border-gray-300">{{ avgRow1[stat] }}</td>
+                            @if (dashboardCard.card_id === 'TABLE_GAME_LINEUP' || dashboardCard.card_id === 'TABLE_GAME_TEAM') {
+                                <td class="text-red-600 text-center px-4 py-2 border-r border-gray-300">{{ avgRow1[`${stat}o`] }}</td>
+                                @if (stat === 'points') {
+                                    <td class="text-red-600 text-center px-4 py-2 border-r border-gray-300">{{ getPlusMinus(avgRow1[stat], avgRow1[`${stat}o`]) }}</td>
+                                }
+                            }
+                        }
+                    </tr>
+                }
             }
 
             <!-- Dati delle righe -->

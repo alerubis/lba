@@ -1,0 +1,193 @@
+@if (dataLoading) {
+    <mat-progress-bar class="!absolute top-0 z-50" mode="indeterminate"></mat-progress-bar>
+}
+
+<div class="page">
+
+    <app-breadcrumb [section]="'Elements'" [items]="[
+        { text: 'REPORTS', route: ['../'] },
+        { text: team?.name, route: [] }
+    ]"
+    ></app-breadcrumb>
+
+    @if (team) {
+
+        <div id="exportArea">
+            <div class="page-header font-condensed">
+                <div class="flex flex-row items-start justify-center gap-12">
+                    <div class="flex flex-col items-center gap-3">
+                        <div class="bg-white rounded-full p-2">
+                            <img class="w-32 h-32 rounded-full" [src]="team.logo_url"/>
+                        </div>
+                        <div class="text-2xl">
+                            {{ team.name }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+
+            <div class="page-content">
+
+                <div class="flex flex-col gap-6">
+
+                    <div class="flex flex-row items-center gap-6 no-print">
+
+                        <div class="flex flex-col gap-1 w-1/6">
+                            <mat-label>League</mat-label>
+                            <mat-form-field appearance="outline">
+                                <mat-select matInput [(ngModel)]="selectedLeagueId" (selectionChange)="loadDataSelect('lega')">
+                                    @for (league of leagues; track $index) {
+                                        <mat-option [value]="league.id">
+                                            {{ league.description }}
+                                        </mat-option>
+                                    }
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="flex flex-col gap-1 w-1/6">
+                            <mat-label>Season</mat-label>
+                            <mat-form-field appearance="outline">
+                                <mat-select matInput [(ngModel)]="selectedLeagueYearId" (selectionChange)="loadDataSelect()">
+                                    @for (leagueYear of getSeason(); track $index) {
+                                        <mat-option [value]="leagueYear.id">
+                                            {{ leagueYear.date_start_utc | date: 'yyyy' }} / {{ leagueYear.date_end_utc | date: 'yyyy' }}
+                                        </mat-option>
+                                    }
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="flex flex-col gap-1 w-1/6">
+                            <mat-label>Type game</mat-label>
+                            <mat-form-field appearance="outline">
+                                <mat-select matInput [(ngModel)]="selectedTypeGameId" multiple>
+                                    @for (league of getTypeGame(); track $index) {
+                                        <mat-option [value]="league.id">
+                                            {{ league.description }}
+                                        </mat-option>
+                                    }
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="flex flex-col gap-1 w-1/2">
+                            <mat-label>Game (<span class="cursor-pointer hover:bg-gray-100" (click)="selezionaTutte()">seleziona tutte</span>/
+                                <span class="cursor-pointer hover:bg-gray-100" (click)="selezionaNessuna()">nessuna</span>)
+                            </mat-label>
+                            <mat-form-field appearance="outline">
+                                <mat-select matInput [(ngModel)]="selectedGameId" multiple>
+                                    @for (game of getGame(); track $index) {
+                                        <mat-option [value]="game.id">
+                                            {{ getTeamFromId(game.team_home_id)?.name }} - {{ getTeamFromId(game.team_guest_id)?.name }}
+                                        </mat-option>
+                                    }
+                                </mat-select>
+                            </mat-form-field>
+                        </div>                
+                    </div>
+                    <div class="flex flex-row items-center no-print">
+
+                        <div class="flex flex-col gap-1 w-full">
+                            <mat-label>Dashboard team</mat-label>
+                            <mat-form-field appearance="outline">
+                                <mat-select matInput [(ngModel)]="selectedDashboardIdTeam">
+                                    @for (dashboard of dashboardsTeam; track $index) {
+                                        <mat-option [value]="dashboard.dashboard_id">
+                                            {{ dashboard.description }}
+                                        </mat-option>
+                                    }
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="flex flex-col gap-1 w-full">
+                            <mat-label>Dashboard game</mat-label>
+                            <mat-form-field appearance="outline">
+                                <mat-select matInput [(ngModel)]="selectedDashboardIdGame">
+                                    @for (dashboard of dashboardsGame; track $index) {
+                                        <mat-option [value]="dashboard.dashboard_id">
+                                            {{ dashboard.description }}
+                                        </mat-option>
+                                    }
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="flex flex-col gap-1 w-full">
+                            <mat-label>Dashboard lineup</mat-label>
+                            <mat-form-field appearance="outline">
+                                <mat-select matInput [(ngModel)]="selectedDashboardIdLineup">
+                                    @for (dashboard of dashboardsLineup; track $index) {
+                                        <mat-option [value]="dashboard.dashboard_id">
+                                            {{ dashboard.description }}
+                                        </mat-option>
+                                    }
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="flex flex-col gap-1 w-full">
+                            <mat-label>Dashboard player</mat-label>
+                            <mat-form-field appearance="outline">
+                                <mat-select matInput [(ngModel)]="selectedDashboardIdPlayer">
+                                    @for (dashboard of dashboardsPlayer; track $index) {
+                                        <mat-option [value]="dashboard.dashboard_id">
+                                            {{ dashboard.description }}
+                                        </mat-option>
+                                    }
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                    </div>
+
+                    
+                    @if (selectedDashboardIdTeam) {
+                        <app-dashboard
+                            [dashboardId]="selectedDashboardIdTeam"
+                            [teamId]="team.id"
+                            [gameIds]="selectedGameId.slice(-1)"
+                        ></app-dashboard>
+                    }
+                    @if (selectedDashboardIdGame) {
+                        <app-dashboard
+                            [dashboardId]="selectedDashboardIdGame"
+                            [gameId]="selectedGameId.slice(-1)[0]"
+                        ></app-dashboard>
+                    }
+                    @if (selectedDashboardIdLineup) {
+                        <app-dashboard
+                            [dashboardId]="selectedDashboardIdLineup"
+                            [teamId]="team.id"
+                            [gameIds]="selectedGameId"
+                            [playerIds]="[]"
+                            [playerOutIds]="[]">
+                        </app-dashboard>
+                    }
+                    @for (player of playerLastGame; track $index) {
+                        <div class="flex flex-row items-start justify-center gap-12">
+                            <div class="flex flex-col items-center">
+                                <div class="bg-white rounded-full p-2">
+                                    <img class="w-32 h-32 rounded-full" [src]="player.logo_url"/>
+                                </div>
+                                <div class="text-2xl">
+                                    {{ player.name }} {{ player.surname }}
+                                </div>
+                            </div>
+                        </div>
+                        @if (selectedDashboardIdPlayer) {
+                            <app-dashboard
+                                [dashboardId]="selectedDashboardIdPlayer"
+                                [playerId]="player.id"
+                                [gameIds]="selectedGameId"
+                            ></app-dashboard>
+                        }
+                    }
+
+                </div>
+
+            </div>
+        </div>
+    }
+
+</div>
