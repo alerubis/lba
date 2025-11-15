@@ -19,6 +19,10 @@ import { TypeLeagueTypeGame } from '../../../shared/types/db/auto/TypeLeagueType
 import { TypeGame } from '../../../shared/types/db/auto/TypeGame';
 import { Game } from '../../../shared/types/db/auto/Game';
 import { Player } from '../../../shared/types/db/auto/Player';
+import html2canvas from 'html2canvas';
+import * as pdfMake from 'pdfmake/build/pdfmake';
+import { TDocumentDefinitions, Content } from 'pdfmake/interfaces';
+import * as htmlToImage from 'html-to-image';
 
 @Component({
     selector: 'app-report',
@@ -49,6 +53,7 @@ export class ReportComponent {
     dashboardsLineup: Dashboard[] = [];
     teams: Team[] = [];
     dataLoading: boolean = false;
+    pdfLoading: boolean = false;
 
     selectedDashboardIdTeam: number | undefined;
     selectedDashboardIdPlayer: number | undefined;
@@ -173,4 +178,102 @@ export class ReportComponent {
     selezionaNessuna(): void {
         this.selectedGameId = [];
     }
+    async exportPdf(): Promise<void> {
+        this.pdfLoading = true;
+
+        console.log("Avvio exportPdf…");
+        await new Promise(r => setTimeout(r, 300)); // permette ai dashboard di stabilizzarsi
+        await this.doPdfExport();
+    }
+    
+    private async doPdfExport(): Promise<void> {
+        const area: HTMLElement = this.exportArea.nativeElement;
+        const blocks: HTMLElement[] = Array.from(
+            area.querySelectorAll('.pdf-block')
+        );
+    
+        if (blocks.length === 0) {
+            console.error("Nessuna sezione .pdf-block trovata!");
+            return;
+        }
+    
+        const images: string[] = [];
+    
+        // 1. Converti ogni blocco in immagine PNG
+        for (let i = 0; i < blocks.length; i++) {
+            const block = blocks[i];
+    
+            try {
+                const dataUrl = await htmlToImage.toPng(block, {
+                    cacheBust: true,
+                    pixelRatio: 2,
+                    quality: 1,
+                    backgroundColor: '#ffffff',
+                    skipFonts: true
+                });
+    
+                images.push(dataUrl);
+            } catch (err) {
+                console.error(`Errore nel blocco ${i + 1}`, err);
+            }
+        }
+    
+        if (images.length === 0) {
+            console.error("Nessuna immagine generata");
+            return;
+        }
+    
+        // 2. Funzione per calcolare le proporzioni di ogni immagine
+        const getImageDimensions = (base64: string, targetWidth: number): Promise<{ width: number; height: number }> => {
+            return new Promise(resolve => {
+                const img = new Image();
+                img.onload = () => {
+                    const ratio = img.height / img.width;
+                    resolve({
+                        width: targetWidth,
+                        height: targetWidth * ratio
+                    });
+                };
+                img.src = base64;
+            });
+        };
+    
+        const targetWidth = 822; // 842 - 20 margini laterali (A4 landscape)
+        const dims: any[] = [];
+    
+        // 3. Calcolo dimensioni reali di ogni immagine
+        for (const img of images) {
+            const dim = await getImageDimensions(img, targetWidth);
+            dims.push(dim);
+        }
+    
+        // 4. Altezza totale della pagina PDF
+        const totalHeight = dims.reduce((sum, d) => sum + d.height + 20, 0); // +20 margin verticali
+    
+        console.log("Altezza totale PDF:", totalHeight);
+    
+        // 5. Costruzione contenuto PDF
+        const content: Content[] = images.map((img, i) => ({
+            image: img,
+            width: dims[i].width,
+            height: dims[i].height,
+            margin: [0, 10, 0, 10] as [number, number, number, number]
+        }));
+    
+        // 6. Definizione PDF: pagina singola, orizzontale, altezza dinamica
+        const docDef: TDocumentDefinitions = {
+            pageSize: {
+                width: 842,        // A4 landscape
+                height: totalHeight  // calcolata dinamicamente
+            },
+            pageMargins: [10, 10, 10, 10] as [number, number, number, number],
+            content
+        };
+    
+        // 7. Generazione PDF
+        pdfMake.createPdf(docDef).download('report.pdf');
+    }
+    
+    
+    
 }

@@ -1,0 +1,87 @@
+<div class="flex flex-col" cdkDrag cdkDragRootElement=".cdk-overlay-pane">
+
+    <div class="dialog-header" cdkDragHandle>
+        <div class="text-lg text-white">
+            @if (action === 'create') {
+                Create stat
+            } @else if (action === 'update') {
+                Update stat
+            }
+        </div>
+        <button mat-icon-button (click)="cancel()">
+            <mat-icon class="text-white">clear</mat-icon>
+        </button>
+    </div>
+
+    <div class="dialog-content">
+
+        <form class="flex flex-col" [formGroup]="statForm">
+
+            <div class="flex flex-col gap-1">
+                <mat-label>Stat</mat-label>
+                <mat-form-field appearance="outline">
+                    <input matInput formControlName="nome" name="nome" type="text">
+                </mat-form-field>
+            </div>
+
+            <div class="flex flex-col gap-1">
+                <mat-label>Min</mat-label>
+                <mat-form-field appearance="outline">
+                    <input matInput formControlName="min" name="min" type="number">
+                </mat-form-field>
+            </div>
+
+            <div class="flex flex-col gap-1">
+                <mat-label>Ave</mat-label>
+                <mat-form-field appearance="outline">
+                    <input matInput formControlName="ave" name="ave" type="number">
+                </mat-form-field>
+            </div>
+
+            <div class="flex flex-col gap-1">
+                <mat-label>Max</mat-label>
+                <mat-form-field appearance="outline">
+                    <input matInput formControlName="max" name="max" type="number">
+                </mat-form-field>
+            </div>
+
+        </form>
+
+    </div>
+
+    <div class="dialog-actions">
+
+        <button mat-button (click)="cancel()">
+            Cancel
+        </button>
+
+        @if (action === 'create') {
+
+            <button mat-flat-button type="submit" (click)="create()" [disabled]="statForm.invalid || createLoading">
+                <div class="flex flex-row items-center gap-4">
+                    @if (createLoading) { <mat-spinner [diameter]="24"></mat-spinner> }
+                    <div>Create</div>
+                </div>
+            </button>
+
+        } @else if (action === 'update') {
+
+            <!--<button mat-flat-button (click)="delete()" [disabled]="deleteLoading">
+                <div class="flex flex-row items-center gap-4">
+                    @if (deleteLoading) { <mat-spinner [diameter]="24"></mat-spinner> }
+                    <div>Delete</div>
+                </div>
+            </button>-->
+
+            <button mat-flat-button type="submit" (click)="update()" [disabled]="statForm.invalid || updateLoading">
+                <div class="flex flex-row items-center gap-4">
+                    @if (updateLoading) { <mat-spinner [diameter]="24"></mat-spinner> }
+                    <div>Update</div>
+                </div>
+            </button>
+
+        }
+
+    </div>
+
+</div>

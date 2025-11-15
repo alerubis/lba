@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import * as echarts from 'echarts';
 import { EChartsCoreOption } from 'echarts/core';
@@ -22,7 +22,11 @@ import { BaseCardComponent } from '../../base-card/base-card.component';
 import { NgClass } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Formula } from '../../../../../../shared/types/db/auto/Formula';
+import { Stat } from '../../../../../../shared/types/db/auto/Stat';
+import { CommonModule } from '@angular/common';
+
 ["fouls_committed", "fouls_received", "points", "made_2pt", "missed_2pt", "pct_2pt", "made_3pt", "missed_3pt", "pct_3pt", "made_ft", "missed_ft", "pct_ft", "off_reb", "def_reb", "blocks_made", "blocks_suffered", "turnovers", "steals", "assists"]
+
 @Component({
     selector: 'grafic-card',
     templateUrl: './grafic-card.component.html',
@@ -32,6 +36,7 @@ import { Formula } from '../../../../../../shared/types/db/auto/Formula';
         MatProgressSpinnerModule,
         RouterLink,
         NgClass,
+        CommonModule,
     ],
     providers: [
         provideEchartsCore({ echarts }),
@@ -50,10 +55,12 @@ export class GraficCardComponent extends BaseCardComponent {
     player5: Player = new Player();
     minuti: any[] = [];
     formule: Formula[] = [];
+    stats: Stat[] = [];
     courtMap: any;
     avgRow1: { [key: string]: number } = {};
     avgRow4: { [key: string]: number } = {};
     avgRowAll: { [key: string]: number } = {};
+    @ViewChild('exportArea') exportArea!: ElementRef;
 
     constructor(
         private _dbService: DbService,
@@ -67,15 +74,16 @@ export class GraficCardComponent extends BaseCardComponent {
     override async loadChartOption(): Promise<void> {
 
         this.formule = await this._dbService.readList(new Formula(), {}) as Formula[];
+        this.stats = await this._dbService.readList(new Stat(), {}) as Stat[];
 
-        if ((this.gameIds && this.gameIds.length) || this.gameId){
+        if ((this.gameIds && this.gameIds.length) || this.gameId) {
             this.loading = true;
 
             if (this.dashboardCard.card_id === 'CALENDAR_PLAYER' || this.dashboardCard.card_id === 'CALENDAR_TEAM') {
                 let dati: any[] = [];
                 let range = 2
                 const y = this.dashboardCardSettings.find((setting) => setting.setting_id === 'Y')?.value;
-    
+
                 if (this.playerId) {
                     dati = await this._dbService.readList(new VPlayerGameTotalBoxscore(), { player_id: this.playerId, game_id: { in: this.gameIds } }) as VPlayerGameTotalBoxscore[];
                 }
@@ -83,12 +91,12 @@ export class GraficCardComponent extends BaseCardComponent {
                     range = 6
                     dati = await this._dbService.readList(new VTeamGameTotalBoxscore(), { team_id: this.teamId, game_id: { in: this.gameIds } }) as VTeamGameTotalBoxscore[];
                 }
-    
+
                 // Leggi le date delle partite
                 const gameList = await this._dbService.readList(new VGame(), {
                     id: { in: this.gameIds }
                 }) as VGame[];
-    
+
                 // Mappa game_id → data (in formato YYYY-MM-DD)
                 const gameDateMap = new Map<number, string>();
                 gameList.forEach(g => {
@@ -96,42 +104,42 @@ export class GraficCardComponent extends BaseCardComponent {
                         gameDateMap.set(g.id, g.date_hours_utc.toISOString().slice(0, 10));
                     }
                 });
-    
+
                 // Determina la data massima delle partite (ultima giocata)
                 const allDates = [...gameDateMap.values()].sort();
                 const lastDate = new Date(allDates[allDates.length - 1]);
                 const fourMonthsAgo = new Date(lastDate);
                 fourMonthsAgo.setMonth(fourMonthsAgo.getMonth() - 3);
                 fourMonthsAgo.setDate(1); // parte dal primo del mese
-    
+
                 const data: [string, number][] = [];
-    
+
                 for (const item of dati) {
                     const gameId = item.game_id;
                     const minutes = Number(this.formula(y, item) ?? 0);
-    
+
                     // Salta se manca game_id o se non ha minuti
                     if (!gameId || minutes <= 0) continue;
-    
+
                     const dateStr = gameDateMap.get(gameId);
                     if (!dateStr) continue;
-    
+
                     const gameDate = new Date(dateStr);
-    
+
                     // Considera solo le partite negli ultimi 4 mesi dall’ultima
                     if (gameDate < fourMonthsAgo || gameDate > lastDate) continue;
-    
+
                     data.push([dateStr, minutes]);
                 }
-    
+
                 // Ordina per data
                 data.sort((a, b) => a[0].localeCompare(b[0]));
-    
-    
+
+
                 // Configura il calendario tra primo giorno di 4 mesi fa e data dell’ultima partita
                 const startDateStr = fourMonthsAgo.toISOString().slice(0, 10);
                 const endDateStr = lastDate.toISOString().slice(0, 10);
-    
+
                 this.chartOption = {
                     tooltip: {
                         position: 'top'
@@ -169,7 +177,7 @@ export class GraficCardComponent extends BaseCardComponent {
                 let dati: any[] = [];
                 const y = this.dashboardCardSettings.find((setting) => setting.setting_id === 'Y')?.value;
                 let countOrdered: [number, number][] = [];
-    
+
                 if (this.playerId) {
                     dati = await this._dbService.viewLineupRoute<any[]>({
                         player_id: this.playerId,
@@ -179,23 +187,23 @@ export class GraficCardComponent extends BaseCardComponent {
                         playerIn: [],
                         playerNotIn: []
                     });
-    
+
                     const grouped = _.groupBy(dati, 'minute');
                     const datiMediati: [number, number][] = [];
                     const countPerMinute: [number, number][] = [];
-    
+
                     for (const [minute, items] of Object.entries(grouped)) {
                         let value: number;
-    
+
                         value = this.formula(y, null, items);
-    
+
                         datiMediati.push([+minute, value]);
                         countPerMinute.push([+minute, items.length]);
                     }
-    
+
                     dati = _.orderBy(datiMediati, a => a[0]);
                     countOrdered = _.orderBy(countPerMinute, a => a[0]);
-    
+
                 } else if (this.teamId && this.gameIds && this.gameIds?.length > 0 && (this.playerIds && this.playerIds?.length > 0 || this.playerOutIds && this.playerOutIds?.length > 0)) {
                     dati = await this._dbService.viewLineupRoute<any[]>({
                         team_id: this.teamId,
@@ -205,23 +213,23 @@ export class GraficCardComponent extends BaseCardComponent {
                         playerIn: this.playerIds,
                         playerNotIn: this.playerOutIds
                     });
-    
+
                     const grouped = _.groupBy(dati, 'minute');
                     const datiMediati: [number, number][] = [];
                     const countPerMinute: [number, number][] = [];
-    
+
                     for (const [minute, items] of Object.entries(grouped)) {
                         let value: number;
-    
+
                         value = this.formula(y, null, items);
-    
+
                         datiMediati.push([+minute, value]);
                         countPerMinute.push([+minute, items.length]);
                     }
-    
+
                     dati = _.orderBy(datiMediati, a => a[0]);
                     countOrdered = _.orderBy(countPerMinute, a => a[0]);
-    
+
                 } else if (this.teamId && this.gameIds && this.gameIds?.length > 0) {
                     dati = await this._dbService.viewLineupRoute<any[]>({
                         team_id: this.teamId,
@@ -231,24 +239,24 @@ export class GraficCardComponent extends BaseCardComponent {
                         playerIn: [],
                         playerNotIn: []
                     });
-    
+
                     const grouped = _.groupBy(dati, 'minute');
                     const datiMediati: [number, number][] = [];
                     const countPerMinute: [number, number][] = [];
-    
+
                     for (const [minute, items] of Object.entries(grouped)) {
                         let value: number;
-    
+
                         value = this.formula(y, null, items);
-    
+
                         datiMediati.push([+minute, value]);
                         countPerMinute.push([+minute, items.length]);
                     }
-    
+
                     dati = _.orderBy(datiMediati, a => a[0]);
                     countOrdered = _.orderBy(countPerMinute, a => a[0]);
                 }
-    
+
                 dati = this.fillMissingMinutes(dati, 10);
                 countOrdered = this.fillMissingMinutes(countOrdered, 10);
                 // Mostra sempre la serie secondaria (conteggio item)
@@ -265,7 +273,7 @@ export class GraficCardComponent extends BaseCardComponent {
                     },
                     data: countOrdered
                 }];
-    
+
                 this.chartOption = {
                     grid: {
                         top: 20,
@@ -330,29 +338,29 @@ export class GraficCardComponent extends BaseCardComponent {
                 let dati: any[] = [];
                 const y = this.dashboardCardSettings.find((setting) => setting.setting_id === 'Y')?.value;
                 let countOrdered: [number, number][] = [];
-    
+
                 if (this.playerId) {
                     dati = await this._dbService.readList(new VPlayerGameMinuteBoxscore(), {
                         player_id: this.playerId,
                         game_id: { in: this.gameIds }
                     }) as VPlayerGameMinuteBoxscore[];
-    
+
                     const grouped = _.groupBy(dati, 'minute');
                     const datiMediati: [number, number][] = [];
                     const countPerMinute: [number, number][] = [];
-    
+
                     for (const [minute, items] of Object.entries(grouped)) {
                         let value: number;
-    
+
                         value = this.formula(y, null, items);
-    
+
                         datiMediati.push([+minute, value]);
                         countPerMinute.push([+minute, items.length]);
                     }
-    
+
                     dati = _.orderBy(datiMediati, a => a[0]);
                     countOrdered = _.orderBy(countPerMinute, a => a[0]);
-    
+
                 } else if (this.teamId && this.gameIds && this.gameIds?.length > 0 && (this.playerIds && this.playerIds?.length > 0 || this.playerOutIds && this.playerOutIds?.length > 0)) {
                     dati = await this._dbService.viewLineupRoute<any[]>({
                         team_id: this.teamId,
@@ -361,46 +369,46 @@ export class GraficCardComponent extends BaseCardComponent {
                         playerIn: this.playerIds,
                         playerNotIn: this.playerOutIds
                     });
-    
+
                     const grouped = _.groupBy(dati, 'minute');
                     const datiMediati: [number, number][] = [];
                     const countPerMinute: [number, number][] = [];
-    
+
                     for (const [minute, items] of Object.entries(grouped)) {
                         let value: number;
-    
+
                         value = this.formula(y, null, items);
-    
+
                         datiMediati.push([+minute, value]);
                         countPerMinute.push([+minute, items.length]);
                     }
-    
+
                     dati = _.orderBy(datiMediati, a => a[0]);
                     countOrdered = _.orderBy(countPerMinute, a => a[0]);
-    
+
                 } else if (this.teamId && this.gameIds && this.gameIds?.length > 0) {
                     dati = await this._dbService.readList(new VTeamGameMinuteBoxscore(), {
                         team_id: this.teamId,
                         game_id: { in: this.gameIds }
                     }) as VTeamGameMinuteBoxscore[];
-    
+
                     const grouped = _.groupBy(dati, 'minute');
                     const datiMediati: [number, number][] = [];
                     const countPerMinute: [number, number][] = [];
-    
+
                     for (const [minute, items] of Object.entries(grouped)) {
                         let value: number;
-    
+
                         value = this.formula(y, null, items);
-    
+
                         datiMediati.push([+minute, value]);
                         countPerMinute.push([+minute, items.length]);
                     }
-    
+
                     dati = _.orderBy(datiMediati, a => a[0]);
                     countOrdered = _.orderBy(countPerMinute, a => a[0]);
                 }
-    
+
                 dati = this.fillMissingMinutes(dati, 40);
                 countOrdered = this.fillMissingMinutes(countOrdered, 40);
                 // Mostra sempre la serie secondaria (conteggio item)
@@ -417,7 +425,7 @@ export class GraficCardComponent extends BaseCardComponent {
                     },
                     data: countOrdered
                 }];
-    
+
                 this.chartOption = {
                     grid: {
                         top: 20,
@@ -484,39 +492,39 @@ export class GraficCardComponent extends BaseCardComponent {
             else if (this.dashboardCard.card_id === 'LINE_GAME_GAME') {
                 let datiH: any[] = [];
                 let datiG: any[] = [];
-    
+
                 const y = this.dashboardCardSettings.find((setting) => setting.setting_id === 'Y')?.value;
                 const dati = await this._dbService.readList(new VPlayerGameMinuteBoxscore(), { game_id: this.gameId, }) as VPlayerGameMinuteBoxscore[];
                 let game: any;
-    
+
                 if (this.gameId) {
                     game = await this._dbService.readUnique(new VGame(), { id: this.gameId, }) as VGame;
-    
+
                     datiH = dati.filter(x => x.team_id === game.team_home_id);
                     datiG = dati.filter(x => x.team_id === game.team_guest_id);
-    
+
                     const groupedH = _.groupBy(datiH, 'minute');
                     const groupedG = _.groupBy(datiG, 'minute');
-    
+
                     const datiMediatiH = Object.entries(groupedH).map(([minute, items]) => {
                         let value: number;
-    
+
                         value = this.formula(y, null, items);
-    
+
                         return [+minute, value];
                     });
                     datiH = _.orderBy(datiMediatiH, a => a[0]);
-    
+
                     const datiMediatiG = Object.entries(groupedG).map(([minute, items]) => {
                         let value: number;
-    
+
                         value = this.formula(y, null, items);
-    
+
                         return [+minute, value];
                     });
                     datiG = _.orderBy(datiMediatiG, a => a[0]);
                 }
-    
+
                 this.chartOption = {
                     grid: {
                         top: 20,
@@ -587,29 +595,29 @@ export class GraficCardComponent extends BaseCardComponent {
                 let dati: any[] = [];
                 const y = this.dashboardCardSettings.find((setting) => setting.setting_id === 'Y')?.value;
                 let countOrdered: [number, number][] = [];
-    
+
                 if (this.playerId) {
                     dati = await this._dbService.readList(new VPlayerGameAbsoluteMinuteBoxscore(), {
                         player_id: this.playerId,
                         game_id: { in: this.gameIds }
                     }) as VPlayerGameAbsoluteMinuteBoxscore[];
-    
+
                     const grouped = _.groupBy(dati, 'absolute_minute');
                     const datiMediati: [number, number][] = [];
                     const countPerMinute: [number, number][] = [];
-    
+
                     for (const [minute, items] of Object.entries(grouped)) {
                         let value: number;
-    
+
                         value = this.formula(y, null, items);
-    
+
                         datiMediati.push([+minute, value]);
                         countPerMinute.push([+minute, items.length]);
                     }
-    
+
                     dati = _.orderBy(datiMediati, a => a[0]);
                     countOrdered = _.orderBy(countPerMinute, a => a[0]);
-    
+
                 } else if (this.teamId && this.gameIds && this.gameIds.length > 0 && (this.playerIds && this.playerIds?.length > 0 || this.playerOutIds && this.playerOutIds?.length > 0)) {
                     dati = await this._dbService.viewLineupRoute<any[]>({
                         team_id: this.teamId,
@@ -618,48 +626,48 @@ export class GraficCardComponent extends BaseCardComponent {
                         playerIn: this.playerIds,
                         playerNotIn: this.playerOutIds
                     });
-    
+
                     const grouped = _.groupBy(dati, 'absolute_minute');
                     const datiMediati: [number, number][] = [];
                     const countPerMinute: [number, number][] = [];
-    
+
                     for (const [minute, items] of Object.entries(grouped)) {
                         let value: number;
-    
+
                         value = this.formula(y, null, items);
-    
+
                         datiMediati.push([+minute, value]);
                         countPerMinute.push([+minute, items.length]);
                     }
-    
+
                     dati = _.orderBy(datiMediati, a => a[0]);
                     countOrdered = _.orderBy(countPerMinute, a => a[0]);
-    
+
                 } else if (this.teamId && this.gameIds && this.gameIds.length > 0) {
                     dati = await this._dbService.readList(new VTeamGameAbsoluteMinuteBoxscore(), {
                         team_id: this.teamId,
                         game_id: { in: this.gameIds }
                     }) as VTeamGameAbsoluteMinuteBoxscore[];
-    
+
                     const grouped = _.groupBy(dati, 'absolute_minute');
                     const datiMediati: [number, number][] = [];
                     const countPerMinute: [number, number][] = [];
-    
+
                     for (const [minute, items] of Object.entries(grouped)) {
                         let value: number;
-    
+
                         value = this.formula(y, null, items);
-    
+
                         datiMediati.push([+minute, value]);
                         countPerMinute.push([+minute, items.length]);
                     }
-    
+
                     dati = _.orderBy(datiMediati, a => a[0]);
                     countOrdered = _.orderBy(countPerMinute, a => a[0]);
                 }
                 dati = this.fillMissingMinutes(dati, 10);
                 countOrdered = this.fillMissingMinutes(countOrdered, 10);
-    
+
                 // Serie sempre presente per conteggio item
                 const counts = countOrdered.map(c => c[1]);
                 const extraSeries = [{
@@ -674,7 +682,7 @@ export class GraficCardComponent extends BaseCardComponent {
                     },
                     data: countOrdered
                 }];
-    
+
                 this.chartOption = {
                     grid: {
                         top: 20,
@@ -740,39 +748,39 @@ export class GraficCardComponent extends BaseCardComponent {
             else if (this.dashboardCard.card_id === 'LINE_QUARTER_GAME') {
                 let datiH: any[] = [];
                 let datiG: any[] = [];
-    
+
                 const y = this.dashboardCardSettings.find((setting) => setting.setting_id === 'Y')?.value;
                 const dati = await this._dbService.readList(new VPlayerGameAbsoluteMinuteBoxscore(), { game_id: this.gameId, }) as VPlayerGameAbsoluteMinuteBoxscore[];
                 let game: any;
-    
+
                 if (this.gameId) {
                     game = await this._dbService.readUnique(new VGame(), { id: this.gameId, }) as VGame;
-    
+
                     datiH = dati.filter(x => x.team_id === game.team_home_id);
                     datiG = dati.filter(x => x.team_id === game.team_guest_id);
-    
+
                     const groupedH = _.groupBy(datiH, 'absolute_minute');
                     const groupedG = _.groupBy(datiG, 'absolute_minute');
-    
+
                     const datiMediatiH = Object.entries(groupedH).map(([absolute_minute, items]) => {
                         let value: number;
-    
+
                         value = this.formula(y, null, items);
-    
+
                         return [+absolute_minute, value];
                     });
                     datiH = _.orderBy(datiMediatiH, a => a[0]);
-    
+
                     const datiMediatiG = Object.entries(groupedG).map(([absolute_minute, items]) => {
                         let value: number;
-    
+
                         value = this.formula(y, null, items);
 
                         return [+absolute_minute, value];
                     });
                     datiG = _.orderBy(datiMediatiG, a => a[0]);
                 }
-    
+
                 this.chartOption = {
                     grid: {
                         top: 20,
@@ -894,17 +902,17 @@ export class GraficCardComponent extends BaseCardComponent {
                 let dati: any[] = [];
                 const y = this.dashboardCardSettings.find((setting) => setting.setting_id === 'Y')?.value;
                 let countOrdered: [number, number][] = [];
-    
+
                 if (this.playerId) {
                     dati = await this._dbService.readList(new VPlayerGameMinutePlayedBeforeBoxscore(), {
                         player_id: this.playerId,
                         game_id: { in: this.gameIds }
                     }) as VPlayerGameMinutePlayedBeforeBoxscore[];
-    
+
                     const grouped = _.groupBy(dati, 'minute');
                     const datiMediati: [number, number][] = [];
                     const countPerMinute: [number, number][] = [];
-    
+
                     for (const [minute, items] of Object.entries(grouped)) {
                         let value: number;
 
@@ -913,11 +921,11 @@ export class GraficCardComponent extends BaseCardComponent {
                         datiMediati.push([+minute, value]);
                         countPerMinute.push([+minute, items.length]);
                     }
-    
+
                     dati = _.orderBy(datiMediati, a => a[0]);
                     countOrdered = _.orderBy(countPerMinute, a => a[0]);
                 }
-    
+
                 // Serie sempre presente per conteggio item
                 const counts = countOrdered.map(c => c[1]);
                 const extraSeries = [{
@@ -932,7 +940,7 @@ export class GraficCardComponent extends BaseCardComponent {
                     },
                     data: countOrdered
                 }];
-    
+
                 this.chartOption = {
                     grid: {
                         top: 20,
@@ -1000,30 +1008,30 @@ export class GraficCardComponent extends BaseCardComponent {
                 let dati: any[] = [];
                 const y = this.dashboardCardSettings.find((setting) => setting.setting_id === 'Y')?.value;
                 let countOrdered: [number, number][] = [];
-    
+
                 if (this.playerId) {
                     dati = await this._dbService.readList(new VPlayerGameMinutePlayingBoxscore(), {
                         player_id: this.playerId,
                         game_id: { in: this.gameIds }
                     }) as VPlayerGameMinutePlayingBoxscore[];
-    
+
                     const grouped = _.groupBy(dati, 'minute');
                     const datiMediati: [number, number][] = [];
                     const countPerMinute: [number, number][] = [];
-    
+
                     for (const [minute, items] of Object.entries(grouped)) {
                         let value: number;
-    
+
                         value = this.formula(y, null, items);
 
                         datiMediati.push([+minute, value]);
                         countPerMinute.push([+minute, items.length]);
                     }
-    
+
                     dati = _.orderBy(datiMediati, a => a[0]);
                     countOrdered = _.orderBy(countPerMinute, a => a[0]);
                 }
-    
+
                 // Serie sempre presente per conteggio item
                 const counts = countOrdered.map(c => c[1]);
                 const extraSeries = [{
@@ -1038,7 +1046,7 @@ export class GraficCardComponent extends BaseCardComponent {
                     },
                     data: countOrdered
                 }];
-    
+
                 this.chartOption = {
                     grid: {
                         top: 20,
@@ -1152,7 +1160,7 @@ export class GraficCardComponent extends BaseCardComponent {
                         };
                     });
                 }
-    
+
                 // Costruisci chartOption
                 this.chartOption = {
                     //legend: {
@@ -1175,7 +1183,7 @@ export class GraficCardComponent extends BaseCardComponent {
                 const x = this.dashboardCardSettings.find((setting) => setting.setting_id === '1')?.value;
                 const y = this.dashboardCardSettings.find((setting) => setting.setting_id === '2')?.value;
                 const l = this.dashboardCardSettings.find((setting) => setting.setting_id === '3')?.value;
-    
+
                 if (this.playerId) {
                     const game = await this._dbService.readList(new VGame(), { id: { in: this.gameIds, }, }) as VGame[];
                     dati = await this._dbService.readList(new VPlayerGameTotalBoxscore(), { player_id: this.playerId, game_id: { in: this.gameIds, }, }) as VPlayerGameTotalBoxscore[];
@@ -1187,7 +1195,7 @@ export class GraficCardComponent extends BaseCardComponent {
                     ]);
                 }
                 else if (this.gameId) {
-                    const game = await this._dbService.readUnique(new VGame(), { id: this.gameId,}) as VGame;
+                    const game = await this._dbService.readUnique(new VGame(), { id: this.gameId, }) as VGame;
 
                     dati = await this._dbService.readList(new VPlayerGameTotalBoxscore(), { game_id: this.gameId, }) as VPlayerGameTotalBoxscore[];
                     const player = await this._dbService.readList(new Player(), { id: { in: dati.map(x => x.player_id), }, }) as Player[];
@@ -1196,7 +1204,7 @@ export class GraficCardComponent extends BaseCardComponent {
                         this.formula(y, a),
                         this.formula(l, a),
                         player.find(x => x.id === a.player_id)?.name + ' ' + player.find(x => x.id === a.player_id)?.surname,
-                        a.team_id === game.team_home_id? true: false
+                        a.team_id === game.team_home_id ? true : false
                     ]);
                 }
                 else if (this.teamId && this.gameIds && this.gameIds.length > 0 && this.playerIds && (this.playerIds && this.playerIds?.length > 0 || this.playerOutIds && this.playerOutIds?.length > 0)) {
@@ -1206,43 +1214,43 @@ export class GraficCardComponent extends BaseCardComponent {
                     });
                     const game = await this._dbService.readList(new VGame(), { id: { in: this.gameIds, }, }) as VGame[];
                     dati = dati.map(a => [this.formula(x, a), this.formula(y, a), this.formula(l, a),
-                        game.find(x => x.id === a.game_id)?.team_home_id === this.teamId ?
+                    game.find(x => x.id === a.game_id)?.team_home_id === this.teamId ?
                         game.find(x => x.id === a.game_id)?.team_guest_name :
                         game.find(x => x.id === a.game_id)?.team_home_name,
-                        this.isWin(game.find(x => x.id === a.game_id), this.teamId)]);
+                    this.isWin(game.find(x => x.id === a.game_id), this.teamId)]);
                 }
                 else if (this.teamId) {
                     dati = await this._dbService.readList(new VTeamGameTotalBoxscore(), { team_id: this.teamId, game_id: { in: this.gameIds, }, }) as VTeamGameTotalBoxscore[];
                     const game = await this._dbService.readList(new VGame(), { id: { in: this.gameIds, }, }) as VGame[];
                     dati = dati.map(a => [this.formula(x, a), this.formula(y, a), this.formula(l, a),
-                        game.find(x => x.id === a.game_id)?.team_home_id === this.teamId ?
+                    game.find(x => x.id === a.game_id)?.team_home_id === this.teamId ?
                         game.find(x => x.id === a.game_id)?.team_guest_name :
                         game.find(x => x.id === a.game_id)?.team_home_name,
-                        this.isWin(game.find(x => x.id === a.game_id), this.teamId)]);
+                    this.isWin(game.find(x => x.id === a.game_id), this.teamId)]);
                 }
-    
+
                 // Step 1: calcolo min e max dei valori nella dimensione 2
                 const values = dati.map(row => +row[2]).filter(v => !isNaN(v));
                 const minVal = Math.min(...values);
                 const maxVal = Math.max(...values);
-    
+
                 // Step 2: funzione di scalatura lineare
                 const scaleSymbolSize = (val: number): number => {
                     const minSize = 10;
                     const maxSize = 40;
-    
+
                     if (isNaN(val)) return minSize;
                     if (maxVal === minVal) return (minSize + maxSize) / 2;
-    
+
                     const normalized = (val - minVal) / (maxVal - minVal);
                     return minSize + normalized * (maxSize - minSize);
                 };
-    
+
                 dati = [
                     ['x', 'y', 'z', 'label', 'win'],  // intestazione fittizia
                     ...dati
                 ];
-    
+
                 this.chartOption = {
                     dataset: {
                         source: dati
@@ -1289,7 +1297,7 @@ export class GraficCardComponent extends BaseCardComponent {
             }
             else if (this.dashboardCard.card_id === 'TABLE_LINEUP_TEAM') {
                 this.statTable = this.dashboardCardSettings.find((setting) => setting.setting_id === 'STAT')?.value;
-    
+
                 if (this.gameIds && this.gameIds.length > 0 && this.teamId) {
                     const result = await this._dbService.callCustomRoute<any[]>('lineup-boxscore', { team_id: this.teamId, game_ids: this.gameIds, });
                     this.rows = result.map(row => ({
@@ -1301,24 +1309,24 @@ export class GraficCardComponent extends BaseCardComponent {
             else if (this.dashboardCard.card_id === 'TABLE_GAME_LINEUP' || this.dashboardCard.card_id === 'TABLE_GAME_PLAYER' || this.dashboardCard.card_id === 'TABLE_PLAYER_GAME' || this.dashboardCard.card_id === 'TABLE_GAME_TEAM') {
                 this.statTable = this.dashboardCardSettings.find((setting) => setting.setting_id === 'STAT')?.value;
                 if (this.playerId) {
-                    const game = await this._dbService.readList(new VGame(), {id: { in: this.gameIds },}) as VGame[];
+                    const game = await this._dbService.readList(new VGame(), { id: { in: this.gameIds }, }) as VGame[];
 
                     this.rows = (await this._dbService.readList(new VPlayerGameTotalBoxscore(), { player_id: this.playerId, game_id: { in: this.gameIds } }) as VPlayerGameTotalBoxscore[]).map(row => ({
                         ...row,
                         description: game.find(x => x.id === row.game_id)?.team_home_name + '-' + game.find(x => x.id === row.game_id)?.team_guest_name,
-                        win: this.isWin(game.find(x=>x.id === row.game_id), row.team_id)
+                        win: this.isWin(game.find(x => x.id === row.game_id), row.team_id)
                     }));
                     this.calcolaMedieStatistiche();
                 }
                 else if (this.gameId) {
-                    const game = await this._dbService.readUnique(new VGame(), { id: this.gameId,}) as VGame;
+                    const game = await this._dbService.readUnique(new VGame(), { id: this.gameId, }) as VGame;
 
                     const playerTeamGame = await this._dbService.readList(new PlayerTeamGame(), { game_id: this.gameId, }) as PlayerTeamGame[];
                     const player = await this._dbService.readList(new Player(), { id: { in: playerTeamGame.map(x => x.player_id), }, }) as Player[];
                     this.rows = (await this._dbService.readList(new VPlayerGameTotalBoxscore(), { game_id: this.gameId, }) as VPlayerGameTotalBoxscore[]).map(row => ({
                         ...row,
                         description: player.find(x => x.id === row.player_id)?.name + ' ' + player.find(x => x.id === row.player_id)?.surname,
-                        win: row.team_id === game.team_home_id? true: false
+                        win: row.team_id === game.team_home_id ? true : false
                     }));
                     this.rows = _.orderBy(this.rows, a => +a.points, 'desc');
                     this.calcolaMedieStatistiche();
@@ -1327,7 +1335,7 @@ export class GraficCardComponent extends BaseCardComponent {
                     const game = await this._dbService.readList(new VGame(), {
                         id: { in: this.gameIds },
                     }) as VGame[];
-    
+
                     this.rows = await Promise.all((await this._dbService.viewLineupRoute<any[]>({
                         team_id: this.teamId,
                         game_ids: this.gameIds,
@@ -1336,7 +1344,7 @@ export class GraficCardComponent extends BaseCardComponent {
                         playerNotIn: this.playerOutIds
                     })).map(async row => {
                         const opponentTeamId = this.getOpponent(game.find(x => x.id === row.game_id), this.teamId);
-    
+
                         const opponentStats = await this._dbService.viewLineupRoute<any[]>({
                             team_id: opponentTeamId,
                             game_ids: [row.game_id],
@@ -1344,14 +1352,14 @@ export class GraficCardComponent extends BaseCardComponent {
                             playerIn: this.playerIds,
                             playerNotIn: this.playerOutIds
                         });
-    
+
                         const opponentRenamed: any = {};
                         for (const [key, value] of Object.entries(opponentStats[0] || {})) {
                             opponentRenamed[`${key}o`] = value; // aggiunge "o" alla fine del campo
                         }
-    
+
                         const gameInfo = game.find(x => x.id === row.game_id);
-    
+
                         return {
                             ...row,
                             ...opponentRenamed,
@@ -1361,7 +1369,7 @@ export class GraficCardComponent extends BaseCardComponent {
                             win: this.isWin(gameInfo, this.teamId)
                         };
                     }));
-    
+
                     this.calcolaMedieStatistiche(true);
                 }
                 else if (this.teamId) {
@@ -1373,27 +1381,27 @@ export class GraficCardComponent extends BaseCardComponent {
 
                     this.rows = await Promise.all((await this._dbService.readList(new VTeamGameTotalBoxscore(),
                         { team_id: this.teamId, game_id: { in: this.gameIds } }) as VTeamGameTotalBoxscore[]).map(async row => {
-                        const opponentTeamId = this.getOpponent(game.find(x => x.id === row.game_id), this.teamId);
-    
-                        const opponentStats = await this._dbService.readList(new VTeamGameTotalBoxscore(),
-                        { team_id: this.teamId, game_id: { in: this.gameIds } }) as VTeamGameTotalBoxscore[];
-    
-                        const opponentRenamed: any = {};
-                        for (const [key, value] of Object.entries(opponentStats[0] || {})) {
-                            opponentRenamed[`${key}o`] = value; // aggiunge "o" alla fine del campo
-                        }
-    
-                        const gameInfo = game.find(x => x.id === row.game_id);
-    
-                        return {
-                            ...row,
-                            ...opponentRenamed,
-                            description: gameInfo?.team_home_id === this.teamId
-                                ? gameInfo?.team_guest_name
-                                : gameInfo?.team_home_name,
-                            win: this.isWin(gameInfo, this.teamId)
-                        };
-                    }));
+                            const opponentTeamId = this.getOpponent(game.find(x => x.id === row.game_id), this.teamId);
+
+                            const opponentStats = await this._dbService.readList(new VTeamGameTotalBoxscore(),
+                                { team_id: this.teamId, game_id: { in: this.gameIds } }) as VTeamGameTotalBoxscore[];
+
+                            const opponentRenamed: any = {};
+                            for (const [key, value] of Object.entries(opponentStats[0] || {})) {
+                                opponentRenamed[`${key}o`] = value; // aggiunge "o" alla fine del campo
+                            }
+
+                            const gameInfo = game.find(x => x.id === row.game_id);
+
+                            return {
+                                ...row,
+                                ...opponentRenamed,
+                                description: gameInfo?.team_home_id === this.teamId
+                                    ? gameInfo?.team_guest_name
+                                    : gameInfo?.team_home_name,
+                                win: this.isWin(gameInfo, this.teamId)
+                            };
+                        }));
 
                     this.calcolaMedieStatistiche();
                 }
@@ -1412,13 +1420,13 @@ export class GraficCardComponent extends BaseCardComponent {
                             }
                             j--;
                         }
-    
+
                         const currA = this.minuti[i].teamA_players;
                         this.minuti[i].teamA_players = currA.map((p: any) => ({
                             ...p,
                             entered: !prevA.includes(p.id)
                         }));
-    
+
                         // Trova il minuto precedente valido per team B
                         j = i - 1;
                         let prevB: number[] = [];
@@ -1429,30 +1437,30 @@ export class GraficCardComponent extends BaseCardComponent {
                             }
                             j--;
                         }
-    
+
                         const currB = this.minuti[i].teamB_players;
                         this.minuti[i].teamB_players = currB.map((p: any) => ({
                             ...p,
                             entered: !prevB.includes(p.id)
                         }));
                     }
-    
+
                     let dati: any[] = [];
                     const y = this.dashboardCardSettings.find((setting) => setting.setting_id === 'Y')?.value;
-    
+
                     dati = await this._dbService.readList(new VPlayerGameMinuteBoxscore(), { game_id: this.gameId, }) as VPlayerGameMinuteBoxscore[];
                     const grouped = _.groupBy(dati, 'minute');
-    
+
                     const datiMediati = Object.entries(grouped).map(([minute, items]) => {
                         let value: number;
-    
+
                         value = this.formula(y, null, items);
-    
+
                         return [+minute, value];
                     });
-    
+
                     dati = _.orderBy(datiMediati, a => a[0]);
-    
+
                     this.chartOption = {
                         xAxis: {
                             type: 'category',
@@ -1739,17 +1747,17 @@ export class GraficCardComponent extends BaseCardComponent {
     }
 
     isWin(game: VGame | undefined, teamId: number | undefined): boolean {
-        if (game){
-            if (game.team_home_id === teamId){
-                if (game.team_home_points && game.team_guest_points && game?.team_home_points > game?.team_guest_points){
+        if (game) {
+            if (game.team_home_id === teamId) {
+                if (game.team_home_points && game.team_guest_points && game?.team_home_points > game?.team_guest_points) {
                     return true;
                 }
                 else {
                     return false;
                 }
             }
-            if (game.team_guest_id === teamId){
-                if (game.team_home_points && game.team_guest_points && game?.team_home_points < game?.team_guest_points){
+            if (game.team_guest_id === teamId) {
+                if (game.team_home_points && game.team_guest_points && game?.team_home_points < game?.team_guest_points) {
                     return true;
                 }
                 else {
@@ -1882,7 +1890,7 @@ export class GraficCardComponent extends BaseCardComponent {
     }
 
     formula(field: string, a: any, b?: any[], o?: boolean): number {
-        if (!!a && Object.keys(a).length > 0){
+        if (!!a && Object.keys(a).length > 0) {
 
             let fieldKey = field;
             if (fieldKey.endsWith('o')) {
@@ -1894,26 +1902,26 @@ export class GraficCardComponent extends BaseCardComponent {
 
             // Se NON è una formula, usa il valore diretto
             if (!formulaEntry || !formulaEntry.formula) {
-                return isNaN(+a[(o?field+'o':field)]) ? 0 : +a[(o?field+'o':field)]; // campo semplice
+                return isNaN(+a[(o ? field + 'o' : field)]) ? 0 : +a[(o ? field + 'o' : field)]; // campo semplice
             }
-        
+
             try {
                 const formula = formulaEntry.formula;
-        
-                if (field === 'poss'){
-                    const asd= 0;
+
+                if (field === 'poss') {
+                    const asd = 0;
                 }
                 // Estrai tutti i nomi dei campi usati nella formula
                 const fieldNames = Object.keys(a);
-        
+
                 // Sostituisci ogni nome di campo con il suo valore
                 let evaluatedFormula = formula.replace(/\b[a-zA-Z_][a-zA-Z0-9_]*\b/g, match => {
                     if (fieldNames.includes(match)) {
-                        return a[(o?match+'o':match)] ?? 0; // fallback a 0
+                        return a[(o ? match + 'o' : match)] ?? 0; // fallback a 0
                     }
                     return match;
                 });
-        
+
                 evaluatedFormula = evaluatedFormula
                     .replace(/−|–|—/g, '-') // sostituisce tutti i "falsi meno" con il vero meno
                     .replace(/\s+/g, '');   // rimuove eventuali spazi
@@ -1930,12 +1938,12 @@ export class GraficCardComponent extends BaseCardComponent {
         else {
             // Cerca se il campo è una formula definita
             const formulaEntry = this.formule?.find(f => f.name === field);
-        
+
             // Se NON è una formula, usa il valore diretto
             if (!formulaEntry || !formulaEntry.formula) {
                 if (field.startsWith('pct_')) {
                     let suffix = field.slice(4);
-                    suffix = suffix + (o?'o':'');
+                    suffix = suffix + (o ? 'o' : '');
                     const madeKey = `made_${suffix}`;
                     const missedKey = `missed_${suffix}`;
                     const madeSum = _.sumBy(b, item => +item[madeKey] || 0);
@@ -1944,16 +1952,16 @@ export class GraficCardComponent extends BaseCardComponent {
                     return total > 0 ? +((madeSum * 100) / total).toFixed(1) : 0;
                 } else {
                     return +_.meanBy(b, item => +this.formula(field, item, [], o) || 0).toFixed(1);
-                }    
+                }
             }
 
             try {
                 const formula = formulaEntry.formula;
-        
+
                 // Estrai tutti i nomi dei campi usati nella formula
-                if (b && b.length > 0){
+                if (b && b.length > 0) {
                     const fieldNames = Object.keys(b[0]);
-        
+
                     // Sostituisci ogni nome di campo con il suo valore
                     let evaluatedFormula = formula.replace(/\b[a-zA-Z_][a-zA-Z0-9_]*\b/g, match => {
                         if (fieldNames.includes(match)) {
@@ -1961,11 +1969,11 @@ export class GraficCardComponent extends BaseCardComponent {
                         }
                         return match;
                     });
-            
+
                     evaluatedFormula = evaluatedFormula
                         .replace(/−|–|—/g, '-') // sostituisce tutti i "falsi meno" con il vero meno
                         .replace(/\s+/g, '');   // rimuove eventuali spazi
-                    
+
                     // Esegui la formula calcolata
                     // Esegui la formula calcolata e gestisci il caso NaN
                     const result = Function(`"use strict"; return (${evaluatedFormula})`)();
@@ -1980,5 +1988,74 @@ export class GraficCardComponent extends BaseCardComponent {
             }
         }
     }
-        
+
+    getColorStyle(value: number, stat: string) {
+
+        if (stat?.substring(0, 3) === 'pct' && value === 0) return {};
+
+        if (value == null || isNaN(value) || (
+            this.dashboardCard.card_id !== 'TABLE_GAME_PLAYER' &&
+            this.dashboardCard.card_id !== 'TABLE_PLAYER_GAME'
+        )) return {};
+
+        const s = this.stats.find(x => x.stat_id === stat);
+        if (!s) return {};
+
+        const min = s.min ?? 0;
+        const max = s.max ?? 0;
+        const ave = s.ave ?? 0;
+
+        // evita range nulli
+        if (min === max) return {};
+
+        // determina se il range è invertito
+        const inverted = (min > max);
+
+        const low = Math.min(min, max);
+        const high = Math.max(min, max);
+
+        // clamp
+        const v = Math.max(low, Math.min(value, high));
+        const range = high - low;
+
+        // normalizzazione valore e media
+        const nv = (v - low) / range;      // valore normalizzato
+        const nave = (ave - low) / range;  // media normalizzata
+
+        let intensity = 0;
+        let color = 'transparent';
+
+        // caso normale (min < max)
+        const isAboveAve = v >= ave;
+
+        if (!inverted) {
+            // 👍 Range normale: sopra media → verde, sotto → rosso
+            if (isAboveAve) {
+                intensity = (nv - nave) / (1 - nave);
+                color = `rgba(0, 200, 0, ${Math.min(Math.max(intensity, 0.1), 1)})`;
+            } else {
+                intensity = (nave - nv) / nave;
+                color = `rgba(255, 0, 0, ${Math.min(Math.max(intensity, 0.1), 1)})`;
+            }
+        } else {
+            // 🔄 Range invertito: sopra media → ROSSO, sotto → VERDE
+            if (isAboveAve) {
+                intensity = (nv - nave) / (1 - nave);
+                color = `rgba(255, 0, 0, ${Math.min(Math.max(intensity, 0.1), 1)})`;
+            } else {
+                intensity = (nave - nv) / nave;
+                color = `rgba(0, 200, 0, ${Math.min(Math.max(intensity, 0.1), 1)})`;
+            }
+        }
+
+        return {
+            'background-color': color,
+            'color': '#000'
+        };
+    }
+
+    getStatName(stat: string): string {
+        return this.stats.find(x => x.stat_id === stat)?.nome || stat;
+    }
+
 }

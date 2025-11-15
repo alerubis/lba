@@ -37,6 +37,10 @@ export const routes: Routes = [
                 loadChildren: () => import('./reports/reports.routes').then(m => m.routes),
             },
             {
+                path: 'stats',
+                loadChildren: () => import('./stats/stats.routes').then(m => m.routes),
+            },
+            {
                 path: '',
                 redirectTo: 'home',
                 pathMatch: 'full'

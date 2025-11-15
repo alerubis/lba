@@ -73,7 +73,7 @@
                     <th class="px-4 text-center border-r border-gray-300">MIN</th>
                 }
                 @for (stat of statTable; track $index) {
-                    <th [colSpan]="getColSpan(stat, dashboardCard.card_id)" class="px-4 text-center border-r border-gray-300">{{ stat }}</th>
+                    <th [colSpan]="getColSpan(stat, dashboardCard.card_id)" class="px-4 text-center border-r border-gray-300">{{ getStatName(stat) }}</th>
                 }
             </tr>
         </thead>
@@ -87,7 +87,7 @@
                             <td class="text-center px-4 py-2 border-r border-gray-300">{{ 0 }}</td>
                         }
                         @for (stat of statTable; track $index) {
-                            <td class="text-center px-4 py-2 border-r border-gray-300">{{ avgRowAll[stat] }}</td>
+                            <td class="text-center px-4 py-2 border-r" [ngStyle]="getColorStyle(avgRowAll[stat], stat)">{{ avgRowAll[stat] }}</td>
                             @if (dashboardCard.card_id === 'TABLE_GAME_LINEUP' || dashboardCard.card_id === 'TABLE_GAME_TEAM') {
                                 <td class="text-red-600 text-center px-4 py-2 border-r border-gray-300">{{ avgRowAll[`${stat}o`] }}</td>
                                 @if (stat === 'points') {
@@ -102,7 +102,7 @@
                             <td class="text-center px-4 py-2 border-r border-gray-300">{{ 0 }}</td>
                         }
                         @for (stat of statTable; track $index) {
-                            <td class="text-center px-4 py-2 border-r border-gray-300">{{ avgRow4[stat] }}</td>
+                            <td class="text-center px-4 py-2 border-r" [ngStyle]="getColorStyle(avgRow4[stat], stat)">{{ avgRow4[stat] }}</td>
                             @if (dashboardCard.card_id === 'TABLE_GAME_LINEUP' || dashboardCard.card_id === 'TABLE_GAME_TEAM') {
                                 <td class="text-red-600 text-center px-4 py-2 border-r border-gray-300">{{ avgRow4[`${stat}o`] }}</td>
                                 @if (stat === 'points') {
@@ -117,7 +117,7 @@
                             <td class="text-center px-4 py-2 border-r border-gray-300">{{ 0 }}</td>
                         }
                         @for (stat of statTable; track $index) {
-                            <td class="text-center px-4 py-2 border-r border-gray-300">{{ avgRow1[stat] }}</td>
+                            <td class="text-center px-4 py-2 border-r" [ngStyle]="getColorStyle(avgRow1[stat], stat)">{{ avgRow1[stat] }}</td>
                             @if (dashboardCard.card_id === 'TABLE_GAME_LINEUP' || dashboardCard.card_id === 'TABLE_GAME_TEAM') {
                                 <td class="text-red-600 text-center px-4 py-2 border-r border-gray-300">{{ avgRow1[`${stat}o`] }}</td>
                                 @if (stat === 'points') {
@@ -158,7 +158,7 @@
                     <td class="text-center px-4 py-2 border-r border-gray-300">{{ row.minutes_played.toFixed(0) }}</td>
                 }
                 @for (stat of statTable; track $index) {
-                    <td class="text-center px-4 py-2 border-r border-gray-300">{{ formula(stat, row) }}</td>
+                    <td class="text-center px-4 py-2 border-r border-gray-300" [ngStyle]="getColorStyle(formula(stat, row), stat)">{{ formula(stat, row) }}</td>
                     @if (dashboardCard.card_id === 'TABLE_GAME_LINEUP' || dashboardCard.card_id === 'TABLE_GAME_TEAM') {
                         <td class="text-red-600 text-center px-4 py-2 border-r border-gray-300">{{ formula(stat, row, [], true) }}</td>
                         @if (stat === 'points') {

@@ -12,21 +12,21 @@
 
     @if (team) {
 
-        <div id="exportArea">
-            <div class="page-header font-condensed">
-                <div class="flex flex-row items-start justify-center gap-12">
-                    <div class="flex flex-col items-center gap-3">
-                        <div class="bg-white rounded-full p-2">
-                            <img class="w-32 h-32 rounded-full" [src]="team.logo_url"/>
-                        </div>
-                        <div class="text-2xl">
-                            {{ team.name }}
+        <div #exportArea>
+            <div class="page-header font-condensed pdf-block">
+                <div class="page-header font-condensed">
+                    <div class="flex flex-row items-start justify-center gap-12">
+                        <div class="flex flex-col items-center gap-3">
+                            <div class="bg-white rounded-full p-2">
+                                <img class="w-32 h-32 rounded-full" [src]="team.logo_url"/>
+                            </div>
+                            <div class="text-2xl">
+                                {{ team.name }}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            
 
             <div class="page-content">
 
@@ -86,7 +86,10 @@
                                     }
                                 </mat-select>
                             </mat-form-field>
-                        </div>                
+                        </div>
+                        <button class="no-print" mat-raised-button color="primary" (click)="exportPdf()" [disabled]="pdfLoading">
+                            Esporta PDF
+                        </button>                        
                     </div>
                     <div class="flex flex-row items-center no-print">
 
@@ -143,45 +146,53 @@
 
                     
                     @if (selectedDashboardIdTeam) {
-                        <app-dashboard
-                            [dashboardId]="selectedDashboardIdTeam"
-                            [teamId]="team.id"
-                            [gameIds]="selectedGameId.slice(-1)"
-                        ></app-dashboard>
+                        <div class="pdf-block">
+                            <app-dashboard
+                                [dashboardId]="selectedDashboardIdTeam"
+                                [teamId]="team.id"
+                                [gameIds]="selectedGameId.slice(-1)"
+                            ></app-dashboard>
+                        </div>
                     }
                     @if (selectedDashboardIdGame) {
-                        <app-dashboard
-                            [dashboardId]="selectedDashboardIdGame"
-                            [gameId]="selectedGameId.slice(-1)[0]"
-                        ></app-dashboard>
+                        <div class="pdf-block">
+                            <app-dashboard
+                                [dashboardId]="selectedDashboardIdGame"
+                                [gameId]="selectedGameId.slice(-1)[0]"
+                            ></app-dashboard>
+                        </div>
                     }
                     @if (selectedDashboardIdLineup) {
-                        <app-dashboard
-                            [dashboardId]="selectedDashboardIdLineup"
-                            [teamId]="team.id"
-                            [gameIds]="selectedGameId"
-                            [playerIds]="[]"
-                            [playerOutIds]="[]">
-                        </app-dashboard>
+                        <div class="pdf-block">
+                            <app-dashboard
+                                [dashboardId]="selectedDashboardIdLineup"
+                                [teamId]="team.id"
+                                [gameIds]="selectedGameId"
+                                [playerIds]="[]"
+                                [playerOutIds]="[]">
+                            </app-dashboard>
+                        </div>
                     }
                     @for (player of playerLastGame; track $index) {
-                        <div class="flex flex-row items-start justify-center gap-12">
-                            <div class="flex flex-col items-center">
-                                <div class="bg-white rounded-full p-2">
-                                    <img class="w-32 h-32 rounded-full" [src]="player.logo_url"/>
-                                </div>
-                                <div class="text-2xl">
-                                    {{ player.name }} {{ player.surname }}
+                        <div class="pdf-block">
+                            <div class="flex flex-row items-start justify-center gap-12">
+                                <div class="flex flex-col items-center">
+                                    <div class="bg-white rounded-full p-2">
+                                        <img class="w-32 h-32 rounded-full" [src]="player.logo_url"/>
+                                    </div>
+                                    <div class="text-2xl">
+                                        {{ player.name }} {{ player.surname }}
+                                    </div>
                                 </div>
                             </div>
+                            @if (selectedDashboardIdPlayer) {
+                                <app-dashboard
+                                    [dashboardId]="selectedDashboardIdPlayer"
+                                    [playerId]="player.id"
+                                    [gameIds]="selectedGameId"
+                                ></app-dashboard>
+                            }
                         </div>
-                        @if (selectedDashboardIdPlayer) {
-                            <app-dashboard
-                                [dashboardId]="selectedDashboardIdPlayer"
-                                [playerId]="player.id"
-                                [gameIds]="selectedGameId"
-                            ></app-dashboard>
-                        }
                     }
 
                 </div>

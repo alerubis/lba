@@ -134,7 +134,16 @@ body {
 
 @media print {
     .no-print {
-      display: none !important;
+        display: none !important;
     }
-  }
-  
+}
+
+/* Modalità export: colori compatibili con html2canvas */
+.export-mode *,
+.export-mode *::before,
+.export-mode *::after {
+    color: rgb(0, 0, 0) !important;
+    background-color: rgb(255, 255, 255) !important;
+    border-color: rgb(0, 0, 0) !important;
+    box-shadow: none !important;
+}

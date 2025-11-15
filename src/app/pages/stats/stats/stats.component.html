@@ -1,0 +1,64 @@
+@if (dataLoading) {
+    <mat-progress-bar class="!absolute top-0 z-50" mode="indeterminate"></mat-progress-bar>
+}
+
+<div class="page">
+
+    <app-breadcrumb [section]="'Elements'" [items]="[
+        { text: 'DASHBOARD', route: [] }
+    ]"
+    ></app-breadcrumb>
+
+    <div class="page-header">
+        <div class="title">
+            STATS
+        </div>
+        <div class="subtitle">
+            In this section you can create your own stats.
+        </div>
+    </div>
+
+    <div class="page-content">
+
+        <div class="card">
+
+            <div class="card-title flex flex-row items-center justify-between">
+
+                <div>
+                    Stats
+                </div>
+
+            </div>
+
+            <div class="bg-gray-200 p-6">
+
+                @if (stats.length > 0) {
+
+                    <div class="flex flex-col divide-y divide-gray-300">
+                        @for (stat of stats; track $index) {
+                            <div class="bg-white p-6 hover:bg-gray-100 cursor-pointer" (click)="updateFormula(stat)">
+                                {{ stat.nome }} ({{stat.min}}, {{stat.ave}}, {{stat.max}})
+                            </div>
+                        }
+                    </div>
+
+                } @else {
+
+                    <div class="flex flex-col items-center justify-center bg-white rounded p-6">
+                        <div class="text-center">
+                            No stat found.
+                        </div>
+                        <div class="text-gray-500 text-sm text-center">
+                            Create your first stat by clicking the button "New stat".
+                        </div>
+                    </div>
+
+                }
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
