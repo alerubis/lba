@@ -14,15 +14,10 @@
 
         <div #exportArea>
             <div class="page-header font-condensed pdf-block">
-                <div class="page-header font-condensed">
-                    <div class="flex flex-row items-start justify-center gap-12">
-                        <div class="flex flex-col items-center gap-3">
-                            <div class="bg-white rounded-full p-2">
-                                <img class="w-32 h-32 rounded-full" [src]="team.logo_url"/>
-                            </div>
-                            <div class="text-2xl">
-                                {{ team.name }}
-                            </div>
+                <div class="flex flex-row items-start justify-center gap-12">
+                    <div class="flex flex-col items-center gap-3">
+                        <div class="bg-white rounded-full">
+                            <img class="w-32 h-32 rounded-full" [src]="team.logo_url"/>
                         </div>
                     </div>
                 </div>
@@ -159,6 +154,7 @@
                             <app-dashboard
                                 [dashboardId]="selectedDashboardIdGame"
                                 [gameId]="selectedGameId.slice(-1)[0]"
+                                [teamId]="team.id"
                             ></app-dashboard>
                         </div>
                     }
@@ -178,9 +174,9 @@
                             <div class="flex flex-row items-start justify-center gap-12">
                                 <div class="flex flex-col items-center">
                                     <div class="bg-white rounded-full p-2">
-                                        <img class="w-32 h-32 rounded-full" [src]="player.logo_url"/>
+                                        <img class="w-32 h-32 rounded-full" [src]="getLogo(player.logo_url)"/>
                                     </div>
-                                    <div class="text-2xl">
+                                    <div>
                                         {{ player.name }} {{ player.surname }}
                                     </div>
                                 </div>

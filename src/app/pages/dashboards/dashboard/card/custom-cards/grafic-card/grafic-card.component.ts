@@ -60,6 +60,10 @@ export class GraficCardComponent extends BaseCardComponent {
     avgRow1: { [key: string]: number } = {};
     avgRow4: { [key: string]: number } = {};
     avgRowAll: { [key: string]: number } = {};
+    avgRowWin: { [key: string]: number } = {};
+    avgRowLoss: { [key: string]: number } = {};
+    avgRowHome: { [key: string]: number } = {};
+    avgRowGuest: { [key: string]: number } = {};
     @ViewChild('exportArea') exportArea!: ElementRef;
 
     constructor(
@@ -1329,6 +1333,9 @@ export class GraficCardComponent extends BaseCardComponent {
                         win: row.team_id === game.team_home_id ? true : false
                     }));
                     this.rows = _.orderBy(this.rows, a => +a.points, 'desc');
+                    if (this.teamId){
+                        this.rows = this.rows.filter(x=>x.team_id === this.teamId);
+                    }
                     this.calcolaMedieStatistiche();
                 }
                 else if (this.teamId && this.gameIds && this.gameIds.length > 0 && this.playerIds) {
@@ -1526,6 +1533,9 @@ export class GraficCardComponent extends BaseCardComponent {
                     this.buildChart();
                 });
             }
+            if (this.rows.length > 0){
+                this.rows = _.orderBy(this.rows, x=>x.game_id, 'desc');
+            }
             this.loading = false;
         }
 
@@ -1662,6 +1672,10 @@ export class GraficCardComponent extends BaseCardComponent {
         this.avgRow1 = {};
         this.avgRow4 = {};
         this.avgRowAll = {};
+        this.avgRowWin = {};
+        this.avgRowLoss = {};
+        this.avgRowHome = {};
+        this.avgRowGuest = {};
 
         if (!this.rows || this.rows.length === 0) return;
 
@@ -1670,7 +1684,11 @@ export class GraficCardComponent extends BaseCardComponent {
             const valoreAll = this.formula(stat, null, this.rows);
             const valore4 = this.formula(stat, null, this.rows.slice(-4));
             const valore1 = this.formula(stat, null, this.rows.slice(-1));
+            const valoreWin = this.formula(stat, null, this.rows.filter(x=>x.win));
+            const valoreLoss = this.formula(stat, null, this.rows.filter(x=>!x.win));
 
+            this.avgRowLoss[stat] = +valoreLoss;
+            this.avgRowWin[stat] = +valoreWin;
             this.avgRowAll[stat] = +valoreAll;
             this.avgRow4[stat] = +valore4;
             this.avgRow1[stat] = +valore1;
@@ -1678,9 +1696,13 @@ export class GraficCardComponent extends BaseCardComponent {
             if (oppositor) {
                 const statO = `${stat}o`;
 
+                const valoreLoss = this.formula(stat, null, this.rows.filter(x=>!x.win), true);
+                const valoreWin = this.formula(stat, null, this.rows.filter(x=>x.win), true);
                 const valoreAll = this.formula(stat, null, this.rows, true);
                 const valore4 = this.formula(stat, null, this.rows.slice(-4), true);
                 const valore1 = this.formula(stat, null, this.rows.slice(-1), true);
+                this.avgRowLoss[statO] = +valoreLoss;
+                this.avgRowWin[statO] = +valoreWin;
                 this.avgRowAll[statO] = +valoreAll;
                 this.avgRow4[statO] = +valore4;
                 this.avgRow1[statO] = +valore1;
@@ -1989,9 +2011,11 @@ export class GraficCardComponent extends BaseCardComponent {
         }
     }
 
-    getColorStyle(value: number, stat: string) {
-
-        if (stat?.substring(0, 3) === 'pct' && value === 0) return {};
+    getColorStyle(row: { [key: string]: number; }, stat: string) {
+        const value = row[stat];
+        const suffix = stat.slice(4);
+        const missedKey = `missed_${suffix}`;
+        if (stat?.substring(0, 3) === 'pct' && value === 0 && row[missedKey] === 0) return {};
 
         if (value == null || isNaN(value) || (
             this.dashboardCard.card_id !== 'TABLE_GAME_PLAYER' &&
@@ -2058,4 +2082,18 @@ export class GraficCardComponent extends BaseCardComponent {
         return this.stats.find(x => x.stat_id === stat)?.nome || stat;
     }
 
+    cleanImageUrl(url: string): string {
+        try {
+            const parsed = new URL(url);
+            const real = parsed.searchParams.get("url");
+            return real ? decodeURIComponent(real) : url;
+        } catch {
+            return url;
+        }
+    }
+
+    getLogo(url: string | undefined): string {
+        const clean = this.cleanImageUrl(url || '');
+        return "http://localhost:8080/proxy?url=" + encodeURIComponent(clean);
+    }
 }

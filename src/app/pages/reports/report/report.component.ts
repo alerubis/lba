@@ -184,45 +184,68 @@ export class ReportComponent {
         console.log("Avvio exportPdf…");
         await new Promise(r => setTimeout(r, 300)); // permette ai dashboard di stabilizzarsi
         await this.doPdfExport();
+
+        this.pdfLoading = false;
+    }
+    waitForImages(): Promise<void> {
+        const images: HTMLImageElement[] = Array.from(
+            document.querySelectorAll<HTMLImageElement>(".pdf-block img")
+        );
+            
+        const waiters = images.map(img => {
+            if (img.complete) return Promise.resolve();
+            return new Promise<void>(resolve => {
+                img.onload = () => resolve();
+                img.onerror = () => resolve();
+            });
+        });
+    
+        return Promise.all(waiters).then(() => {});
     }
     
     private async doPdfExport(): Promise<void> {
+
+        await this.waitForImages();
+        await document.fonts.ready;
+        
         const area: HTMLElement = this.exportArea.nativeElement;
         const blocks: HTMLElement[] = Array.from(
             area.querySelectorAll('.pdf-block')
         );
-    
+
         if (blocks.length === 0) {
             console.error("Nessuna sezione .pdf-block trovata!");
             return;
         }
-    
+
         const images: string[] = [];
-    
+
         // 1. Converti ogni blocco in immagine PNG
         for (let i = 0; i < blocks.length; i++) {
             const block = blocks[i];
-    
+
             try {
                 const dataUrl = await htmlToImage.toPng(block, {
                     cacheBust: true,
                     pixelRatio: 2,
                     quality: 1,
                     backgroundColor: '#ffffff',
-                    skipFonts: true
+                    skipFonts: true,
+                    includeQueryParams: true
                 });
-    
+
                 images.push(dataUrl);
+                console.log(`Caricato blocco ${i + 1}`);
             } catch (err) {
                 console.error(`Errore nel blocco ${i + 1}`, err);
             }
         }
-    
+
         if (images.length === 0) {
             console.error("Nessuna immagine generata");
             return;
         }
-    
+
         // 2. Funzione per calcolare le proporzioni di ogni immagine
         const getImageDimensions = (base64: string, targetWidth: number): Promise<{ width: number; height: number }> => {
             return new Promise(resolve => {
@@ -237,21 +260,21 @@ export class ReportComponent {
                 img.src = base64;
             });
         };
-    
+
         const targetWidth = 822; // 842 - 20 margini laterali (A4 landscape)
         const dims: any[] = [];
-    
+
         // 3. Calcolo dimensioni reali di ogni immagine
         for (const img of images) {
             const dim = await getImageDimensions(img, targetWidth);
             dims.push(dim);
         }
-    
+
         // 4. Altezza totale della pagina PDF
-        const totalHeight = dims.reduce((sum, d) => sum + d.height + 20, 0); // +20 margin verticali
-    
+        const totalHeight = dims.reduce((sum, d) => sum + d.height + 50, 0); // +20 margin verticali
+
         console.log("Altezza totale PDF:", totalHeight);
-    
+
         // 5. Costruzione contenuto PDF
         const content: Content[] = images.map((img, i) => ({
             image: img,
@@ -259,7 +282,7 @@ export class ReportComponent {
             height: dims[i].height,
             margin: [0, 10, 0, 10] as [number, number, number, number]
         }));
-    
+
         // 6. Definizione PDF: pagina singola, orizzontale, altezza dinamica
         const docDef: TDocumentDefinitions = {
             pageSize: {
@@ -269,11 +292,22 @@ export class ReportComponent {
             pageMargins: [10, 10, 10, 10] as [number, number, number, number],
             content
         };
-    
+
         // 7. Generazione PDF
         pdfMake.createPdf(docDef).download('report.pdf');
     }
-    
-    
-    
+    cleanImageUrl(url: string): string {
+        try {
+            const parsed = new URL(url);
+            const real = parsed.searchParams.get("url");
+            return real ? decodeURIComponent(real) : url;
+        } catch {
+            return url;
+        }
+    }
+
+    getLogo(url: string | undefined): string {
+        const clean = this.cleanImageUrl(url || '');
+        return "http://localhost:8080/proxy?url=" + encodeURIComponent(clean);
+    }
 }
