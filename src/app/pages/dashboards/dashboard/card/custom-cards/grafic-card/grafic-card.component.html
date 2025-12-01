@@ -185,7 +185,7 @@
                         }
                         @else {
                         <div class="flex flex-row">
-                        <!--<img class="w-10 h-10 rounded-full" [src]="getLogo(row.player1.logo_url)"
+                            <!--<img class="w-10 h-10 rounded-full" [src]="getLogo(row.player1.logo_url)"
                                 [title]="row.player1.name + ' ' + row.player1.surname">
                             <img class="w-10 h-10 rounded-full" [src]="getLogo(row.player2.logo_url)"
                                 [title]="row.player2.name + ' ' + row.player2.surname">
@@ -205,19 +205,16 @@
                     </div>
                 </td>
                 @if (dashboardCard.card_id === 'TABLE_LINEUP_TEAM') {
-                <td class="text-center px-4 py-2 border-r border-gray-300">{{ row.minutes_played.toFixed(0) }}</td>
+                    <td class="text-center px-4 py-2 border-r border-gray-300">{{ row.minutes_played.toFixed(0) }}</td>
                 }
                 @for (stat of statTable; track $index) {
-                <td class="text-center px-4 py-2 border-r border-gray-300"
-                    [ngStyle]="getColorStyle(row, stat)">{{ formula(stat, row) }}</td>
-                @if (dashboardCard.card_id === 'TABLE_GAME_LINEUP' || dashboardCard.card_id === 'TABLE_GAME_TEAM') {
-                <td class="text-red-600 text-center px-4 py-2 border-r border-gray-300">{{ formula(stat, row, [], true)
-                    }}</td>
-                @if (stat === 'points') {
-                <td class="text-red-600 text-center px-4 py-2 border-r border-gray-300">{{ getPlusMinus(row[stat],
-                    row[`${stat}o`]) }}</td>
-                }
-                }
+                    <td class="text-center px-4 py-2 border-r border-gray-300" [ngStyle]="getColorStyle(row, stat)">{{ formula(stat, row) }}</td>
+                    @if (dashboardCard.card_id === 'TABLE_GAME_LINEUP' || dashboardCard.card_id === 'TABLE_GAME_TEAM' || dashboardCard.card_id === 'TABLE_LINEUP_TEAM') {
+                        <td class="text-red-600 text-center px-4 py-2 border-r border-gray-300">{{ formula(stat, row, [], true)}}</td>
+                        @if (stat === 'points') {
+                            <td class="text-red-600 text-center px-4 py-2 border-r border-gray-300">{{ getPlusMinus(row[stat], row[`${stat}o`]) }}</td>
+                        }
+                    }
                 }
             </tr>
             }

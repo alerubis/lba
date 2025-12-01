@@ -1752,7 +1752,7 @@ export class GraficCardComponent extends BaseCardComponent {
     }
 
     getColSpan(stat: string, card: string | undefined): number {
-        if (card === 'TABLE_GAME_LINEUP' || card === 'TABLE_GAME_TEAM') {
+        if (card === 'TABLE_GAME_LINEUP' || card === 'TABLE_GAME_TEAM' || card === 'TABLE_LINEUP_TEAM') {
             if (stat === 'points') {
                 return 3;
             }
